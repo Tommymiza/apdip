@@ -3,6 +3,9 @@
     flex-direction: row;
     justify-content: space-between;
     padding: 20px;
+    position: fixed;
+    z-index: 2;
+    width: calc(100vw - 40px);
 }
 a{
     color: inherit;

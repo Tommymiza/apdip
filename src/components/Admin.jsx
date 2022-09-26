@@ -58,7 +58,7 @@ const Admin = () => {
       const keyitems = key.split(";");
       const keyitem = keyitems[0].split("=");
       const admins = collection(database, "admins");
-      const docs = getDocs(admins)
+      getDocs(admins)
         .then((res) => {
           res.docs.map((doc) => {
             if (keyitem[1] === doc.id) {

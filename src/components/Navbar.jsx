@@ -23,6 +23,7 @@ const Navbar = () => {
   };
   const deluser = () => {
     document.cookie = "accessKey=; expires=01 Oct 1970 00:00:00 GMT";
+    window.location.reload()
   };
   useEffect(() => {
     document.getElementById("menuopen").addEventListener("click", (e) => {
