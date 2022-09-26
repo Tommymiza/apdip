@@ -1,0 +1,40 @@
+#navbar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+}
+a{
+    color: inherit;
+    text-decoration: inherit;
+    transition: 0.5s;
+}
+#Title{
+    font-family: 'Gumela';
+    font-size: 25px;
+    text-align: center;
+    margin-right: 10px;
+    margin-left: 10px;
+    font-style: italic;
+    &>span{
+        font-size: 30px;
+        font-weight: bolder;
+        font-style: normal;
+    }
+}
+@media screen and (max-width: 960px) {
+    #Title{
+        font-size: 20px;
+        &>span{
+            font-size: 25px;
+        }
+    }
+}
+@media screen and (max-width: 810px) {
+    #Title{
+        font-size: 15px;
+        &>span{
+            font-size: 20px;
+        }
+    }
+}

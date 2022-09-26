@@ -1,0 +1,29 @@
+#adminsec{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    align-items: center;
+    p{
+        color: red;
+        filter:drop-shadow(0px 0px 10px red)
+    }
+    div{
+        margin-bottom: 20px;
+        label.MuiFormLabel-root{
+            font-size: 20px;
+        }
+    }
+    .MuiInputBase-input{
+        font-size: 20px;
+    }
+    legend span{
+        font-size: 15px;
+    }
+}
