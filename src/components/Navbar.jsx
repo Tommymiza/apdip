@@ -11,7 +11,6 @@ import {
   Typography,
   
 } from "@mui/material";
-import logo from "../images/logo.png";
 import * as Im from "@mui/icons-material";
 import "../style/Navbar.scss";
 
@@ -41,16 +40,6 @@ const Navbar = () => {
         alignItems={"center"}
         wrap={"nowrap"}
       >
-        <Grid item>
-          <Avatar
-            src={logo}
-            sx={{
-              width: 100,
-              height: 100,
-              boxShadow: "7px 5px 15px",
-            }}
-          ></Avatar>
-        </Grid>
         <Grid item>
           <Typography id="Title">
             <span>A</span>

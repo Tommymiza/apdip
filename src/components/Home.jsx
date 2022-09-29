@@ -8,13 +8,16 @@ import {
   CardContent,
   Typography,
   Button,
-  CircularProgress,
+  Dialog,
+  DialogTitle,
+  Grid,
+  Avatar,
 } from "@mui/material";
 import * as Im from "@mui/icons-material";
 import "../style/Home.scss";
 import { motion } from "framer-motion";
-import { getFirestore, collection, getDocs, getDoc } from "firebase/firestore";
-import { getStorage, ref, getDownloadURL, getMetadata } from "firebase/storage";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import app from "./db";
 
 const Home = () => {
@@ -22,6 +25,27 @@ const Home = () => {
   const [pret, setPret] = useState(false);
   const [list, setList] = useState({});
   const [activities, setActivities] = useState([]);
+  const [show, setShow] = useState({});
+
+  function showDialog(id) {
+    const obj = {};
+    Object.keys(show).forEach((key) => {
+      if (key === id) {
+        obj[key] = true;
+      } else {
+        obj[key] = false;
+      }
+    });
+    setShow(obj);
+  }
+  function hideDialog() {
+    const temp = {};
+    Object.keys(show).forEach((key) => {
+      temp[key] = false;
+    });
+    setShow(temp);
+  }
+
   useEffect(() => {
     return () => {
       const database = getFirestore(app);
@@ -31,39 +55,30 @@ const Home = () => {
           const temp = res.docs.map((doc) => doc.data());
           setList(temp[0]);
           setPret(true);
-          var n = 1;
-          setInterval(() => {
-            if (document.getElementById("slide" + n)) {
-              document.getElementById("slide" + n).checked = true;
-              n++;
-              if (n > 3) {
-                n = 1;
-              }
-            }
-          }, 3000);
         })
         .catch((err) => {
           alert(err);
         });
       const activity = collection(database, "activity");
       getDocs(activity).then((resultat) => {
+        const temp = {};
         resultat.docs.forEach((item) => {
           const date = item.data().date.toDate();
-          const date2 = new Date()
-          console.log(date)
           const exactpath =
             date.getFullYear() +
             "-" +
-            (date.getMonth()+1) +
+            (date.getMonth() + 1) +
             "-" +
             date.getDate() +
             "/" +
             item.data().path;
+          temp[item.id] = false;
           getDownloadURL(ref(getStorage(app), `images/${exactpath}`)).then(
             (res) => {
               setActivities((previous) => [
                 ...previous,
                 {
+                  id: item.id,
                   date: item.data().date.toDate(),
                   description: item.data().description,
                   path: res,
@@ -73,22 +88,26 @@ const Home = () => {
             }
           );
         });
+        setShow(temp);
       });
     };
   }, []);
   return (
     <div className="accueil">
+      <Avatar
+        src="images/logo_APDIP.png"
+        sx={{
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+          width: "50vh",
+          height: "50vh",
+          position: "fixed",
+          opacity: 0.7,
+          zIndex: -1,
+        }}
+      ></Avatar>
       <header>
-        <img src={fond1} alt="backgroundimg" className="background" />
-        <div
-          style={{
-            position: "absolute",
-            background: "rgba(0,0,0,0.2)",
-            width: "100%",
-            height: "100%",
-            transform: "translateZ(-20px) scale(3.03)",
-          }}
-        ></div>
         <div id="apropos">
           {pret ? (
             <div>
@@ -217,61 +236,95 @@ const Home = () => {
       <section>
         <div className="actmiss">
           <div className="activity">
-            {activities.length != 0 ? (
-              activities.map((activ) => (
-                <Card sx={{ maxWidth: 345 }} key={activ.description}>
-                  <CardMedia
-                    component="img"
-                    sx={{width: 320, height: 140}}
-                    image={activ.path}
-                    alt={activ.title}
-                  />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {activ.title + ' le ' + activ.date.getDay() + '-' + activ.date.getMonth() + '-' + activ.date.getFullYear()}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {activ.description}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small">Learn More</Button>
-                  </CardActions>
-                </Card>
-              ))
+            {activities.length !== 0 ? (
+              <Grid
+                container
+                direction={"row"}
+                wrap={"wrap"}
+                justifyContent={"space-evenly"}
+                display={"flex"}
+              >
+                {activities.map((activ, index) => (
+                  <div key={index} className="actcard">
+                    <Card sx={{ maxWidth: 345 }} elevation={4}>
+                      <CardMedia
+                        component="img"
+                        sx={{ width: 345, height: 140 }}
+                        image={activ.path}
+                        alt={activ.title}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {activ.title}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {activ.description.substr(0, 30) + "..."}
+                        </Typography>
+                        <Dialog open={show[activ.id]}>
+                          <DialogTitle>{activ.title}</DialogTitle>
+                          <Button
+                            variant="rounded"
+                            onClick={() => hideDialog()}
+                          >
+                            Close
+                          </Button>
+                        </Dialog>
+                      </CardContent>
+                      <CardActions>
+                        <Button
+                          size="small"
+                          onClick={() => showDialog(activ.id)}
+                        >
+                          More...
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </div>
+                ))}
+              </Grid>
             ) : (
-              <Card sx={{ maxWidth: 345 }}>
-                <Skeleton variant={"rectangular"} width={320} height={160}></Skeleton>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    <Skeleton
-                      width={100}
-                      height={20}
-                      variant={"rectangular"}
-                    ></Skeleton>
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    <Skeleton
-                      width={200}
-                      height={10}
-                      variant={"rectangular"}
-                    ></Skeleton>
-                    <Skeleton
-                      width={200}
-                      height={10}
-                      variant={"rectangular"}
-                    ></Skeleton>
-                    <Skeleton
-                      width={200}
-                      height={10}
-                      variant={"rectangular"}
-                    ></Skeleton>
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Learn More</Button>
-                </CardActions>
-              </Card>
+              <Grid container direction={"row"} justifyContent={"space-evenly"}>
+                {skeleton.map((i) => (
+                  <motion.div key={i} className="actcard" initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 0.5}}>
+                    <Card sx={{ maxWidth: 345 }} elevation={4}>
+                      <Skeleton
+                        variant={"rectangular"}
+                        width={345}
+                        height={160}
+                      ></Skeleton>
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          <Skeleton
+                            width={100}
+                            height={20}
+                            variant={"rectangular"}
+                          ></Skeleton>
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          <Skeleton
+                            width={200}
+                            height={10}
+                            variant={"rectangular"}
+                          ></Skeleton>
+                          <Skeleton
+                            width={200}
+                            height={10}
+                            variant={"rectangular"}
+                          ></Skeleton>
+                          <Skeleton
+                            width={200}
+                            height={10}
+                            variant={"rectangular"}
+                          ></Skeleton>
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Button size="small">More...</Button>
+                      </CardActions>
+                    </Card>
+                  </motion.div>
+                ))}
+              </Grid>
             )}
           </div>
           <div className="mission"></div>

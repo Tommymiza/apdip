@@ -1,35 +1,28 @@
 .accueil {
-  height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  perspective: 10px;
   scroll-behavior: smooth;
   &::-webkit-scrollbar {
     display: none;
   }
 }
 header {
-  height: 100%;
-  transform-style: preserve-3d;
-  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  z-index: -1;
   #apropos {
     margin-top: 200px;
     display: flex;
     flex-direction: row;
     height: calc(100% - 150px);
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: wrap;
     div {
       display: flex;
       flex-direction: column;
       min-width: 400px;
-      width: 100%;
+      width: 80%;
       border-radius: 10px;
       margin: 20px 20px;
       p {
@@ -67,31 +60,22 @@ header {
     }
   }
 }
-.background {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  transform: translateZ(-20px) scale(3.03);
-  object-fit: cover;
-  z-index: -1;
-}
-
-.activity{
-  margin: 0 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
+section{
+  
+  margin-top: 200px;
+  .activity{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0;
+    div.actcard{
+      margin: 20px;
+    }
+  }
 }
 
 
 
 @media screen and (max-width: 960px) {
-  header #apropos {
-    justify-content: center;
-    div {
-      width: 80%;
-    }
-  }
+  
 }
