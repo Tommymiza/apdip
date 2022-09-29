@@ -1,63 +1,97 @@
-#parallax{
-    div::-webkit-scrollbar{
-        display: none;
-    }
+.accueil {
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  perspective: 10px;
+  scroll-behavior: smooth;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
-.apropos{
-    font-family: 'PoiretOne';
+header {
+  height: 100%;
+  transform-style: preserve-3d;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: -1;
+  #apropos {
     margin-top: 200px;
-    font-size: 25px;
-    font-weight: bold;
-    color: black;
-    padding-right: 20px;
-    padding-left: 20px;
-    background-color: rgba($color: #000000, $alpha: 0);
-    backdrop-filter: blur(2px);
-    span{
-        font-family: 'Gumela';
+    display: flex;
+    flex-direction: row;
+    height: calc(100% - 150px);
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    div {
+      display: flex;
+      flex-direction: column;
+      min-width: 400px;
+      width: 100%;
+      border-radius: 10px;
+      margin: 20px 20px;
+      p {
+        font-family: "PoiretOne";
+        font-weight: bold;
+        font-size: 20px;
+        margin: 0;
+        color: black;
+        text-shadow: 0 0 20px white;
+        span {
+          font-family: "Gumela";
+          color: white;
+          font-weight: lighter;
+          cursor: pointer;
+          transition: 0.5s;
+          &:hover{
+            text-decoration: underline;
+          }
+        }
+      }
+      h2 {
+        margin: 0;
+        font-family: "PoiretOne";
         font-weight: bolder;
-    }
-    div{
+        text-decoration: underline;
+        text-shadow: 0 0 20px white;
+      }
+      .icontext {
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding-left: 10px;
-        margin-top: 20px;
-        p{
-            font-size: 20px;
-            margin: 0;
-        }
+        width: 100%;
+        margin: 10px 0;
+      }
     }
-    .column{
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-        align-items: start;
-        margin-top: 40px;
-        h2{
-            font-size: 25px;
-            color: white;
-            margin: 0;
-            margin-bottom: 5px;
-            text-decoration: underline;
-        }
-    }
+  }
 }
-@media screen and (max-width: 830px) {
-    .apropos{
-        font-size: 20px;
-        margin-top: 150px;
-        div{
-            p{
-                font-size: 17px;
-            }
-        }
-    }
+.background {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  transform: translateZ(-20px) scale(3.03);
+  object-fit: cover;
+  z-index: -1;
 }
-@media screen and (max-width: 490px) {
-    .apropos{
-        div{
-            margin: 5px;
-        }
+
+.activity{
+  margin: 0 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+
+
+@media screen and (max-width: 960px) {
+  header #apropos {
+    justify-content: center;
+    div {
+      width: 80%;
     }
+  }
 }

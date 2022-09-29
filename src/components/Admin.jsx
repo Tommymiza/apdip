@@ -82,7 +82,7 @@ const Admin = () => {
   ) : (
     <div id="adminsec">
       {username !== "" && password !== "" && (
-        <Grid container>
+        <Grid container direction={'row'}>
           <Grid item>
             <Button>Ajouter une activité</Button>
           </Grid>
@@ -94,6 +94,12 @@ const Admin = () => {
           </Grid>
           <Grid item>
             <Button>Ajout d'un administrateur</Button>
+          </Grid>
+          <Grid item>
+            <Button>Modifier les apropos</Button>
+          </Grid>
+          <Grid item>
+            <Button>Modifier les Groupements de base</Button>
           </Grid>
         </Grid>
       )}
