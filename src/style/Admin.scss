@@ -3,7 +3,16 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-family: var(--fontText);
     height: 100vh;
+    .btngrid{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
 }
 form{
     display: flex;

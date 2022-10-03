@@ -8,17 +8,29 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { Button, Grid, TextField, CircularProgress } from "@mui/material";
+import { Button, TextField, CircularProgress, Tooltip, Dialog, DialogTitle, DialogActions, DialogContent } from "@mui/material";
+import {
+  LibraryAddRounded,
+  BorderColorRounded,
+  DeleteRounded,
+  PersonAddRounded,
+  LogoutRounded,
+  LockOpenRounded,
+} from "@mui/icons-material";
 import "../style/Admin.scss";
 
 const Admin = () => {
   const [loading, setLoading] = useState(false);
   const [check, setCheck] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [passError, setPassError] = useState("");
   const [connected, setConnected] = useState(false);
+  const [dialog, setDialog] = useState("");
 
+  const deluser = () => {
+    setDialog("")
+    document.cookie = "accessKey=; expires=01 Oct 1970 00:00:00 GMT";
+    setConnected(false);
+  };
   const database = getFirestore(app);
   const handleSubmit = (e) => {
     setPassError("");
@@ -42,28 +54,28 @@ const Admin = () => {
           setPassError("Mot de passe invalid");
           setLoading(false);
         } else {
-          setUsername(list[0].username);
-          setPassword(list[0].password);
           document.cookie =
             "accessKey=" + id + ";expires=Sat, 31 Dec 2022 00:00:01 GMT";
           setLoading(false);
+          setConnected(true);
         }
       }
     });
   };
   useEffect(() => {
     return () => {
+      setConnected(false);
+      const tempdata = getFirestore(app);
       setCheck(true);
       const key = document.cookie;
       const keyitems = key.split(";");
       const keyitem = keyitems[0].split("=");
-      const admins = collection(database, "admins");
+      const admins = collection(tempdata, "admins");
       getDocs(admins)
         .then((res) => {
-          res.docs.map((doc) => {
+          res.docs.forEach((doc) => {
             if (keyitem[1] === doc.id) {
-              setUsername(doc.data().username);
-              setPassword(doc.data().password);
+              setConnected(true);
             }
           });
           setCheck(false);
@@ -73,37 +85,93 @@ const Admin = () => {
           setCheck(false);
         });
     };
-  }, [connected]);
+  }, []);
 
   return check ? (
     <div id="adminsec">
-      <CircularProgress size={100}></CircularProgress>
+      <CircularProgress size={100} sx={{ color: "#eca588" }}></CircularProgress>
     </div>
   ) : (
     <div id="adminsec">
-      {username !== "" && password !== "" && (
-        <Grid container direction={'row'}>
-          <Grid item>
-            <Button>Ajouter une activité</Button>
-          </Grid>
-          <Grid item>
-            <Button>Modififier une activité</Button>
-          </Grid>
-          <Grid item>
-            <Button>Supprimer une activité</Button>
-          </Grid>
-          <Grid item>
-            <Button>Ajout d'un administrateur</Button>
-          </Grid>
-          <Grid item>
-            <Button>Modifier les apropos</Button>
-          </Grid>
-          <Grid item>
-            <Button>Modifier les Groupements de base</Button>
-          </Grid>
-        </Grid>
-      )}
-      {username === "" && password === "" && (
+      {connected ? (
+        <div className="btngrid">
+          <Button
+            sx={{
+              border: "none",
+              p: 5,
+              background: "rgba(0,0,0,0.05)",
+              boxShadow: "2px 2px 15px #6091A5",
+              borderRadius: "20px",
+              backdropFilter: "blur(2px)",
+            }}
+            onClick={() => setDialog("ajout")}
+          >
+            <Tooltip title="Ajout Activité">
+              <LibraryAddRounded sx={{ width: 50, height: 50 }} />
+            </Tooltip>
+          </Button>
+          <Button
+            sx={{
+              border: "none",
+              p: 5,
+              background: "rgba(0,0,0,0.05)",
+              boxShadow: "2px 2px 15px #6091A5",
+              borderRadius: "20px",
+              backdropFilter: "blur(2px)",
+            }}
+            onClick={() => setDialog("modification")}
+          >
+            <Tooltip title="Modification Activité">
+              <BorderColorRounded sx={{ width: 50, height: 50 }} />
+            </Tooltip>
+          </Button>
+          <Button
+            sx={{
+              border: "none",
+              p: 5,
+              background: "rgba(0,0,0,0.05)",
+              boxShadow: "2px 2px 15px #6091A5",
+              borderRadius: "20px",
+              backdropFilter: "blur(2px)",
+            }}
+            onClick={() => setDialog("suppression")}
+          >
+            <Tooltip title="Suppression Activité">
+              <DeleteRounded sx={{ width: 50, height: 50 }} />
+            </Tooltip>
+          </Button>
+          <Button
+            sx={{
+              border: "none",
+              p: 5,
+              background: "rgba(0,0,0,0.05)",
+              boxShadow: "2px 2px 15px #6091A5",
+              borderRadius: "20px",
+              backdropFilter: "blur(2px)",
+            }}
+            onClick={() => setDialog("ajoutAdmin")}
+          >
+            <Tooltip title="Ajout Admin">
+              <PersonAddRounded sx={{ width: 50, height: 50 }} />
+            </Tooltip>
+          </Button>
+          <Button
+            sx={{
+              border: "none",
+              p: 5,
+              background: "rgba(0,0,0,0.05)",
+              boxShadow: "2px 2px 15px #6091A5",
+              borderRadius: "20px",
+              backdropFilter: "blur(2px)",
+            }}
+            onClick={deluser}
+          >
+            <Tooltip title="Log out">
+              <LogoutRounded sx={{ width: 50, height: 50 }} />
+            </Tooltip>
+          </Button>
+        </div>
+      ) : (
         <form id="connexion" onSubmit={handleSubmit}>
           <TextField label="Username" name="user"></TextField>
           <TextField label="Password" name="pass" type={"password"}></TextField>
@@ -111,8 +179,18 @@ const Admin = () => {
           {loading ? (
             <CircularProgress size={24}></CircularProgress>
           ) : (
-            <Button type="submit" variant="outlined">
-              Valider
+            <Button
+              type="submit"
+              startIcon={<LockOpenRounded />}
+              sx={{
+                color: "white",
+                p: 1,
+                border: "none",
+                boxShadow: "2px 2px 10px #6091A5",
+                borderRadius: "7px",
+              }}
+            >
+              Login
             </Button>
           )}
         </form>
