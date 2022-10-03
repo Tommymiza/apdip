@@ -8,7 +8,16 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { Button, TextField, CircularProgress, Tooltip, Dialog, DialogTitle, DialogActions, DialogContent } from "@mui/material";
+import {
+  Button,
+  TextField,
+  CircularProgress,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+} from "@mui/material";
 import {
   LibraryAddRounded,
   BorderColorRounded,
@@ -26,12 +35,47 @@ const Admin = () => {
   const [connected, setConnected] = useState(false);
   const [dialog, setDialog] = useState("");
 
+  const showimage = () => {
+    const fichiers = document.getElementById("dialogform").images.files;
+    var bool = true
+    var i = 0
+    while(bool){
+      if(document.getElementById("image"+i)){
+        document.getElementById("listes").removeChild(document.getElementById("image"+i))
+      }else{
+        bool = false
+      }
+      i++
+    }
+    const arrayFile = Object.keys(fichiers);
+    arrayFile.forEach((i) => {
+      var node = document.createElement('img')
+      node.setAttribute('id', `image${i}`)
+      document.getElementById("listes").appendChild(node);
+    });
+    setTimeout(() => {
+      arrayFile.forEach((key) => {
+        var reader = new FileReader();
+        reader.onload = () => {
+          document.getElementById("image" + key).src = reader.result;
+        };
+        reader.readAsDataURL(fichiers[key]);
+      });
+    }, 500);
+  };
+
+  const upload =  (e)=>{
+    e.preventDefault()
+
+  }
   const deluser = () => {
-    setDialog("")
+    setDialog("");
     document.cookie = "accessKey=; expires=01 Oct 1970 00:00:00 GMT";
     setConnected(false);
   };
+
   const database = getFirestore(app);
+
   const handleSubmit = (e) => {
     setPassError("");
     setLoading(true);
@@ -62,6 +106,11 @@ const Admin = () => {
       }
     });
   };
+
+  const handleClose = () => {
+    setDialog("");
+  };
+
   useEffect(() => {
     return () => {
       setConnected(false);
@@ -170,6 +219,43 @@ const Admin = () => {
               <LogoutRounded sx={{ width: 50, height: 50 }} />
             </Tooltip>
           </Button>
+          <Dialog open={dialog === "ajout"} onClose={handleClose}>
+            <DialogTitle sx={{fontFamily: 'Gumela', fontSize: 30, alignSelf: 'center'}}>Ajout d'une activité:</DialogTitle>
+            <DialogContent>
+              <form id="dialogform" onSubmit={upload}>
+                <TextField
+                  label="Titre"
+                  name="titre"
+                  variant="standard"
+                  required
+                  sx={{width: 300,fontFamily: 'var(--fontText)'}}
+                ></TextField>
+                <TextField
+                  label="Description"
+                  name="descri"
+                  variant="outlined"
+                  multiline
+                  maxRows={5}
+                  required
+                  sx={{width: 300,fontFamily: 'var(--fontText)'}}
+                ></TextField>
+                <input type="date" name="date" required />
+                <input
+                  type="file"
+                  name="images"
+                  multiple
+                  accept="image/*"
+                  required
+                  onChange={showimage}
+                />
+                <div id="listes"></div>
+                <DialogActions>
+                  <Button type="submit">Upload</Button>
+                  <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       ) : (
         <form id="connexion" onSubmit={handleSubmit}>
