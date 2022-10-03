@@ -7,7 +7,9 @@ import {
   query,
   where,
   getDocs,
+  addDoc
 } from "firebase/firestore";
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import {
   Button,
   TextField,
@@ -34,40 +36,84 @@ const Admin = () => {
   const [passError, setPassError] = useState("");
   const [connected, setConnected] = useState(false);
   const [dialog, setDialog] = useState("");
+  const [progress, setProgress] = useState(0);
 
   const showimage = () => {
-    const fichiers = document.getElementById("dialogform").images.files;
-    var bool = true
-    var i = 0
-    while(bool){
-      if(document.getElementById("image"+i)){
-        document.getElementById("listes").removeChild(document.getElementById("image"+i))
-      }else{
-        bool = false
+    var bool = true;
+    var i = 0;
+    while (bool) {
+      if (document.getElementById("image" + i)) {
+        document
+          .getElementById("listes")
+          .removeChild(document.getElementById("image" + i));
+      } else {
+        bool = false;
       }
-      i++
+      i++;
     }
+    const fichiers = document.getElementById("dialogform").images.files;
     const arrayFile = Object.keys(fichiers);
     arrayFile.forEach((i) => {
-      var node = document.createElement('img')
-      node.setAttribute('id', `image${i}`)
+      var node = document.createElement("img");
+      node.setAttribute("id", `image${i}`);
       document.getElementById("listes").appendChild(node);
     });
-    setTimeout(() => {
-      arrayFile.forEach((key) => {
-        var reader = new FileReader();
-        reader.onload = () => {
-          document.getElementById("image" + key).src = reader.result;
-        };
-        reader.readAsDataURL(fichiers[key]);
-      });
-    }, 500);
-  };
-
-  const upload =  (e)=>{
-    e.preventDefault()
-
+    arrayFile.forEach((key) => {
+      var reader = new FileReader();
+      reader.onload = () => {
+        document.getElementById("image" + key).src = reader.result;
+      };
+      reader.readAsDataURL(fichiers[key]);
+    });
   }
+  async function addactivity(a){
+    try {
+      const docRef =  await addDoc(collection(getFirestore(app), "activity"), a)
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
+
+  const upload = (e) => {
+    e.preventDefault();
+    const formDial = document.getElementById("dialogform");
+    const fichiers = formDial.images.files;
+    const arrayFile = Object.keys(fichiers);
+    const newDate = new Date(formDial.date.value);
+    const exactDate =
+      newDate.getFullYear() +
+      "-" +
+      (newDate.getMonth() + 1) +
+      "-" +
+      newDate.getDate();
+    const activity = {
+      date: exactDate,
+      description: formDial.descri.value,
+      path: formDial.images.files[0].name,
+      place: formDial.lieu.value,
+      title: formDial.titre.value,
+    };
+    addactivity(activity)
+    const storage = getStorage(app);
+    arrayFile.forEach((i) => {
+      const storageRef = ref(
+        storage,
+        `images/${exactDate}/${fichiers[i].name}`
+      );
+      const uploadTask = uploadBytesResumable(storageRef, fichiers[i]);
+      uploadTask.on("state_changed", (snap) => {
+        const temp = (snap.bytesTransferred / snap.totalBytes) * 100;
+        if (temp < 100) {
+          setProgress(temp);
+        } else {
+          setTimeout(() => {
+            setProgress(0);
+          }, 1000);
+        }
+      });
+    });
+  };
   const deluser = () => {
     setDialog("");
     document.cookie = "accessKey=; expires=01 Oct 1970 00:00:00 GMT";
@@ -220,7 +266,11 @@ const Admin = () => {
             </Tooltip>
           </Button>
           <Dialog open={dialog === "ajout"} onClose={handleClose}>
-            <DialogTitle sx={{fontFamily: 'Gumela', fontSize: 30, alignSelf: 'center'}}>Ajout d'une activité:</DialogTitle>
+            <DialogTitle
+              sx={{ fontFamily: "Gumela", fontSize: 30, alignSelf: "center" }}
+            >
+              Ajout d'une activité:
+            </DialogTitle>
             <DialogContent>
               <form id="dialogform" onSubmit={upload}>
                 <TextField
@@ -228,7 +278,7 @@ const Admin = () => {
                   name="titre"
                   variant="standard"
                   required
-                  sx={{width: 300,fontFamily: 'var(--fontText)'}}
+                  sx={{ width: 300, fontFamily: "var(--fontText)" }}
                 ></TextField>
                 <TextField
                   label="Description"
@@ -237,7 +287,14 @@ const Admin = () => {
                   multiline
                   maxRows={5}
                   required
-                  sx={{width: 300,fontFamily: 'var(--fontText)'}}
+                  sx={{ width: 300, fontFamily: "var(--fontText)" }}
+                ></TextField>
+                <TextField
+                  label="Lieu"
+                  name="lieu"
+                  variant="standard"
+                  required
+                  sx={{ width: 300, fontFamily: "var(--fontText)" }}
                 ></TextField>
                 <input type="date" name="date" required />
                 <input
@@ -249,6 +306,9 @@ const Admin = () => {
                   onChange={showimage}
                 />
                 <div id="listes"></div>
+                {progress > 0 && (
+                  <CircularProgress variant="determinate" value={progress} />
+                )}
                 <DialogActions>
                   <Button type="submit">Upload</Button>
                   <Button onClick={handleClose}>Close</Button>

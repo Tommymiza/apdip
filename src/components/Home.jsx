@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import "../style/Home.scss";
 import { AnimatePresence, motion } from "framer-motion";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, orderBy, limit, query, getDocsFromCache } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import app from "./db";
 import ReactScrollWheelHandler from "react-scroll-wheel-handler";
@@ -30,14 +30,14 @@ const Home = () => {
   function upScroll() {
     var temp = page - 1;
     if (temp === -1) {
-      temp = 0
+      temp = 0;
     }
     setPage(temp);
   }
   function downScroll() {
     var temp = page + 1;
     if (temp === 3) {
-      temp = 2
+      temp = 2;
     }
     setPage(temp);
   }
@@ -75,19 +75,11 @@ const Home = () => {
           return;
         });
       const activity = collection(database, "activity");
-      getDocs(activity)
-        .then((resultat) => {
+      const q = query(activity, orderBy("date","desc"), limit(2))
+        getDocs(q).then((resultat) => {
           const temp = {};
           resultat.docs.forEach((item) => {
-            const date = item.data().date.toDate();
-            const exactpath =
-              date.getFullYear() +
-              "-" +
-              (date.getMonth() + 1) +
-              "-" +
-              date.getDate() +
-              "/" +
-              item.data().path;
+            const exactpath = item.data().date + "/" + item.data().path;
             temp[item.id] = false;
             getDownloadURL(ref(getStorage(app), `images/${exactpath}`))
               .then((res) => {
@@ -95,7 +87,7 @@ const Home = () => {
                   ...previous,
                   {
                     id: item.id,
-                    date: item.data().date.toDate(),
+                    date: item.data().date,
                     description: item.data().description,
                     path: res,
                     title: item.data().title,
@@ -117,12 +109,11 @@ const Home = () => {
     };
   }, []);
   return width >= 1590 ? (
-    <ReactScrollWheelHandler
-      upHandler={upScroll}
-      downHandler={downScroll}
-    >
-      <motion.div className="accueil" 
-      exit={{opacity: 0, transition:{duration: 0.5}}}>
+    <ReactScrollWheelHandler upHandler={upScroll} downHandler={downScroll}>
+      <motion.div
+        className="accueil"
+        exit={{ opacity: 0, transition: { duration: 0.5 } }}
+      >
         <AnimatePresence mode="wait">
           {page === 0 && (
             <motion.section
@@ -361,12 +352,17 @@ const Home = () => {
       </motion.div>
     </ReactScrollWheelHandler>
   ) : (
-    <motion.div className="accueil" exit={{opacity: 0, transition:{duration: 0.5}}}>
+    <motion.div
+      className="accueil"
+      exit={{ opacity: 0, transition: { duration: 0.5 } }}
+    >
       <motion.section
         initial={{ opacity: 0, y: 200 }}
         animate={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
       >
-        <div className="about"><h2>About</h2></div>
+        <div className="about">
+          <h2>About</h2>
+        </div>
       </motion.section>
       <motion.section
         initial={{ opacity: 0, y: 200 }}
