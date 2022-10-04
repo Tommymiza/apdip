@@ -38,6 +38,8 @@ const Admin = () => {
   const [dialog, setDialog] = useState("");
   const [progress, setProgress] = useState(0);
 
+  
+
   const showimage = () => {
     var bool = true;
     var i = 0;
@@ -70,8 +72,8 @@ const Admin = () => {
     try {
       const docRef =  await addDoc(collection(getFirestore(app), "activity"), a)
       console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
+    } catch (err) {
+      console.error("Error adding document: ", err);
     }
   }
 
@@ -81,25 +83,32 @@ const Admin = () => {
     const fichiers = formDial.images.files;
     const arrayFile = Object.keys(fichiers);
     const newDate = new Date(formDial.date.value);
+    const month = (newDate.getMonth()+1) < 10 ? "0"+(newDate.getMonth()+1) : (newDate.getMonth()+1)
+    const day = newDate.getDate() < 10 ? "0"+ newDate.getDate() : newDate.getDate()
     const exactDate =
       newDate.getFullYear() +
       "-" +
-      (newDate.getMonth() + 1) +
+      month +
       "-" +
-      newDate.getDate();
+      day;
+    var pathArray = []
+    arrayFile.forEach(file=>{
+      pathArray = [...pathArray,fichiers[file].name]
+    })
     const activity = {
       date: exactDate,
       description: formDial.descri.value,
-      path: formDial.images.files[0].name,
+      images: pathArray,
       place: formDial.lieu.value,
       title: formDial.titre.value,
     };
+    console.log(pathArray)
     addactivity(activity)
     const storage = getStorage(app);
     arrayFile.forEach((i) => {
       const storageRef = ref(
         storage,
-        `images/${exactDate}/${fichiers[i].name}`
+        `images/${activity.title + activity.place + exactDate}/${fichiers[i].name}`
       );
       const uploadTask = uploadBytesResumable(storageRef, fichiers[i]);
       uploadTask.on("state_changed", (snap) => {
@@ -305,7 +314,8 @@ const Admin = () => {
                   required
                   onChange={showimage}
                 />
-                <div id="listes"></div>
+                <div id="listes">
+                </div>
                 {progress > 0 && (
                   <CircularProgress variant="determinate" value={progress} />
                 )}

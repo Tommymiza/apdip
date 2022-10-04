@@ -10,10 +10,24 @@ import {
   Dialog,
   DialogTitle,
   Grid,
+  IconButton,
 } from "@mui/material";
+import {
+  Close,
+  ChevronLeftRounded,
+  ChevronRightRounded,
+  Translate,
+} from "@mui/icons-material";
 import "../style/Home.scss";
 import { AnimatePresence, motion } from "framer-motion";
-import { getFirestore, collection, getDocs, orderBy, limit, query, getDocsFromCache } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  orderBy,
+  limit,
+  query,
+} from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import app from "./db";
 import ReactScrollWheelHandler from "react-scroll-wheel-handler";
@@ -26,6 +40,20 @@ const Home = () => {
   const [show, setShow] = useState({});
   const [page, setPage] = useState(0);
   const [width, setWidth] = useState(document.body.offsetWidth);
+  const [slide, setSlide] = useState(0);
+
+  const slideleft = (a) => {
+    if (slide > -((a - 1) * 100)) {
+      var trsltX = slide - 100;
+      setSlide(trsltX);
+    }
+  };
+  const slideright = () => {
+    if (slide < 0) {
+      var trsltX = slide + 100;
+      setSlide(trsltX);
+    }
+  };
 
   function upScroll() {
     var temp = page - 1;
@@ -43,6 +71,7 @@ const Home = () => {
   }
 
   function showDialog(id) {
+    setSlide(0);
     const obj = {};
     Object.keys(show).forEach((key) => {
       if (key === id) {
@@ -60,49 +89,75 @@ const Home = () => {
     });
     setShow(temp);
   }
+
+  const database = getFirestore(app);
+  async function getdocument(str) {
+    const docs = collection(database, str);
+    const document = await getDocs(docs);
+    var act = [];
+    document.docs.map((item) => {
+      act = [...act, { id: item.id, contenu: item.data() }];
+    });
+    return act;
+  }
+  async function querydoc(str) {
+    const activity = collection(database, str);
+    const q = query(activity, orderBy("date", "desc"), limit(2));
+    const document = await getDocs(q);
+    var act = [];
+    document.docs.map((item) => {
+      act = [...act, { id: item.id, contenu: item.data() }];
+    });
+    return act;
+  }
+  async function downurl(str) {
+    const storage = getStorage(app);
+    const refStorage = ref(storage, str);
+    const download = await getDownloadURL(refStorage);
+    return download;
+  }
+  async function demarrer() {
+    const activity = await querydoc("activity");
+    const temp = {};
+    for (let act of activity) {
+      var tab = [];
+      for (let img of act.contenu.images) {
+        const path =
+          "images/" +
+          act.contenu.title +
+          act.contenu.place +
+          act.contenu.date +
+          "/" +
+          img;
+        const downloadedurl = await downurl(path);
+        tab.push(downloadedurl);
+      }
+      temp[act.id] = false;
+      setActivities((prev) => [
+        ...prev,
+        {
+          id: act.id,
+          date: act.contenu.date,
+          description: act.contenu.description,
+          images: tab,
+          place: act.contenu.place,
+          title: act.contenu.title,
+        },
+      ]);
+    }
+    setShow(temp);
+  }
+  useEffect(() => {
+    document.querySelectorAll(".diapo div").forEach((element) => {
+      element.style.transform = `translateX(${slide}%)`;
+    });
+  }, [slide]);
   useEffect(() => {
     return () => {
-      const database = getFirestore(app);
-      const docs = collection(database, "apropos");
-      getDocs(docs)
-        .then((res) => {
-          const temp = res.docs.map((doc) => doc.data());
-          setList(temp[0]);
-          setPret(true);
-        })
-        .catch((err) => {
-          alert(err);
-          return;
-        });
-      const activity = collection(database, "activity");
-      const q = query(activity, orderBy("date","desc"), limit(2))
-        getDocs(q).then((resultat) => {
-          const temp = {};
-          resultat.docs.forEach((item) => {
-            const exactpath = item.data().date + "/" + item.data().path;
-            temp[item.id] = false;
-            getDownloadURL(ref(getStorage(app), `images/${exactpath}`))
-              .then((res) => {
-                setActivities((previous) => [
-                  ...previous,
-                  {
-                    id: item.id,
-                    date: item.data().date,
-                    description: item.data().description,
-                    path: res,
-                    title: item.data().title,
-                  },
-                ]);
-              })
-              .catch((err) => {
-                alert(err);
-              });
-          });
-          setShow(temp);
-        })
-        .catch((err) => {
-          alert(err);
-        });
+      setPret(false);
+      demarrer().then((res) => {
+        setPret(true);
+      });
       window.addEventListener("resize", () => {
         setWidth(document.body.offsetWidth);
       });
@@ -124,7 +179,7 @@ const Home = () => {
                 opacity: 0,
                 x: -1000,
               }}
-              transition={{ duration: 1 }}
+              transition={{ duration: 0.5 }}
               key={page}
             >
               <div className="about">
@@ -141,13 +196,13 @@ const Home = () => {
                 opacity: 0,
                 x: -1000,
               }}
-              transition={{ duration: 1 }}
+              transition={{ duration: 0.5 }}
               key={page}
             >
               <div className="actmiss">
                 <div className="activity">
                   <h1>Nos activités récentes:</h1>
-                  {activities.length !== 0 ? (
+                  {pret ? (
                     <div
                       style={{
                         display: "flex",
@@ -165,6 +220,7 @@ const Home = () => {
                           transition={{
                             type: "spring",
                             stiffness: 50,
+                            duration: 0.2,
                           }}
                         >
                           <Card
@@ -178,7 +234,7 @@ const Home = () => {
                             <CardMedia
                               component="img"
                               sx={{ width: 345, height: 160 }}
-                              image={activ.path}
+                              image={activ.images[0] || "images/logo_APDIP.png"}
                               alt={activ.title}
                             />
                             <CardContent sx={{ bgcolor: "transparent" }}>
@@ -195,14 +251,61 @@ const Home = () => {
                               >
                                 {activ.description.substr(0, 30) + "..."}
                               </Typography>
-                              <Dialog open={show[activ.id]}>
-                                <DialogTitle>{activ.title}</DialogTitle>
-                                <Button
-                                  variant="rounded"
-                                  onClick={() => hideDialog()}
-                                >
-                                  Close
-                                </Button>
+                              <Dialog
+                                open={show[activ.id]}
+                                maxWidth={"lg"}
+                                onBackdropClick={hideDialog}
+                              >
+                                <div className="diaporama">
+                                  <div className="diapo">
+                                    {activ.images.map((item, index) => (
+                                      <div key={index}>
+                                        <img src={item} alt={activ.title} />
+                                      </div>
+                                    ))}
+                                    <IconButton
+                                      onClick={() => slideright()}
+                                      sx={{
+                                        position: "absolute",
+                                        left: 10,
+                                        top: "50%",
+                                        transform: "translateY(-50%)",
+                                      }}
+                                    >
+                                      <ChevronLeftRounded />
+                                    </IconButton>
+                                    <IconButton
+                                      onClick={() =>
+                                        slideleft(activ.images.length)
+                                      }
+                                      sx={{
+                                        position: "absolute",
+                                        right: 10,
+                                        top: "50%",
+                                        transform: "translateY(-50%)",
+                                      }}
+                                    >
+                                      <ChevronRightRounded />
+                                    </IconButton>
+                                  </div>
+                                  <div className="descri">
+                                    <h2>{activ.title}</h2>
+                                    <h4>
+                                      {activ.place} le {activ.date}
+                                    </h4>
+                                    <p>{activ.description}</p>
+                                  </div>
+                                  <IconButton
+                                    sx={{
+                                      position: "absolute",
+                                      right: 0,
+                                      top: 0,
+                                    }}
+                                    onClick={hideDialog}
+                                  >
+                                    <Close />
+                                  </IconButton>
+                                </div>
                               </Dialog>
                             </CardContent>
                             <CardActions>
@@ -229,7 +332,7 @@ const Home = () => {
                           className="actcard"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          transition={{ duration: 0.5 }}
+                          transition={{ duration: 0.2 }}
                         >
                           <Card sx={{ maxWidth: 345 }} elevation={4}>
                             <Skeleton
@@ -285,7 +388,7 @@ const Home = () => {
                     initial={{ scale: 0, y: 200, opacity: 0 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{
-                      duration: 0.8,
+                      duration: 0.2,
                       delay: 0,
                       type: "spring",
                       stiffness: 50,
@@ -301,7 +404,7 @@ const Home = () => {
                     initial={{ scale: 0, y: 200, opacity: 0 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{
-                      duration: 0.8,
+                      duration: 0.2,
                       delay: 0.2,
                       type: "spring",
                       stiffness: 50,
@@ -317,7 +420,7 @@ const Home = () => {
                     initial={{ scale: 0, y: 200, opacity: 0 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{
-                      duration: 0.8,
+                      duration: 0.2,
                       delay: 0.5,
                       type: "spring",
                       stiffness: 50,
@@ -367,12 +470,12 @@ const Home = () => {
       <motion.section
         initial={{ opacity: 0, y: 200 }}
         whileInView={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
-        transition={{ duration: 1 }}
+        transition={{ duration: 0.5 }}
       >
         <div className="actmiss">
           <div className="activity">
             <h1>Nos activités récentes:</h1>
-            {activities.length !== 0 ? (
+            {pret ? (
               <div
                 style={{
                   display: "flex",
@@ -403,7 +506,7 @@ const Home = () => {
                       <CardMedia
                         component="img"
                         sx={{ width: 345, height: 160 }}
-                        image={activ.path}
+                        image={activ.images[0] || "images/logo_APDIP.png"}
                         alt={activ.title}
                       />
                       <CardContent sx={{ bgcolor: "transparent" }}>
@@ -413,14 +516,59 @@ const Home = () => {
                         <Typography variant="body2" color="text.secondary">
                           {activ.description.substr(0, 30) + "..."}
                         </Typography>
-                        <Dialog open={show[activ.id]}>
-                          <DialogTitle>{activ.title}</DialogTitle>
-                          <Button
-                            variant="rounded"
-                            onClick={() => hideDialog()}
-                          >
-                            Close
-                          </Button>
+                        <Dialog
+                          open={show[activ.id]}
+                          maxWidth={"lg"}
+                          onBackdropClick={hideDialog}
+                        >
+                          <div className="diaporama">
+                            <div className="diapo">
+                              {activ.images.map((item, index) => (
+                                <div key={index}>
+                                  <img src={item} alt={activ.title} />
+                                </div>
+                              ))}
+                              <IconButton
+                                onClick={() => slideright()}
+                                sx={{
+                                  position: "absolute",
+                                  left: 10,
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                }}
+                              >
+                                <ChevronLeftRounded />
+                              </IconButton>
+                              <IconButton
+                                onClick={() => slideleft(activ.images.length)}
+                                sx={{
+                                  position: "absolute",
+                                  right: 10,
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                }}
+                              >
+                                <ChevronRightRounded />
+                              </IconButton>
+                            </div>
+                            <div className="descri">
+                              <h2>{activ.title}</h2>
+                              <h4>
+                                {activ.place} le {activ.date}
+                              </h4>
+                              <p>{activ.description}</p>
+                            </div>
+                            <IconButton
+                              sx={{
+                                position: "absolute",
+                                right: 0,
+                                top: 0,
+                              }}
+                              onClick={hideDialog}
+                            >
+                              <Close />
+                            </IconButton>
+                          </div>
                         </Dialog>
                       </CardContent>
                       <CardActions>
@@ -492,7 +640,7 @@ const Home = () => {
               initial={{ scale: 0, y: 200, opacity: 0 }}
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
               transition={{
-                duration: 0.8,
+                duration: 0.2,
                 delay: 0,
                 type: "spring",
                 stiffness: 50,
@@ -508,7 +656,7 @@ const Home = () => {
               initial={{ scale: 0, y: 200, opacity: 0 }}
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
               transition={{
-                duration: 0.8,
+                duration: 0.2,
                 delay: 0.2,
                 type: "spring",
                 stiffness: 50,
@@ -523,7 +671,7 @@ const Home = () => {
               initial={{ scale: 0, y: 200, opacity: 0 }}
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
               transition={{
-                duration: 0.8,
+                duration: 0.2,
                 delay: 0.5,
                 type: "spring",
                 stiffness: 50,
@@ -540,7 +688,7 @@ const Home = () => {
       <motion.section
         initial={{ opacity: 0, y: 200 }}
         whileInView={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
-        transition={{ duration: 1 }}
+        transition={{ duration: 0.5 }}
       >
         <div>Footer</div>
       </motion.section>
