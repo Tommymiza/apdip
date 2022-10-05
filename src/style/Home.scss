@@ -124,3 +124,16 @@ section{
     }
   }
 }
+@media screen and (max-width: 1280px) {
+  .diaporama{
+    flex-direction: column;
+    .diapo{
+      height: 70%;
+      width: 100%;
+    }
+    .descri{
+      width: 100%;
+      height: calc(30% - 20px);
+    }
+  }
+}

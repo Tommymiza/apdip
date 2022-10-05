@@ -8,7 +8,6 @@ import {
   Typography,
   Button,
   Dialog,
-  DialogTitle,
   Grid,
   IconButton,
 } from "@mui/material";
@@ -16,7 +15,6 @@ import {
   Close,
   ChevronLeftRounded,
   ChevronRightRounded,
-  Translate,
 } from "@mui/icons-material";
 import "../style/Home.scss";
 import { AnimatePresence, motion } from "framer-motion";
@@ -46,12 +44,18 @@ const Home = () => {
     if (slide > -((a - 1) * 100)) {
       var trsltX = slide - 100;
       setSlide(trsltX);
+      document.querySelectorAll(".diapo div").forEach((element) => {
+        element.style.transform = `translateX(${trsltX}%)`;
+      });
     }
   };
   const slideright = () => {
     if (slide < 0) {
       var trsltX = slide + 100;
       setSlide(trsltX);
+      document.querySelectorAll(".diapo div").forEach((element) => {
+        element.style.transform = `translateX(${trsltX}%)`;
+      });
     }
   };
 
@@ -95,7 +99,7 @@ const Home = () => {
     const docs = collection(database, str);
     const document = await getDocs(docs);
     var act = [];
-    document.docs.map((item) => {
+    document.docs.forEach((item) => {
       act = [...act, { id: item.id, contenu: item.data() }];
     });
     return act;
@@ -105,7 +109,7 @@ const Home = () => {
     const q = query(activity, orderBy("date", "desc"), limit(2));
     const document = await getDocs(q);
     var act = [];
-    document.docs.map((item) => {
+    document.docs.forEach((item) => {
       act = [...act, { id: item.id, contenu: item.data() }];
     });
     return act;
@@ -119,8 +123,9 @@ const Home = () => {
   async function demarrer() {
     const activity = await querydoc("activity");
     const temp = {};
+    var tab = [];
     for (let act of activity) {
-      var tab = [];
+      tab = [];
       for (let img of act.contenu.images) {
         const path =
           "images/" +
@@ -147,11 +152,6 @@ const Home = () => {
     }
     setShow(temp);
   }
-  useEffect(() => {
-    document.querySelectorAll(".diapo div").forEach((element) => {
-      element.style.transform = `translateX(${slide}%)`;
-    });
-  }, [slide]);
   useEffect(() => {
     return () => {
       setPret(false);
@@ -270,6 +270,7 @@ const Home = () => {
                                         left: 10,
                                         top: "50%",
                                         transform: "translateY(-50%)",
+                                        zIndex: 1,
                                       }}
                                     >
                                       <ChevronLeftRounded />
@@ -283,6 +284,7 @@ const Home = () => {
                                         right: 10,
                                         top: "50%",
                                         transform: "translateY(-50%)",
+                                        zIndex: 1,
                                       }}
                                     >
                                       <ChevronRightRounded />
@@ -535,6 +537,7 @@ const Home = () => {
                                   left: 10,
                                   top: "50%",
                                   transform: "translateY(-50%)",
+                                  zIndex: 1,
                                 }}
                               >
                                 <ChevronLeftRounded />
@@ -546,6 +549,7 @@ const Home = () => {
                                   right: 10,
                                   top: "50%",
                                   transform: "translateY(-50%)",
+                                  zIndex: 1,
                                 }}
                               >
                                 <ChevronRightRounded />

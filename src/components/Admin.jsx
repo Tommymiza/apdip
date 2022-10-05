@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import app from "./db";
+import { activity } from "../firebase/activite";
 import {
   onSnapshot,
   getFirestore,
@@ -7,9 +8,7 @@ import {
   query,
   where,
   getDocs,
-  addDoc
 } from "firebase/firestore";
-import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import {
   Button,
   TextField,
@@ -19,6 +18,7 @@ import {
   DialogTitle,
   DialogActions,
   DialogContent,
+  MenuItem,
 } from "@mui/material";
 import {
   LibraryAddRounded,
@@ -36,9 +36,10 @@ const Admin = () => {
   const [passError, setPassError] = useState("");
   const [connected, setConnected] = useState(false);
   const [dialog, setDialog] = useState("");
-  const [progress, setProgress] = useState(0);
-
-  
+  const [progress, setProgress] = useState(false);
+  const [activite, setActivite] = useState("");
+  const [status, setStatus] = useState("");
+  const act = activity.getPostInstance();
 
   const showimage = () => {
     var bool = true;
@@ -67,71 +68,27 @@ const Admin = () => {
       };
       reader.readAsDataURL(fichiers[key]);
     });
-  }
-  async function addactivity(a){
-    try {
-      const docRef =  await addDoc(collection(getFirestore(app), "activity"), a)
-      console.log("Document written with ID: ", docRef.id);
-    } catch (err) {
-      console.error("Error adding document: ", err);
-    }
-  }
-
-  const upload = (e) => {
+  };
+  const handleChangeActivite = (event) => {
+    setActivite(event.target.value);
+  };
+  const upload = async (e) => {
     e.preventDefault();
-    const formDial = document.getElementById("dialogform");
-    const fichiers = formDial.images.files;
-    const arrayFile = Object.keys(fichiers);
-    const newDate = new Date(formDial.date.value);
-    const month = (newDate.getMonth()+1) < 10 ? "0"+(newDate.getMonth()+1) : (newDate.getMonth()+1)
-    const day = newDate.getDate() < 10 ? "0"+ newDate.getDate() : newDate.getDate()
-    const exactDate =
-      newDate.getFullYear() +
-      "-" +
-      month +
-      "-" +
-      day;
-    var pathArray = []
-    arrayFile.forEach(file=>{
-      pathArray = [...pathArray,fichiers[file].name]
-    })
-    const activity = {
-      date: exactDate,
-      description: formDial.descri.value,
-      images: pathArray,
-      place: formDial.lieu.value,
-      title: formDial.titre.value,
-    };
-    console.log(pathArray)
-    addactivity(activity)
-    const storage = getStorage(app);
-    arrayFile.forEach((i) => {
-      const storageRef = ref(
-        storage,
-        `images/${activity.title + activity.place + exactDate}/${fichiers[i].name}`
-      );
-      const uploadTask = uploadBytesResumable(storageRef, fichiers[i]);
-      uploadTask.on("state_changed", (snap) => {
-        const temp = (snap.bytesTransferred / snap.totalBytes) * 100;
-        if (temp < 100) {
-          setProgress(temp);
-        } else {
-          setTimeout(() => {
-            setProgress(0);
-          }, 1000);
-        }
-      });
-    });
+    await act.ajout(
+      document.getElementById("dialogform"),
+      document.getElementById("dialogform").images.files,
+      setProgress,
+      setStatus,
+      setActivite
+    );
   };
   const deluser = () => {
     setDialog("");
     document.cookie = "accessKey=; expires=01 Oct 1970 00:00:00 GMT";
     setConnected(false);
   };
-
-  const database = getFirestore(app);
-
   const handleSubmit = (e) => {
+    const database = getFirestore(app);
     setPassError("");
     setLoading(true);
     e.preventDefault();
@@ -161,11 +118,12 @@ const Admin = () => {
       }
     });
   };
-
   const handleClose = () => {
     setDialog("");
+    setActivite("");
+    setStatus("");
+    setProgress(false);
   };
-
   useEffect(() => {
     return () => {
       setConnected(false);
@@ -274,7 +232,7 @@ const Admin = () => {
               <LogoutRounded sx={{ width: 50, height: 50 }} />
             </Tooltip>
           </Button>
-          <Dialog open={dialog === "ajout"} onClose={handleClose}>
+          <Dialog open={dialog === "ajout"} maxWidth={"lg"} onClose={handleClose}>
             <DialogTitle
               sx={{ fontFamily: "Gumela", fontSize: 30, alignSelf: "center" }}
             >
@@ -289,6 +247,21 @@ const Admin = () => {
                   required
                   sx={{ width: 300, fontFamily: "var(--fontText)" }}
                 ></TextField>
+                <TextField
+                  label="Activité"
+                  name="select"
+                  value={activite}
+                  onChange={handleChangeActivite}
+                  select
+                  sx={{ width: 300, fontFamily: "var(--fontText)" }}
+                >
+                  <MenuItem value={"Vary"}>Vary</MenuItem>
+                  <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
+                  <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
+                  <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
+                  <MenuItem value={"Trondro"}>Trondro</MenuItem>
+                  <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
+                </TextField>
                 <TextField
                   label="Description"
                   name="descri"
@@ -314,11 +287,9 @@ const Admin = () => {
                   required
                   onChange={showimage}
                 />
-                <div id="listes">
-                </div>
-                {progress > 0 && (
-                  <CircularProgress variant="determinate" value={progress} />
-                )}
+                <div id="listes"></div>
+                {progress && <CircularProgress></CircularProgress>}
+                <p>{status}</p>
                 <DialogActions>
                   <Button type="submit">Upload</Button>
                   <Button onClick={handleClose}>Close</Button>
