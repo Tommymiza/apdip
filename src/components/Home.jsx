@@ -10,35 +10,38 @@ import {
   Dialog,
   Grid,
   IconButton,
+  ThemeProvider,
+  CircularProgress,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
+import { theme } from "./theme";
 import {
   Close,
   ChevronLeftRounded,
   ChevronRightRounded,
+  ExpandMoreRounded
 } from "@mui/icons-material";
 import "../style/Home.scss";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  orderBy,
-  limit,
-  query,
-} from "firebase/firestore";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import app from "./db";
 import ReactScrollWheelHandler from "react-scroll-wheel-handler";
+import { activity } from "../firebase/activite";
+import { about } from "../firebase/about";
+import { Box } from "@mui/system";
 
 const Home = () => {
   const skeleton = [0, 1];
   const [pret, setPret] = useState(false);
-  const [list, setList] = useState({});
   const [activities, setActivities] = useState([]);
+  const [aboutLoading, setAboutLoading] = useState(true);
+  const [list, setList] = useState({});
   const [show, setShow] = useState({});
   const [page, setPage] = useState(0);
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [slide, setSlide] = useState(0);
+  const [acc, setAcc] = useState(false);
+  const [nomCommune, setNomCommune] = useState([]);
 
   const slideleft = (a) => {
     if (slide > -((a - 1) * 100)) {
@@ -58,7 +61,6 @@ const Home = () => {
       });
     }
   };
-
   function upScroll() {
     var temp = page - 1;
     if (temp === -1) {
@@ -73,7 +75,6 @@ const Home = () => {
     }
     setPage(temp);
   }
-
   function showDialog(id) {
     setSlide(0);
     const obj = {};
@@ -93,100 +94,251 @@ const Home = () => {
     });
     setShow(temp);
   }
-
-  const database = getFirestore(app);
-  async function getdocument(str) {
-    const docs = collection(database, str);
-    const document = await getDocs(docs);
-    var act = [];
-    document.docs.forEach((item) => {
-      act = [...act, { id: item.id, contenu: item.data() }];
-    });
-    return act;
-  }
-  async function querydoc(str) {
-    const activity = collection(database, str);
-    const q = query(activity, orderBy("date", "desc"), limit(2));
-    const document = await getDocs(q);
-    var act = [];
-    document.docs.forEach((item) => {
-      act = [...act, { id: item.id, contenu: item.data() }];
-    });
-    return act;
-  }
-  async function downurl(str) {
-    const storage = getStorage(app);
-    const refStorage = ref(storage, str);
-    const download = await getDownloadURL(refStorage);
-    return download;
-  }
-  async function demarrer() {
-    const activity = await querydoc("activity");
-    const temp = {};
-    var tab = [];
-    for (let act of activity) {
-      tab = [];
-      for (let img of act.contenu.images) {
-        const path =
-          "images/" +
-          act.contenu.title +
-          act.contenu.place +
-          act.contenu.date +
-          "/" +
-          img;
-        const downloadedurl = await downurl(path);
-        tab.push(downloadedurl);
-      }
-      temp[act.id] = false;
-      setActivities((prev) => [
-        ...prev,
-        {
-          id: act.id,
-          date: act.contenu.date,
-          description: act.contenu.description,
-          images: tab,
-          place: act.contenu.place,
-          title: act.contenu.title,
-        },
-      ]);
+  function nbGroup() {
+    const commune = Object.keys(list.commune);
+    var nb = 0;
+    for (let c of commune) {
+      nb = nb + list.commune[c].length;
     }
-    setShow(temp);
+    return [nb, commune.length];
   }
+  const accordionHide = () => {
+    setAcc(false);
+  };
+  const accordionShow = () => {
+    setAcc(true);
+  };
+
   useEffect(() => {
     return () => {
       setPret(false);
-      demarrer().then((res) => {
+      const act = activity.getPostInstance();
+      act.demarrer(setActivities, setShow).then((res) => {
         setPret(true);
       });
       window.addEventListener("resize", () => {
         setWidth(document.body.offsetWidth);
       });
+      const abt = about.getpostinstance();
+      abt.getdocument(setList, setNomCommune).then((res) => {
+        setAboutLoading(false);
+      });
     };
   }, []);
-  return width >= 1590 ? (
-    <ReactScrollWheelHandler upHandler={upScroll} downHandler={downScroll}>
+
+  return width >= 1360 ? (
+    <ReactScrollWheelHandler
+      upHandler={upScroll}
+      downHandler={downScroll}
+      disableSwipeWithMouse
+    >
       <motion.div
         className="accueil"
         exit={{ opacity: 0, transition: { duration: 0.5 } }}
       >
         <AnimatePresence mode="wait">
-          {page === 0 && (
-            <motion.section
-              className="large"
-              initial={{ opacity: 0, x: 1000 }}
-              animate={{ opacity: 1, x: 0, transition: { duration: 0.5 } }}
-              exit={{
-                opacity: 0,
-                x: -1000,
-              }}
-              transition={{ duration: 0.5 }}
-              key={page}
-            >
-              <div className="about">
-                <h2>About</h2>
-              </div>
-            </motion.section>
-          )}
+          {page === 0 &&
+            (!aboutLoading ? (
+              <motion.section
+                className="large"
+                exit={{
+                  opacity: 0,
+                  x: -1000,
+                }}
+                transition={{ duration: 0.5 }}
+                key={page}
+              >
+                <div className="about">
+                  <motion.div
+                    id="title"
+                    initial={{ scale: 0, y: 20, opacity: 0 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 50,
+                      duration: 0.5,
+                    }}
+                    style={{ marginTop: "70px" }}
+                  >
+                    <h1>A</h1>
+                    <p>ssociation des </p>
+                    <h1>&nbsp;P</h1>
+                    <p>aysans pour le </p>
+                    <h1>&nbsp;D</h1>
+                    <p>éveloppement </p>
+                    <h1>&nbsp;I</h1>
+                    <p>nter-</p>
+                    <h1>P</h1>
+                    <p>rofessionnels</p>
+                  </motion.div>
+                  <div id="context">
+                    <motion.h4
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                      }}
+                    >
+                      L'APDIP est une organisation paysanne:
+                    </motion.h4>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.2,
+                      }}
+                    >
+                      Fédérant <span>{list.paysans}</span> producteurs
+                      exploitants agricoles, cotisant, répartis dans{" "}
+                      <span>{nbGroup()[0]}</span> groupements de base au sein de{" "}
+                      <span>{nbGroup()[1]}</span> communes rurales de la région
+                      de Bongolava;
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.4,
+                      }}
+                    >
+                      Gérée par un Conseil d’Administration composé de{" "}
+                      <span>{list.ag}</span> paysans élus par l’Assemblée
+                      Générale
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.6,
+                      }}
+                    >
+                      Dotée d’une direction exécutive composée d’une Directrice,
+                      <span> {list.technicien}</span> Techniciens et une
+                      Secrétaire comptable
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.8,
+                      }}
+                    >
+                      <span>{list.paysVulga}</span> Paysans Vulgarisateurs pour
+                      assurer les diffusions techniques Agricoles et différents
+                      services à la base
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 1,
+                      }}
+                    >
+                      <span>{list.paysRel}</span> Paysans relais pour vulgariser
+                      la technique en Agro écologie aux 450 membres
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 1.2,
+                      }}
+                    >
+                      Gérant une budget annuel avec fonds propres de{" "}
+                      <span>20%</span> annuel avec des audits annuels externe
+                      chaque année
+                    </motion.p>
+                    <motion.h4
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 1.5,
+                      }}
+                    >
+                      NOTRE VISION
+                    </motion.h4>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 1.6,
+                      }}
+                    >
+                      Développement et Professionnalisme Développer le niveau de
+                      vie des paysans membres au niveau maximum (IDH) et
+                      Professionnaliser les métiers agricoles.
+                    </motion.p>
+                  </div>
+                  <motion.div
+                    initial={{ y: 200, opacity: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 1,
+                      delay: 1.8,
+                    }}
+                  >
+                    <ThemeProvider theme={theme}>
+                      <Button onClick={accordionShow}>Listes communes</Button>
+                    </ThemeProvider>
+                  </motion.div>
+                  <ThemeProvider theme={theme}>
+                    <Dialog  open={acc} onClose={accordionHide} fullScreen>
+                      <div style={{display: "flex", flexDirection:"row", justifyContent: 'space-between', pa: 3, alignItems: 'center'}}>
+                        <h1 style={{margin: 0, fontFamily: "Gumela", fontWeight: 'lighter', padding: 20, fontSize: 25}}>Liste des communes et groupements:</h1>
+                        <IconButton size="small" onClick={accordionHide} sx={{mr: 2}}>
+                          <Close />
+                        </IconButton>
+                      </div>
+                      {nomCommune.length !== 0 &&
+                        nomCommune.map((item) => (
+                          <Accordion key={item}>
+                            <AccordionSummary expandIcon={<ExpandMoreRounded />}>
+                              <h2
+                                style={{
+                                  fontFamily: "var(--fontText)",
+                                  margin: 5,
+                                  fontSize: 20,
+                                  fontWeight: 'lighter',
+                                }}
+                              >
+                                {item}
+                              </h2>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              {list.commune[item].map((groupement) => (
+                                <h4 key={groupement} style={{fontFamily: 'var(--fontText)', fontSize: 15, fontWeight: 'lighter', color : 'rgb(124, 91, 91)', marginLeft:'30px'}}>{groupement}</h4>
+                              ))}
+                            </AccordionDetails>
+                          </Accordion>
+                        ))}
+                    </Dialog>
+                  </ThemeProvider>
+                </div>
+              </motion.section>
+            ) : (
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "100vh",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CircularProgress
+                  size={100}
+                  sx={{ color: "#eca588" }}
+                ></CircularProgress>
+              </Box>
+            ))}
           {page === 1 && (
             <motion.section
               className="large"
@@ -225,7 +377,7 @@ const Home = () => {
                         >
                           <Card
                             sx={{
-                              maxWidth: 345,
+                              maxWidth: width > 1590 ? 345 : 260,
                               bgcolor: "transparent",
                               backdropFilter: "blur(3px)",
                               boxShadow: "2px 2px 15px #6091A5",
@@ -233,7 +385,11 @@ const Home = () => {
                           >
                             <CardMedia
                               component="img"
-                              sx={{ width: 345, height: 160 }}
+                              sx={{
+                                width: width > 1590 ? 345 : 260,
+                                height: 160,
+                                objectFit: "cover",
+                              }}
                               image={activ.images[0] || "images/logo_APDIP.png"}
                               alt={activ.title}
                             />
@@ -255,6 +411,7 @@ const Home = () => {
                                 open={show[activ.id]}
                                 maxWidth={"lg"}
                                 onBackdropClick={hideDialog}
+                                sx={{ background: "transparent" }}
                               >
                                 <div className="diaporama">
                                   <div className="diapo">
@@ -271,6 +428,7 @@ const Home = () => {
                                         top: "50%",
                                         transform: "translateY(-50%)",
                                         zIndex: 1,
+                                        color: "black",
                                       }}
                                     >
                                       <ChevronLeftRounded />
@@ -285,6 +443,7 @@ const Home = () => {
                                         top: "50%",
                                         transform: "translateY(-50%)",
                                         zIndex: 1,
+                                        color: "black",
                                       }}
                                     >
                                       <ChevronRightRounded />
@@ -339,7 +498,7 @@ const Home = () => {
                           <Card sx={{ maxWidth: 345 }} elevation={4}>
                             <Skeleton
                               variant={"rectangular"}
-                              width={345}
+                              width={width > 1590 ? 345 : 260}
                               height={160}
                             ></Skeleton>
                             <CardContent>
@@ -461,14 +620,206 @@ const Home = () => {
       className="accueil"
       exit={{ opacity: 0, transition: { duration: 0.5 } }}
     >
-      <motion.section
-        initial={{ opacity: 0, y: 200 }}
-        animate={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
-      >
-        <div className="about">
-          <h2>About</h2>
-        </div>
-      </motion.section>
+      {!aboutLoading ? (
+              <motion.section
+                className="large"
+                exit={{
+                  opacity: 0,
+                  x: -1000,
+                }}
+                transition={{ duration: 0.5 }}
+                key={page}
+              >
+                <div className="about">
+                  <motion.div
+                    id="title"
+                    initial={{ scale: 0, y: 20, opacity: 0 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 50,
+                      duration: 0.5,
+                    }}
+                    style={{ marginTop: "70px" }}
+                  >
+                    <h1>A</h1>
+                    <p>ssociation des </p>
+                    <h1>&nbsp;P</h1>
+                    <p>aysans pour le </p>
+                    <h1>&nbsp;D</h1>
+                    <p>éveloppement </p>
+                    <h1>&nbsp;I</h1>
+                    <p>nter-</p>
+                    <h1>P</h1>
+                    <p>rofessionnels</p>
+                  </motion.div>
+                  <div id="context">
+                    <motion.h4
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                      }}
+                    >
+                      L'APDIP est une organisation paysanne:
+                    </motion.h4>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.2,
+                      }}
+                    >
+                      Fédérant <span>{list.paysans}</span> producteurs
+                      exploitants agricoles, cotisant, répartis dans{" "}
+                      <span>{nbGroup()[0]}</span> groupements de base au sein de{" "}
+                      <span>{nbGroup()[1]}</span> communes rurales de la région
+                      de Bongolava;
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.4,
+                      }}
+                    >
+                      Gérée par un Conseil d’Administration composé de{" "}
+                      <span>{list.ag}</span> paysans élus par l’Assemblée
+                      Générale
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.6,
+                      }}
+                    >
+                      Dotée d’une direction exécutive composée d’une Directrice,
+                      <span> {list.technicien}</span> Techniciens et une
+                      Secrétaire comptable
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.8,
+                      }}
+                    >
+                      <span>{list.paysVulga}</span> Paysans Vulgarisateurs pour
+                      assurer les diffusions techniques Agricoles et différents
+                      services à la base
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 1,
+                      }}
+                    >
+                      <span>{list.paysRel}</span> Paysans relais pour vulgariser
+                      la technique en Agro écologie aux 450 membres
+                    </motion.p>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 1.2,
+                      }}
+                    >
+                      Gérant une budget annuel avec fonds propres de{" "}
+                      <span>20%</span> annuel avec des audits annuels externe
+                      chaque année
+                    </motion.p>
+                    <motion.h4
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 1.5,
+                      }}
+                    >
+                      NOTRE VISION
+                    </motion.h4>
+                    <motion.p
+                      initial={{ y: 200, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 1,
+                        delay: 1.6,
+                      }}
+                    >
+                      Développement et Professionnalisme Développer le niveau de
+                      vie des paysans membres au niveau maximum (IDH) et
+                      Professionnaliser les métiers agricoles.
+                    </motion.p>
+                  </div>
+                  <motion.div
+                    initial={{ y: 200, opacity: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 1,
+                      delay: 1.8,
+                    }}
+                  >
+                    <ThemeProvider theme={theme}>
+                      <Button onClick={accordionShow}>Listes communes</Button>
+                    </ThemeProvider>
+                  </motion.div>
+                  <ThemeProvider theme={theme}>
+                    <Dialog  open={acc} onClose={accordionHide} fullScreen >
+                      <div style={{display: "flex", flexDirection:"row", justifyContent: 'space-between', pa: 3, alignItems: 'center'}}>
+                        <h1 style={{margin: 0, fontFamily: "Gumela", fontWeight: 'lighter', padding: 20, fontSize: 25}}>Liste des communes et groupements:</h1>
+                        <IconButton size="small" onClick={accordionHide} sx={{mr: 2}}>
+                          <Close />
+                        </IconButton>
+                      </div>
+                      {nomCommune.length !== 0 &&
+                        nomCommune.map((item) => (
+                          <Accordion key={item}>
+                            <AccordionSummary expandIcon={<ExpandMoreRounded />}>
+                              <h2
+                                style={{
+                                  fontFamily: "var(--fontText)",
+                                  margin: 5,
+                                  fontSize: 20,
+                                  fontWeight: 'lighter'
+                                }}
+                              >
+                                {item}
+                              </h2>
+                            </AccordionSummary>
+                            <AccordionDetails sx={{color: 'red', m: 0, }}>
+                              {list.commune[item].map((groupement) => (
+                                <h4 key={groupement} style={{fontFamily: 'var(--fontText)', fontSize: 15, fontWeight: 'lighter',color : 'rgb(124, 91, 91)', marginLeft:'30px'}}>{groupement}</h4>
+                              ))}
+                            </AccordionDetails>
+                          </Accordion>
+                        ))}
+                    </Dialog>
+                  </ThemeProvider>
+                </div>
+              </motion.section>
+            ) : (
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "100vh",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CircularProgress
+                  size={100}
+                  sx={{ color: "#eca588" }}
+                ></CircularProgress>
+              </Box>)}
       <motion.section
         initial={{ opacity: 0, y: 200 }}
         whileInView={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
@@ -538,6 +889,7 @@ const Home = () => {
                                   top: "50%",
                                   transform: "translateY(-50%)",
                                   zIndex: 1,
+                                  color: "black",
                                 }}
                               >
                                 <ChevronLeftRounded />
@@ -550,6 +902,7 @@ const Home = () => {
                                   top: "50%",
                                   transform: "translateY(-50%)",
                                   zIndex: 1,
+                                  color: "black",
                                 }}
                               >
                                 <ChevronRightRounded />

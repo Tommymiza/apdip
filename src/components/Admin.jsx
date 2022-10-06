@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import app from "./db";
+import app from "../firebase/db";
 import { activity } from "../firebase/activite";
 import {
   onSnapshot,
@@ -232,7 +232,7 @@ const Admin = () => {
               <LogoutRounded sx={{ width: 50, height: 50 }} />
             </Tooltip>
           </Button>
-          <Dialog open={dialog === "ajout"} maxWidth={"lg"} onClose={handleClose}>
+          <Dialog open={dialog === "ajout"} fullScreen>
             <DialogTitle
               sx={{ fontFamily: "Gumela", fontSize: 30, alignSelf: "center" }}
             >

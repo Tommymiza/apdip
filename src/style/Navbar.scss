@@ -6,9 +6,10 @@
   align-items: center;
   width: calc(100% - 40px);
   position: fixed;
+  top: 0;
   background: rgba($color: #000000, $alpha: 0);
   backdrop-filter: blur(5px);
-  padding: 20px;
+  padding: 10px;
   z-index: 2;
   ul {
     display: flex;

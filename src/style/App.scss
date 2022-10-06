@@ -1,39 +1,45 @@
-body{
-    margin: 0;
-    padding: 0;
-    background: url('../../public/images/background.jpg');
-    background-size: cover;
-    background-attachment: fixed;
-    overflow-x: hidden;
-    &::-webkit-scrollbar{
-        display: none;
-    }
+body {
+  margin: 0;
+  padding: 0;
+  background: url("../../public/images/background.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+* {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+@font-face {
+  font-family: "Satisty";
+  src: url("./Satisfy-Regular.ttf");
 }
 
 @font-face {
-    font-family: 'Gumela';
-    src: url('./Gumela.ttf');
+  font-family: "Gumela";
+  src: url("./Gumela.ttf");
 }
 @font-face {
-    font-family: 'PoiretOne';
-    src: url('./PoiretOne-Regular.ttf');
+  font-family: "PoiretOne";
+  src: url("./PoiretOne-Regular.ttf");
 }
 @font-face {
-    font-family: 'Work Sans';
-    src: url('./WorkSans-Regular.ttf');
+  font-family: "Work Sans";
+  src: url("./WorkSans-Regular.ttf");
 }
 
-:root{
-    --fontText: 'Work Sans'
+:root {
+  --fontText: "Work Sans";
 }
-#notfound{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100vh;
-    h1{
-        font-family: 'Gumela';
-    }
+#notfound {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  h1 {
+    font-family: "Gumela";
+  }
 }

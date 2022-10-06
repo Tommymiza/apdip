@@ -1,12 +1,19 @@
-import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
-import { addDoc, getFirestore, collection } from "firebase/firestore";
-import app from "../components/db";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { addDoc, getFirestore, collection, getDocs,orderBy,
+  limit,
+  query, } from "firebase/firestore";
+import app from "./db";
 export class activity {
   static getPostInstance() {
     const instance = new activity();
     return instance ? instance : new activity();
   }
-  async ajout(formDial, fichiers, setProgress, setStatus,setActivite) {
+  async ajout(formDial, fichiers, setProgress, setStatus, setActivite) {
     setStatus("");
     setProgress(true);
     const arrayFile = Object.keys(fichiers);
@@ -38,7 +45,7 @@ export class activity {
       this.addactivity(activity).then(() => {
         setProgress(false);
         setStatus("Tâche fini");
-        setActivite('');
+        setActivite("");
         formDial.titre.value = "";
         formDial.lieu.value = "";
         formDial.descri.value = "";
@@ -76,5 +83,53 @@ export class activity {
     } catch (err) {
       console.error("Error adding document: ", err);
     }
+  }
+  async demarrer(setActivities,setShow) {
+    const activity = await this.querydoc("activity");
+    const temp = {};
+    var tab = [];
+    for (let act of activity) {
+      var tab1 = [];
+      for (let img of act.contenu.images) {
+        const path =
+          "images/" +
+          act.contenu.title +
+          act.contenu.place +
+          act.contenu.date +
+          "/" +
+          img;
+        const downloadedurl = await this.downurl(path);
+        tab1.push(downloadedurl);
+      }
+      tab.push({
+        id: act.id,
+        date: act.contenu.date,
+        description: act.contenu.description,
+        images: tab1,
+        place: act.contenu.place,
+        title: act.contenu.title,
+        filière: act.contenu.filière,
+      })
+      temp[act.id] = false;
+    }
+    setActivities(tab)
+    setShow(temp);
+  }
+  async querydoc(str) {
+    const database = getFirestore(app);
+    const activity = collection(database, str);
+    const q = query(activity, orderBy("date", "desc"), limit(2));
+    const document = await getDocs(q);
+    var act = [];
+    document.docs.forEach((item) => {
+      act = [...act, { id: item.id, contenu: item.data() }];
+    });
+    return act;
+  }
+  async downurl(str) {
+    const storage = getStorage(app);
+    const refStorage = ref(storage, str);
+    const download = await getDownloadURL(refStorage);
+    return download;
   }
 }
