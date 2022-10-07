@@ -21,7 +21,7 @@ import {
   Close,
   ChevronLeftRounded,
   ChevronRightRounded,
-  ExpandMoreRounded
+  ExpandMoreRounded,
 } from "@mui/icons-material";
 import "../style/Home.scss";
 import { AnimatePresence, motion } from "framer-motion";
@@ -290,23 +290,47 @@ const Home = () => {
                     </ThemeProvider>
                   </motion.div>
                   <ThemeProvider theme={theme}>
-                    <Dialog  open={acc} onClose={accordionHide} fullScreen>
-                      <div style={{display: "flex", flexDirection:"row", justifyContent: 'space-between', pa: 3, alignItems: 'center'}}>
-                        <h1 style={{margin: 0, fontFamily: "Gumela", fontWeight: 'lighter', padding: 20, fontSize: 25}}>Liste des communes et groupements:</h1>
-                        <IconButton size="small" onClick={accordionHide} sx={{mr: 2}}>
+                    <Dialog open={acc} onClose={accordionHide} fullScreen>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          pa: 3,
+                          alignItems: "center",
+                        }}
+                      >
+                        <h1
+                          style={{
+                            margin: 0,
+                            fontFamily: "Gumela",
+                            fontWeight: "lighter",
+                            padding: 20,
+                            fontSize: 25,
+                          }}
+                        >
+                          Liste des communes et groupements:
+                        </h1>
+                        <IconButton
+                          size="small"
+                          onClick={accordionHide}
+                          sx={{ mr: 2 }}
+                        >
                           <Close />
                         </IconButton>
                       </div>
                       {nomCommune.length !== 0 &&
                         nomCommune.map((item) => (
                           <Accordion key={item}>
-                            <AccordionSummary expandIcon={<ExpandMoreRounded />}>
+                            <AccordionSummary
+                              expandIcon={<ExpandMoreRounded />}
+                            >
                               <h2
                                 style={{
                                   fontFamily: "var(--fontText)",
                                   margin: 5,
                                   fontSize: 20,
-                                  fontWeight: 'lighter',
+                                  fontWeight: "lighter",
                                 }}
                               >
                                 {item}
@@ -314,7 +338,18 @@ const Home = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                               {list.commune[item].map((groupement) => (
-                                <h4 key={groupement} style={{fontFamily: 'var(--fontText)', fontSize: 15, fontWeight: 'lighter', color : 'rgb(124, 91, 91)', marginLeft:'30px'}}>{groupement}</h4>
+                                <h4
+                                  key={groupement}
+                                  style={{
+                                    fontFamily: "var(--fontText)",
+                                    fontSize: 15,
+                                    fontWeight: "lighter",
+                                    color: "rgb(124, 91, 91)",
+                                    marginLeft: "30px",
+                                  }}
+                                >
+                                  {groupement}
+                                </h4>
                               ))}
                             </AccordionDetails>
                           </Accordion>
@@ -621,205 +656,236 @@ const Home = () => {
       exit={{ opacity: 0, transition: { duration: 0.5 } }}
     >
       {!aboutLoading ? (
-              <motion.section
-                className="large"
-                exit={{
-                  opacity: 0,
-                  x: -1000,
+        <motion.section
+          className="large"
+          exit={{
+            opacity: 0,
+            x: -1000,
+          }}
+          transition={{ duration: 0.5 }}
+          key={page}
+        >
+          <div className="about">
+            <motion.div
+              id="title"
+              initial={{ scale: 0, y: 20, opacity: 0 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 50,
+                duration: 0.5,
+              }}
+              style={{ marginTop: "70px" }}
+            >
+              <h1>A</h1>
+              <p>ssociation des </p>
+              <h1>&nbsp;P</h1>
+              <p>aysans pour le </p>
+              <h1>&nbsp;D</h1>
+              <p>éveloppement </p>
+              <h1>&nbsp;I</h1>
+              <p>nter-</p>
+              <h1>P</h1>
+              <p>rofessionnels</p>
+            </motion.div>
+            <div id="context">
+              <motion.h4
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
                 }}
-                transition={{ duration: 0.5 }}
-                key={page}
               >
-                <div className="about">
-                  <motion.div
-                    id="title"
-                    initial={{ scale: 0, y: 20, opacity: 0 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 50,
-                      duration: 0.5,
-                    }}
-                    style={{ marginTop: "70px" }}
-                  >
-                    <h1>A</h1>
-                    <p>ssociation des </p>
-                    <h1>&nbsp;P</h1>
-                    <p>aysans pour le </p>
-                    <h1>&nbsp;D</h1>
-                    <p>éveloppement </p>
-                    <h1>&nbsp;I</h1>
-                    <p>nter-</p>
-                    <h1>P</h1>
-                    <p>rofessionnels</p>
-                  </motion.div>
-                  <div id="context">
-                    <motion.h4
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                      }}
-                    >
-                      L'APDIP est une organisation paysanne:
-                    </motion.h4>
-                    <motion.p
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 0.2,
-                      }}
-                    >
-                      Fédérant <span>{list.paysans}</span> producteurs
-                      exploitants agricoles, cotisant, répartis dans{" "}
-                      <span>{nbGroup()[0]}</span> groupements de base au sein de{" "}
-                      <span>{nbGroup()[1]}</span> communes rurales de la région
-                      de Bongolava;
-                    </motion.p>
-                    <motion.p
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 0.4,
-                      }}
-                    >
-                      Gérée par un Conseil d’Administration composé de{" "}
-                      <span>{list.ag}</span> paysans élus par l’Assemblée
-                      Générale
-                    </motion.p>
-                    <motion.p
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 0.6,
-                      }}
-                    >
-                      Dotée d’une direction exécutive composée d’une Directrice,
-                      <span> {list.technicien}</span> Techniciens et une
-                      Secrétaire comptable
-                    </motion.p>
-                    <motion.p
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 0.8,
-                      }}
-                    >
-                      <span>{list.paysVulga}</span> Paysans Vulgarisateurs pour
-                      assurer les diffusions techniques Agricoles et différents
-                      services à la base
-                    </motion.p>
-                    <motion.p
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 1,
-                      }}
-                    >
-                      <span>{list.paysRel}</span> Paysans relais pour vulgariser
-                      la technique en Agro écologie aux 450 membres
-                    </motion.p>
-                    <motion.p
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 1.2,
-                      }}
-                    >
-                      Gérant une budget annuel avec fonds propres de{" "}
-                      <span>20%</span> annuel avec des audits annuels externe
-                      chaque année
-                    </motion.p>
-                    <motion.h4
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 1.5,
-                      }}
-                    >
-                      NOTRE VISION
-                    </motion.h4>
-                    <motion.p
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 1.6,
-                      }}
-                    >
-                      Développement et Professionnalisme Développer le niveau de
-                      vie des paysans membres au niveau maximum (IDH) et
-                      Professionnaliser les métiers agricoles.
-                    </motion.p>
-                  </div>
-                  <motion.div
-                    initial={{ y: 200, opacity: 0 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 1,
-                      delay: 1.8,
+                L'APDIP est une organisation paysanne:
+              </motion.h4>
+              <motion.p
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 0.2,
+                }}
+              >
+                Fédérant <span>{list.paysans}</span> producteurs exploitants
+                agricoles, cotisant, répartis dans <span>{nbGroup()[0]}</span>{" "}
+                groupements de base au sein de <span>{nbGroup()[1]}</span>{" "}
+                communes rurales de la région de Bongolava;
+              </motion.p>
+              <motion.p
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 0.4,
+                }}
+              >
+                Gérée par un Conseil d’Administration composé de{" "}
+                <span>{list.ag}</span> paysans élus par l’Assemblée Générale
+              </motion.p>
+              <motion.p
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 0.6,
+                }}
+              >
+                Dotée d’une direction exécutive composée d’une Directrice,
+                <span> {list.technicien}</span> Techniciens et une Secrétaire
+                comptable
+              </motion.p>
+              <motion.p
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 0.8,
+                }}
+              >
+                <span>{list.paysVulga}</span> Paysans Vulgarisateurs pour
+                assurer les diffusions techniques Agricoles et différents
+                services à la base
+              </motion.p>
+              <motion.p
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 1,
+                }}
+              >
+                <span>{list.paysRel}</span> Paysans relais pour vulgariser la
+                technique en Agro écologie aux 450 membres
+              </motion.p>
+              <motion.p
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 1.2,
+                }}
+              >
+                Gérant une budget annuel avec fonds propres de <span>20%</span>{" "}
+                annuel avec des audits annuels externe chaque année
+              </motion.p>
+              <motion.h4
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 1.5,
+                }}
+              >
+                NOTRE VISION
+              </motion.h4>
+              <motion.p
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 1.6,
+                }}
+              >
+                Développement et Professionnalisme Développer le niveau de vie
+                des paysans membres au niveau maximum (IDH) et Professionnaliser
+                les métiers agricoles.
+              </motion.p>
+            </div>
+            <motion.div
+              initial={{ y: 200, opacity: 0 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 1,
+                delay: 1.8,
+              }}
+            >
+              <ThemeProvider theme={theme}>
+                <Button onClick={accordionShow}>Listes communes</Button>
+              </ThemeProvider>
+            </motion.div>
+            <ThemeProvider theme={theme}>
+              <Dialog open={acc} onClose={accordionHide} fullScreen>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    pa: 3,
+                    alignItems: "center",
+                  }}
+                >
+                  <h1
+                    style={{
+                      margin: 0,
+                      fontFamily: "Gumela",
+                      fontWeight: "lighter",
+                      padding: 20,
+                      fontSize: 25,
                     }}
                   >
-                    <ThemeProvider theme={theme}>
-                      <Button onClick={accordionShow}>Listes communes</Button>
-                    </ThemeProvider>
-                  </motion.div>
-                  <ThemeProvider theme={theme}>
-                    <Dialog  open={acc} onClose={accordionHide} fullScreen >
-                      <div style={{display: "flex", flexDirection:"row", justifyContent: 'space-between', pa: 3, alignItems: 'center'}}>
-                        <h1 style={{margin: 0, fontFamily: "Gumela", fontWeight: 'lighter', padding: 20, fontSize: 25}}>Liste des communes et groupements:</h1>
-                        <IconButton size="small" onClick={accordionHide} sx={{mr: 2}}>
-                          <Close />
-                        </IconButton>
-                      </div>
-                      {nomCommune.length !== 0 &&
-                        nomCommune.map((item) => (
-                          <Accordion key={item}>
-                            <AccordionSummary expandIcon={<ExpandMoreRounded />}>
-                              <h2
-                                style={{
-                                  fontFamily: "var(--fontText)",
-                                  margin: 5,
-                                  fontSize: 20,
-                                  fontWeight: 'lighter'
-                                }}
-                              >
-                                {item}
-                              </h2>
-                            </AccordionSummary>
-                            <AccordionDetails sx={{color: 'red', m: 0, }}>
-                              {list.commune[item].map((groupement) => (
-                                <h4 key={groupement} style={{fontFamily: 'var(--fontText)', fontSize: 15, fontWeight: 'lighter',color : 'rgb(124, 91, 91)', marginLeft:'30px'}}>{groupement}</h4>
-                              ))}
-                            </AccordionDetails>
-                          </Accordion>
-                        ))}
-                    </Dialog>
-                  </ThemeProvider>
+                    Liste des communes et groupements:
+                  </h1>
+                  <IconButton
+                    size="small"
+                    onClick={accordionHide}
+                    sx={{ mr: 2 }}
+                  >
+                    <Close />
+                  </IconButton>
                 </div>
-              </motion.section>
-            ) : (
-              <Box
-                sx={{
-                  width: "100%",
-                  height: "100vh",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress
-                  size={100}
-                  sx={{ color: "#eca588" }}
-                ></CircularProgress>
-              </Box>)}
+                {nomCommune.length !== 0 &&
+                  nomCommune.map((item) => (
+                    <Accordion key={item}>
+                      <AccordionSummary expandIcon={<ExpandMoreRounded />}>
+                        <h2
+                          style={{
+                            fontFamily: "var(--fontText)",
+                            margin: 5,
+                            fontSize: 20,
+                            fontWeight: "lighter",
+                          }}
+                        >
+                          {item}
+                        </h2>
+                      </AccordionSummary>
+                      <AccordionDetails sx={{ color: "red", m: 0 }}>
+                        {list.commune[item].map((groupement) => (
+                          <h4
+                            key={groupement}
+                            style={{
+                              fontFamily: "var(--fontText)",
+                              fontSize: 15,
+                              fontWeight: "lighter",
+                              color: "rgb(124, 91, 91)",
+                              marginLeft: "30px",
+                            }}
+                          >
+                            {groupement}
+                          </h4>
+                        ))}
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+              </Dialog>
+            </ThemeProvider>
+          </div>
+        </motion.section>
+      ) : (
+        <Box
+          sx={{
+            width: "100%",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress
+            size={100}
+            sx={{ color: "#eca588" }}
+          ></CircularProgress>
+        </Box>
+      )}
       <motion.section
         initial={{ opacity: 0, y: 200 }}
         whileInView={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
@@ -1044,10 +1110,34 @@ const Home = () => {
       </motion.section>
       <motion.section
         initial={{ opacity: 0, y: 200 }}
-        whileInView={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
+        animate={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
         transition={{ duration: 0.5 }}
       >
-        <div>Footer</div>
+        <div>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita
+          totam impedit unde tempore? Fugiat fugit quia minima obcaecati,
+          repellendus aliquid neque laborum, doloremque aliquam magni, placeat
+          praesentium voluptatum possimus sapiente molestias! Sit nobis quos
+          adipisci minima possimus architecto autem recusandae corrupti sint
+          dicta earum temporibus, at veniam! In ipsam voluptatibus eveniet.
+          Dolorum distinctio earum dignissimos exercitationem, asperiores
+          repellendus. Animi quidem eligendi sed laudantium dolore quia
+          voluptates laboriosam possimus accusamus, quam unde doloribus
+          architecto, molestias quas ducimus officia a voluptate ex ullam autem
+          amet quis enim. Molestias error, minima eaque tempore quasi quos
+          omnis, veritatis, necessitatibus hic nemo excepturi. Odio unde quasi
+          aperiam quam laudantium reprehenderit nulla fuga iure dicta non sunt,
+          modi corrupti debitis sequi tenetur ab aut? Ea fugiat sunt aut eos
+          veritatis quis explicabo corporis dolorum autem soluta quibusdam
+          laborum aperiam, modi tempore nihil quaerat exercitationem dicta?
+          Facilis tempore ex placeat est error soluta beatae odio natus ipsum
+          optio, sapiente accusantium deleniti saepe aperiam sequi delectus in
+          ullam? Quis voluptatibus sed aperiam quas atque at ipsam corporis,
+          perferendis provident animi molestias voluptate suscipit commodi esse
+          veniam tenetur pariatur totam eaque dicta dignissimos! Est neque
+          doloremque quidem ipsum unde dolorem dicta nihil aspernatur laborum,
+          illo placeat ex voluptatibus magnam?
+        </div>
       </motion.section>
     </motion.div>
   );

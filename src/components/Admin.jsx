@@ -16,9 +16,10 @@ import {
   Tooltip,
   Dialog,
   DialogTitle,
-  DialogActions,
   DialogContent,
   MenuItem,
+  IconButton,
+  ThemeProvider,
 } from "@mui/material";
 import {
   LibraryAddRounded,
@@ -27,8 +28,15 @@ import {
   PersonAddRounded,
   LogoutRounded,
   LockOpenRounded,
+  AddAPhotoRounded,
+  Close,
+  SendRounded,
+  ViewListRounded,
+  EditRounded,
 } from "@mui/icons-material";
+import { theme } from "./theme";
 import "../style/Admin.scss";
+import { motion } from "framer-motion";
 
 const Admin = () => {
   const [loading, setLoading] = useState(false);
@@ -39,8 +47,37 @@ const Admin = () => {
   const [progress, setProgress] = useState(false);
   const [activite, setActivite] = useState("");
   const [status, setStatus] = useState("");
+  const [activities, setActivities] = useState([]);
+  const [pret, setPret] = useState(false);
+  const [width, setWidth] = useState(document.body.offsetWidth);
+  const [drawer, toggleDrawer] = useState(false);
   const act = activity.getPostInstance();
 
+  const updateAct = (e) => {
+    e.preventDefault();
+    setProgress(true);
+    const newDate = new Date(document.getElementById("updateForm").date.value);
+    const month =
+      newDate.getMonth() + 1 < 10
+        ? "0" + (newDate.getMonth() + 1)
+        : newDate.getMonth() + 1;
+    const day =
+      newDate.getDate() < 10 ? "0" + newDate.getDate() : newDate.getDate();
+    const exactDate = day + "-" + month + "-" + newDate.getFullYear();
+    const obj = {
+      date: exactDate,
+      description: document.getElementById("updateForm").descri.value,
+      filière: activite,
+      place: document.getElementById("updateForm").lieu.value,
+      title: document.getElementById("updateForm").titre.value,
+    };
+    act
+      .updateActivity(obj, document.getElementById("updateForm").id.value)
+      .then(() => {
+        setProgress(false);
+        setStatus("Activité mis à jour");
+      });
+  };
   const showimage = () => {
     var bool = true;
     var i = 0;
@@ -124,6 +161,16 @@ const Admin = () => {
     setStatus("");
     setProgress(false);
   };
+  function select(a) {
+    document.getElementById("updateForm").id.value = a.id;
+    document.getElementById("updateForm").titre.value = a.title;
+    setActivite(a.filière);
+    document.getElementById("updateForm").descri.value = a.description;
+    document.getElementById("updateForm").lieu.value = a.place;
+    var dateString = a.date.split("-");
+    document.getElementById("updateForm").date.value =
+      dateString[2] + "-" + dateString[1] + "-" + dateString[0];
+  }
   useEffect(() => {
     return () => {
       setConnected(false);
@@ -146,6 +193,14 @@ const Admin = () => {
           alert(err);
           setCheck(false);
         });
+      const act = activity.getPostInstance();
+      act.list(setActivities).then(() => {
+        setPret(true);
+      });
+      window.addEventListener("resize", () => {
+        setWidth(document.body.offsetWidth);
+        toggleDrawer(false);
+      });
     };
   }, []);
 
@@ -154,7 +209,10 @@ const Admin = () => {
       <CircularProgress size={100} sx={{ color: "#eca588" }}></CircularProgress>
     </div>
   ) : (
-    <div id="adminsec">
+    <motion.div
+      id="adminsec"
+      exit={{ opacity: 0, transition: { duration: 0.5 } }}
+    >
       {connected ? (
         <div className="btngrid">
           <Button
@@ -181,7 +239,9 @@ const Admin = () => {
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
-            onClick={() => setDialog("modification")}
+            onClick={() => {
+              setDialog("modifier");
+            }}
           >
             <Tooltip title="Modification Activité">
               <BorderColorRounded sx={{ width: 50, height: 50 }} />
@@ -234,68 +294,194 @@ const Admin = () => {
           </Button>
           <Dialog open={dialog === "ajout"} fullScreen>
             <DialogTitle
-              sx={{ fontFamily: "Gumela", fontSize: 30, alignSelf: "center" }}
+              sx={{
+                fontFamily: "Gumela",
+                fontSize: 30,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+                alignItems: "center",
+              }}
             >
               Ajout d'une activité:
+              <IconButton onClick={handleClose}>
+                <Close />
+              </IconButton>
             </DialogTitle>
             <DialogContent>
               <form id="dialogform" onSubmit={upload}>
-                <TextField
-                  label="Titre"
-                  name="titre"
-                  variant="standard"
-                  required
-                  sx={{ width: 300, fontFamily: "var(--fontText)" }}
-                ></TextField>
-                <TextField
-                  label="Activité"
-                  name="select"
-                  value={activite}
-                  onChange={handleChangeActivite}
-                  select
-                  sx={{ width: 300, fontFamily: "var(--fontText)" }}
-                >
-                  <MenuItem value={"Vary"}>Vary</MenuItem>
-                  <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
-                  <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
-                  <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
-                  <MenuItem value={"Trondro"}>Trondro</MenuItem>
-                  <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
-                </TextField>
-                <TextField
-                  label="Description"
-                  name="descri"
-                  variant="outlined"
-                  multiline
-                  maxRows={5}
-                  required
-                  sx={{ width: 300, fontFamily: "var(--fontText)" }}
-                ></TextField>
-                <TextField
-                  label="Lieu"
-                  name="lieu"
-                  variant="standard"
-                  required
-                  sx={{ width: 300, fontFamily: "var(--fontText)" }}
-                ></TextField>
-                <input type="date" name="date" required />
-                <input
-                  type="file"
-                  name="images"
-                  multiple
-                  accept="image/*"
-                  required
-                  onChange={showimage}
-                />
-                <div id="listes"></div>
+                <div>
+                  <div className="form-row">
+                    <TextField
+                      label="Titre"
+                      name="titre"
+                      variant="standard"
+                      required
+                      sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                    ></TextField>
+                    <TextField
+                      label="Filière"
+                      name="select"
+                      value={activite}
+                      onChange={handleChangeActivite}
+                      select
+                      required
+                      sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                    >
+                      <MenuItem value={"Vary"}>Vary</MenuItem>
+                      <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
+                      <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
+                      <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
+                      <MenuItem value={"Trondro"}>Trondro</MenuItem>
+                      <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
+                    </TextField>
+                    <TextField
+                      label="Description"
+                      name="descri"
+                      variant="outlined"
+                      multiline
+                      maxRows={5}
+                      required
+                      sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                    ></TextField>
+                    <TextField
+                      label="Lieu"
+                      name="lieu"
+                      variant="standard"
+                      required
+                      sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                    ></TextField>
+                    <input type="date" name="date" required />
+                  </div>
+                  <div className="form-row">
+                    <Tooltip
+                      title={"Joindre des photos"}
+                      sx={{ alignSelf: "center" }}
+                    >
+                      <IconButton size="medium">
+                        <label
+                          htmlFor="img"
+                          style={{ width: "30px", height: "30px" }}
+                        >
+                          <AddAPhotoRounded />
+                        </label>
+                      </IconButton>
+                    </Tooltip>
+                    <input
+                      type="file"
+                      name="images"
+                      multiple
+                      id="img"
+                      accept="image/*"
+                      required
+                      onChange={showimage}
+                    />
+                    <div id="listes"></div>
+                  </div>
+                </div>
                 {progress && <CircularProgress></CircularProgress>}
                 <p>{status}</p>
-                <DialogActions>
-                  <Button type="submit">Upload</Button>
-                  <Button onClick={handleClose}>Close</Button>
-                </DialogActions>
+                <ThemeProvider theme={theme}>
+                  <Button type="submit" endIcon={<SendRounded />}>
+                    Upload
+                  </Button>
+                </ThemeProvider>
               </form>
             </DialogContent>
+          </Dialog>
+          <Dialog open={dialog === "modifier"} fullScreen>
+            <DialogTitle
+              sx={{
+                fontFamily: "Gumela",
+                fontSize: 30,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+                alignItems: "center",
+              }}
+            >
+              Modification d'une activité:
+              <IconButton onClick={handleClose}>
+                <Close />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent>
+              <div id="updatediv">
+                <form id="updateForm" onSubmit={updateAct}>
+                  <input type="text" name="id" style={{ display: "none" }} />
+                  <TextField
+                    name="titre"
+                    variant="standard"
+                    required
+                    sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                  ></TextField>
+                  <TextField
+                    name="select"
+                    value={activite}
+                    onChange={handleChangeActivite}
+                    select
+                    required
+                    sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                  >
+                    <MenuItem value={"Vary"}>Vary</MenuItem>
+                    <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
+                    <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
+                    <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
+                    <MenuItem value={"Trondro"}>Trondro</MenuItem>
+                    <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
+                  </TextField>
+                  <TextField
+                    name="descri"
+                    variant="outlined"
+                    multiline
+                    maxRows={5}
+                    required
+                    sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                  ></TextField>
+                  <TextField
+                    name="lieu"
+                    variant="standard"
+                    required
+                    sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                  ></TextField>
+                  <input type="date" name="date" required />
+                  {progress && <CircularProgress></CircularProgress>}
+                  <p>{status}</p>
+                  <ThemeProvider theme={theme}>
+                    <Button type="submit" endIcon={<EditRounded />}>
+                      Valider
+                    </Button>
+                  </ThemeProvider>
+                </form>
+                {pret ? (
+                  <ul className={drawer ? "shown" : ""}>
+                    {activities.map((item) => (
+                      <li key={item.id}>
+                        <ThemeProvider theme={theme}>
+                          <Button onClick={() => select(item)}>
+                            {item.title} {item.date}
+                          </Button>
+                        </ThemeProvider>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <ul><li><CircularProgress size={50}></CircularProgress></li></ul>
+                )}
+              </div>
+            </DialogContent>
+            {width < 850 && (
+              <IconButton
+                className="showList"
+                onClick={() => {
+                  toggleDrawer(!drawer);
+                }}
+              >
+                {drawer ? <Close /> : <ViewListRounded />}
+              </IconButton>
+            )}
           </Dialog>
         </div>
       ) : (
@@ -322,7 +508,7 @@ const Admin = () => {
           )}
         </form>
       )}
-    </div>
+    </motion.div>
   );
 };
 
