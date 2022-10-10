@@ -20,6 +20,13 @@ import {
   MenuItem,
   IconButton,
   ThemeProvider,
+  Checkbox,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableContainer,
 } from "@mui/material";
 import {
   LibraryAddRounded,
@@ -53,6 +60,23 @@ const Admin = () => {
   const [drawer, toggleDrawer] = useState(false);
   const act = activity.getPostInstance();
 
+  
+  const handleDelete = () => {
+    setProgress(true);
+    var promises = [];
+    const item = document.getElementsByClassName("itemsup");
+    for (let e of item) {
+      if (e.children[0].checked) {
+        const value = e.children[0].defaultValue.split(" ");
+        promises.push(act.delete(value[0], value[1], value[2]));
+      }
+    }
+    Promise.all(promises).then(() => {
+      act.list(setActivities).then(() => {
+        setProgress(false);
+      });
+    });
+  };
   const updateAct = (e) => {
     e.preventDefault();
     if (document.getElementById("updateForm").id.value !== "") {
@@ -78,11 +102,13 @@ const Admin = () => {
       act
         .updateActivity(obj, document.getElementById("updateForm").id.value)
         .then(() => {
-          setProgress(false);
-          setStatus("Activité mis à jour");
+          act.list(setActivities).then(() => {
+            setProgress(false);
+            setStatus("Activité mis à jour");
+          });
         });
-    }else{
-      setStatus("Vous devez séléctionner une activité à modifier")
+    } else {
+      setStatus("Vous devez séléctionner une activité à modifier");
     }
   };
   const showimage = () => {
@@ -116,14 +142,16 @@ const Admin = () => {
   const handleChangeActivite = (event) => {
     setActivite(event.target.value);
   };
-  const upload = async (e) => {
+  const upload = (e) => {
     e.preventDefault();
-    await act.ajout(
+
+    act.ajout(
       document.getElementById("dialogform"),
       document.getElementById("dialogform").images.files,
-      setProgress,
+      setActivite,
       setStatus,
-      setActivite
+      setProgress,
+      setActivities
     );
   };
   const deluser = () => {
@@ -177,6 +205,7 @@ const Admin = () => {
     var dateString = a.date.split("-");
     document.getElementById("updateForm").date.value =
       dateString[2] + "-" + dateString[1] + "-" + dateString[0];
+    toggleDrawer(false);
   }
   useEffect(() => {
     return () => {
@@ -263,7 +292,7 @@ const Admin = () => {
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
-            onClick={() => setDialog("suppression")}
+            onClick={() => setDialog("supprimer")}
           >
             <Tooltip title="Suppression Activité">
               <DeleteRounded sx={{ width: 50, height: 50 }} />
@@ -484,6 +513,14 @@ const Admin = () => {
                 </form>
                 {pret ? (
                   <ul className={drawer ? "shown" : ""}>
+                    <li
+                      style={{
+                        fontFamily: "var(--fontText)",
+                        fontSize: "25px",
+                      }}
+                    >
+                      Listes des activités:
+                    </li>
                     {activities.map((item) => (
                       <li key={item.id}>
                         <ThemeProvider theme={theme}>
@@ -501,6 +538,74 @@ const Admin = () => {
                     </li>
                   </ul>
                 )}
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={dialog === "supprimer"} fullScreen>
+            <DialogTitle
+              sx={{
+                fontFamily: "Gumela",
+                fontSize: 30,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+                alignItems: "center",
+              }}
+            >
+              Supprimer des activités:
+              <IconButton onClick={handleClose}>
+                <Close />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent>
+              <div
+                id="supdiv"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell>Titre</TableCell>
+                        <TableCell>Date</TableCell>
+                        <TableCell>Filière</TableCell>
+                        <TableCell>Place</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {activities.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            <Checkbox
+                              value={
+                                item.id + " " + item.path + " " + item.files
+                              }
+                              className="itemsup"
+                            ></Checkbox>
+                          </TableCell>
+                          <TableCell>{item.title}</TableCell>
+                          <TableCell>{item.date}</TableCell>
+                          <TableCell>{item.filière}</TableCell>
+                          <TableCell>{item.place}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                {progress && <CircularProgress size={50}></CircularProgress>}
+                <Button
+                  type="submit"
+                  endIcon={<DeleteRounded />}
+                  onClick={handleDelete}
+                >
+                  Supprimer
+                </Button>
               </div>
             </DialogContent>
           </Dialog>

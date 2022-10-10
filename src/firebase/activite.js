@@ -3,6 +3,7 @@ import {
   ref,
   uploadBytesResumable,
   getDownloadURL,
+  deleteObject,
 } from "firebase/storage";
 import {
   addDoc,
@@ -13,7 +14,8 @@ import {
   limit,
   query,
   updateDoc,
-  doc
+  doc,
+  deleteDoc,
 } from "firebase/firestore";
 import app from "./db";
 export class activity {
@@ -21,9 +23,16 @@ export class activity {
     const instance = new activity();
     return instance ? instance : new activity();
   }
-  async ajout(formDial, fichiers, setProgress, setStatus, setActivite) {
-    setStatus("");
+  async ajout(
+    formDial,
+    fichiers,
+    setActivite,
+    setStatus,
+    setProgress,
+    setActivities
+  ) {
     setProgress(true);
+    setStatus("");
     const arrayFile = Object.keys(fichiers);
     const newDate = new Date(formDial.date.value);
     const month =
@@ -44,7 +53,7 @@ export class activity {
       filière: formDial.select.value,
       place: formDial.lieu.value,
       title: formDial.titre.value,
-      path: formDial.titre.value + formDial.lieu.value + exactDate
+      path: formDial.titre.value + formDial.lieu.value + exactDate,
     };
     var promise = [];
     for (let i of arrayFile) {
@@ -52,9 +61,6 @@ export class activity {
     }
     Promise.all(promise).then(() => {
       this.addactivity(activity).then(() => {
-        setProgress(false);
-        setStatus("Tâche fini");
-        setActivite("");
         formDial.titre.value = "";
         formDial.lieu.value = "";
         formDial.descri.value = "";
@@ -72,6 +78,11 @@ export class activity {
           }
           i++;
         }
+        this.list(setActivities).then(() => {
+          setProgress(false);
+          setStatus("");
+          setActivite("");
+        });
       });
     });
   }
@@ -94,17 +105,13 @@ export class activity {
     }
   }
   async demarrer(setActivities, setShow) {
-    const activity = await this.querydoc("activity");
+    const activity = await this.queryDoc("activity");
     const temp = {};
     var tab = [];
     for (let act of activity) {
       var tab1 = [];
       for (let img of act.contenu.images) {
-        const path =
-          "images/" +
-          act.contenu.path +
-          "/" +
-          img;
+        const path = "images/" + act.contenu.path + "/" + img;
         const downloadedurl = await this.downurl(path);
         tab1.push(downloadedurl);
       }
@@ -122,17 +129,13 @@ export class activity {
     setActivities(tab);
     setShow(temp);
   }
-  async list(setActivities) {
+  async list(a) {
     const activity = await this.querydoc("activity");
     var tab = [];
     for (let act of activity) {
       var tab1 = [];
       for (let img of act.contenu.images) {
-        const path =
-          "images/" +
-          act.contenu.path +
-          "/" +
-          img;
+        const path = "images/" + act.contenu.path + "/" + img;
         const downloadedurl = await this.downurl(path);
         tab1.push(downloadedurl);
       }
@@ -144,11 +147,24 @@ export class activity {
         place: act.contenu.place,
         title: act.contenu.title,
         filière: act.contenu.filière,
+        path: act.contenu.path,
+        files: act.contenu.images.join(",")
       });
     }
-    setActivities(tab);
+    a(tab);
   }
   async querydoc(str) {
+    const database = getFirestore(app);
+    const activity = collection(database, str);
+    const q = query(activity, orderBy("title", "asc"));
+    const document = await getDocs(q);
+    var act = [];
+    document.docs.forEach((item) => {
+      act = [...act, { id: item.id, contenu: item.data() }];
+    });
+    return act;
+  }
+  async queryDoc(str) {
     const database = getFirestore(app);
     const activity = collection(database, str);
     const q = query(activity, orderBy("date", "desc"), limit(2));
@@ -166,7 +182,16 @@ export class activity {
     return download;
   }
   async updateActivity(form, id) {
-    const activ = doc(getFirestore(app), 'activity', id)
-    await updateDoc(activ, form)
+    const activ = doc(getFirestore(app), "activity", id);
+    await updateDoc(activ, form);
+  }
+  async delete(id, str,files) {
+    const activ = doc(getFirestore(app), "activity", id);
+    await deleteDoc(activ);
+    const img = files.split(',')
+    for (let a of img) {
+      const storageRef = ref(getStorage(app), "images/" + str + "/" + a);
+      await deleteObject(storageRef);
+    }
   }
 }
