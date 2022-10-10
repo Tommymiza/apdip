@@ -14,19 +14,12 @@
     gap: 20px;
   }
 }
-.showList {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  z-index: 2;
-}
+
 #updatediv {
   display: flex;
   flex-direction: row;
   width: 100%;
   flex-wrap: nowrap;
-  
   ul {
     list-style: none;
     display: flex;
@@ -43,6 +36,12 @@ form {
   width: 50%;
   align-items: center;
   min-width: 400px;
+  label{
+    align-self: flex-start;
+    font-size: 20px;
+    font-family: var(--fontText);
+    color: rgb(88, 82, 82);
+  }
   input[type="date"] {
     height: 40px;
     width: 100%;
@@ -116,9 +115,6 @@ form {
         }
       }
     }
-  }
-  .showList {
-    display: block;
   }
   #updatediv {
     ul {

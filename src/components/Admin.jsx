@@ -55,28 +55,35 @@ const Admin = () => {
 
   const updateAct = (e) => {
     e.preventDefault();
-    setProgress(true);
-    const newDate = new Date(document.getElementById("updateForm").date.value);
-    const month =
-      newDate.getMonth() + 1 < 10
-        ? "0" + (newDate.getMonth() + 1)
-        : newDate.getMonth() + 1;
-    const day =
-      newDate.getDate() < 10 ? "0" + newDate.getDate() : newDate.getDate();
-    const exactDate = day + "-" + month + "-" + newDate.getFullYear();
-    const obj = {
-      date: exactDate,
-      description: document.getElementById("updateForm").descri.value,
-      filière: activite,
-      place: document.getElementById("updateForm").lieu.value,
-      title: document.getElementById("updateForm").titre.value,
-    };
-    act
-      .updateActivity(obj, document.getElementById("updateForm").id.value)
-      .then(() => {
-        setProgress(false);
-        setStatus("Activité mis à jour");
-      });
+    if (document.getElementById("updateForm").id.value !== "") {
+      setProgress(true);
+      setStatus("");
+      const newDate = new Date(
+        document.getElementById("updateForm").date.value
+      );
+      const month =
+        newDate.getMonth() + 1 < 10
+          ? "0" + (newDate.getMonth() + 1)
+          : newDate.getMonth() + 1;
+      const day =
+        newDate.getDate() < 10 ? "0" + newDate.getDate() : newDate.getDate();
+      const exactDate = day + "-" + month + "-" + newDate.getFullYear();
+      const obj = {
+        date: exactDate,
+        description: document.getElementById("updateForm").descri.value,
+        filière: activite,
+        place: document.getElementById("updateForm").lieu.value,
+        title: document.getElementById("updateForm").titre.value,
+      };
+      act
+        .updateActivity(obj, document.getElementById("updateForm").id.value)
+        .then(() => {
+          setProgress(false);
+          setStatus("Activité mis à jour");
+        });
+    }else{
+      setStatus("Vous devez séléctionner une activité à modifier")
+    }
   };
   const showimage = () => {
     var bool = true;
@@ -410,6 +417,7 @@ const Admin = () => {
             <DialogContent>
               <div id="updatediv">
                 <form id="updateForm" onSubmit={updateAct}>
+                  <label>Titre:</label>
                   <input type="text" name="id" style={{ display: "none" }} />
                   <TextField
                     name="titre"
@@ -417,6 +425,7 @@ const Admin = () => {
                     required
                     sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                   ></TextField>
+                  <label>Filière:</label>
                   <TextField
                     name="select"
                     value={activite}
@@ -432,6 +441,7 @@ const Admin = () => {
                     <MenuItem value={"Trondro"}>Trondro</MenuItem>
                     <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
                   </TextField>
+                  <label>Description:</label>
                   <TextField
                     name="descri"
                     variant="outlined"
@@ -440,19 +450,36 @@ const Admin = () => {
                     required
                     sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                   ></TextField>
+                  <label>Place: </label>
                   <TextField
                     name="lieu"
                     variant="standard"
                     required
                     sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                   ></TextField>
+                  <label>Date:</label>
                   <input type="date" name="date" required />
-                  {progress && <CircularProgress></CircularProgress>}
+                  {progress && (
+                    <CircularProgress
+                      size={35}
+                      sx={{ mt: 3 }}
+                    ></CircularProgress>
+                  )}
                   <p>{status}</p>
                   <ThemeProvider theme={theme}>
                     <Button type="submit" endIcon={<EditRounded />}>
                       Valider
                     </Button>
+                    {width < 850 && (
+                      <Button
+                        onClick={() => {
+                          toggleDrawer(!drawer);
+                        }}
+                        sx={{ zIndex: 2 }}
+                      >
+                        {drawer ? <Close /> : <ViewListRounded />}
+                      </Button>
+                    )}
                   </ThemeProvider>
                 </form>
                 {pret ? (
@@ -468,20 +495,14 @@ const Admin = () => {
                     ))}
                   </ul>
                 ) : (
-                  <ul><li><CircularProgress size={50}></CircularProgress></li></ul>
+                  <ul>
+                    <li>
+                      <CircularProgress size={50}></CircularProgress>
+                    </li>
+                  </ul>
                 )}
               </div>
             </DialogContent>
-            {width < 850 && (
-              <IconButton
-                className="showList"
-                onClick={() => {
-                  toggleDrawer(!drawer);
-                }}
-              >
-                {drawer ? <Close /> : <ViewListRounded />}
-              </IconButton>
-            )}
           </Dialog>
         </div>
       ) : (
