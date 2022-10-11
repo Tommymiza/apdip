@@ -41,7 +41,7 @@ export class activity {
         : newDate.getMonth() + 1;
     const day =
       newDate.getDate() < 10 ? "0" + newDate.getDate() : newDate.getDate();
-    const exactDate = day + "-" + month + "-" + newDate.getFullYear();
+    const exactDate = newDate.getFullYear() + "-" + month + "-" + day;
     var pathArray = [];
     arrayFile.forEach((file) => {
       pathArray = [...pathArray, fichiers[file].name];
@@ -66,6 +66,7 @@ export class activity {
         formDial.descri.value = "";
         formDial.date.value = null;
         formDial.images.value = "";
+        setActivite("");
         var bool = true;
         var i = 0;
         while (bool) {
@@ -79,9 +80,8 @@ export class activity {
           i++;
         }
         this.list(setActivities).then(() => {
+          setStatus("Tâche finis");
           setProgress(false);
-          setStatus("");
-          setActivite("");
         });
       });
     });
@@ -148,7 +148,7 @@ export class activity {
         title: act.contenu.title,
         filière: act.contenu.filière,
         path: act.contenu.path,
-        files: act.contenu.images.join(",")
+        files: act.contenu.images.join(","),
       });
     }
     a(tab);
@@ -185,13 +185,82 @@ export class activity {
     const activ = doc(getFirestore(app), "activity", id);
     await updateDoc(activ, form);
   }
-  async delete(id, str,files) {
+  async delete(id, str, files) {
     const activ = doc(getFirestore(app), "activity", id);
     await deleteDoc(activ);
-    const img = files.split(',')
+    const img = files.split(",");
     for (let a of img) {
       const storageRef = ref(getStorage(app), "images/" + str + "/" + a);
       await deleteObject(storageRef);
     }
+  }
+  async updateAbout() {
+    const database = getFirestore(app);
+    const aboutDoc = collection(database, "apropos");
+    const res = await getDocs(aboutDoc);
+    const resultat = res.docs.map((doc) => doc.id);
+    await updateDoc(doc(getFirestore(app), "apropos", resultat[0]), {
+      commune: {
+        Ambalanirana: {
+          groupement: [
+            "EZAKA I",
+            "FONIALA",
+            "TAFARAY",
+            "NY VOARY",
+            "FANOMEZANTSOA",
+            "FTM",
+            "TABALAHA",
+          ],
+          top: 52,
+          right: 38,
+        },
+        Ambararatabe: {
+          groupement: [
+            "AINGAVAO",
+            "TSIRINALA",
+            "EZAKA III",
+            "MILASOA",
+            "FI.TA.AM",
+          ],
+          top: 60,
+          right: 57,
+        },
+        Andriampotsy: {
+          groupement: ["LIANTSOA", "FTTM"],
+          top: 38,
+          right: 38,
+        },
+        Ankadinondry: {
+          groupement: ["SOAFIDY"],
+          top: 65,
+          right: 40,
+        },
+        Belobaka: {
+          groupement: ["VONDRONA"],
+          top: 65,
+          right: 83,
+        },
+        Bemahatazana: {
+          groupement: ["TAFAFI", "MITSINJO II", "TSIMBINA II", "TANTELY"],
+          top: 85,
+          right: 65,
+        },
+        Maritampona: {
+          groupement: ["NAMBININTSOA II", "FIVOY", "MITSINJO", "MIARISOA"],
+          top: 55,
+          right: 30,
+        },
+        Miandrarivo: {
+          groupement: ["FFPM", "VONONA", "LIANTSOA II", "SANTATRA", "MIAMI"],
+          top: 90,
+          right: 25,
+        },
+        "Tsinjoarivo Imanga": {
+          groupement: ["AVOTRA", "VOLY VOASARY MIAVOTRA"],
+          top: 63,
+          right: 50,
+        },
+      },
+    });
   }
 }

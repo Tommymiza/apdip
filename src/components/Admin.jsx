@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import app from "../firebase/db";
 import { activity } from "../firebase/activite";
+import { DataGrid } from "@mui/x-data-grid";
 import {
   onSnapshot,
   getFirestore,
@@ -20,13 +21,7 @@ import {
   MenuItem,
   IconButton,
   ThemeProvider,
-  Checkbox,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableContainer,
+  Box,
 } from "@mui/material";
 import {
   LibraryAddRounded,
@@ -58,17 +53,38 @@ const Admin = () => {
   const [pret, setPret] = useState(false);
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [drawer, toggleDrawer] = useState(false);
+  const [selected, setSelected] = useState([]);
   const act = activity.getPostInstance();
-
   
+
+  const columns = [
+    {
+      field: "title",
+      headerName: "Titre",
+      width: width / 4 - 25,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: width / 4 - 25,
+    },
+    {
+      field: "filière",
+      headerName: "Filière",
+      width: width / 4 - 25,
+    },
+    {
+      field: "place",
+      headerName: "Place",
+      width: width / 4 - 25,
+    },
+  ];
   const handleDelete = () => {
-    setProgress(true);
     var promises = [];
-    const item = document.getElementsByClassName("itemsup");
-    for (let e of item) {
-      if (e.children[0].checked) {
-        const value = e.children[0].defaultValue.split(" ");
-        promises.push(act.delete(value[0], value[1], value[2]));
+    setProgress(true);
+    for (let item of activities) {
+      if (selected.indexOf(item.id) > -1) {
+        promises.push(act.delete(item.id, item.path, item.files));
       }
     }
     Promise.all(promises).then(() => {
@@ -567,45 +583,32 @@ const Admin = () => {
                   alignItems: "center",
                 }}
               >
-                <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell>Titre</TableCell>
-                        <TableCell>Date</TableCell>
-                        <TableCell>Filière</TableCell>
-                        <TableCell>Place</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {activities.map((item) => (
-                        <TableRow key={item.id}>
-                          <TableCell>
-                            <Checkbox
-                              value={
-                                item.id + " " + item.path + " " + item.files
-                              }
-                              className="itemsup"
-                            ></Checkbox>
-                          </TableCell>
-                          <TableCell>{item.title}</TableCell>
-                          <TableCell>{item.date}</TableCell>
-                          <TableCell>{item.filière}</TableCell>
-                          <TableCell>{item.place}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                {activities.length !== 0 ? (
+                  <Box sx={{ height: 400, width: "100%" }}>
+                    <DataGrid
+                      rows={activities}
+                      columns={columns}
+                      checkboxSelection
+                      disableSelectionOnClick
+                      rowsPerPageOptions={[5]}
+                      onSelectionModelChange={(newSelection) => {
+                        setSelected(newSelection);
+                      }}
+                    />
+                  </Box>
+                ) : (
+                  <CircularProgress size={50}></CircularProgress>
+                )}
                 {progress && <CircularProgress size={50}></CircularProgress>}
-                <Button
-                  type="submit"
-                  endIcon={<DeleteRounded />}
-                  onClick={handleDelete}
-                >
-                  Supprimer
-                </Button>
+                <ThemeProvider theme={theme}>
+                  <Button
+                    type="submit"
+                    endIcon={<DeleteRounded />}
+                    onClick={handleDelete}
+                  >
+                    Supprimer
+                  </Button>
+                </ThemeProvider>
               </div>
             </DialogContent>
           </Dialog>

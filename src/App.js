@@ -8,6 +8,7 @@ import {
 import Home from "./components/Home";
 import Admin from "./components/Admin";
 import Test from "./components/test";
+import List from "./components/List"
 import { AnimatePresence } from "framer-motion";
 
 function App() {
@@ -18,7 +19,8 @@ function App() {
       <AnimatePresence>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />}></Route>
-          <Route path="/list" element={<Admin />}></Route>
+          <Route path="/dashboard" element={<Admin />}></Route>
+          <Route path="/list" element={<List />}></Route>
           <Route path="/*" element={<Test />}></Route>
         </Routes>
       </AnimatePresence>

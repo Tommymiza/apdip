@@ -10,18 +10,12 @@ import {
   Dialog,
   Grid,
   IconButton,
-  ThemeProvider,
   CircularProgress,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from "@mui/material";
-import { theme } from "./theme";
 import {
   Close,
   ChevronLeftRounded,
   ChevronRightRounded,
-  ExpandMoreRounded,
 } from "@mui/icons-material";
 import "../style/Home.scss";
 import { AnimatePresence, motion } from "framer-motion";
@@ -40,8 +34,6 @@ const Home = () => {
   const [page, setPage] = useState(0);
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [slide, setSlide] = useState(0);
-  const [acc, setAcc] = useState(false);
-  const [nomCommune, setNomCommune] = useState([]);
 
   const slideleft = (a) => {
     if (slide > -((a - 1) * 100)) {
@@ -98,29 +90,24 @@ const Home = () => {
     const commune = Object.keys(list.commune);
     var nb = 0;
     for (let c of commune) {
-      nb = nb + list.commune[c].length;
+      nb = nb + list.commune[c].groupement.length;
     }
+    
     return [nb, commune.length];
   }
-  const accordionHide = () => {
-    setAcc(false);
-  };
-  const accordionShow = () => {
-    setAcc(true);
-  };
 
   useEffect(() => {
     return () => {
       setPret(false);
       const act = activity.getPostInstance();
-      act.demarrer(setActivities, setShow).then((res) => {
+      act.demarrer(setActivities, setShow).then(() => {
         setPret(true);
       });
       window.addEventListener("resize", () => {
         setWidth(document.body.offsetWidth);
       });
       const abt = about.getpostinstance();
-      abt.getdocument(setList, setNomCommune).then((res) => {
+      abt.getdocument(setList).then(() => {
         setAboutLoading(false);
       });
     };
@@ -277,85 +264,6 @@ const Home = () => {
                       Professionnaliser les métiers agricoles.
                     </motion.p>
                   </div>
-                  <motion.div
-                    initial={{ y: 200, opacity: 0 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 1,
-                      delay: 1.8,
-                    }}
-                  >
-                    <ThemeProvider theme={theme}>
-                      <Button onClick={accordionShow}>Listes communes</Button>
-                    </ThemeProvider>
-                  </motion.div>
-                  <ThemeProvider theme={theme}>
-                    <Dialog open={acc} onClose={accordionHide} fullScreen>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          pa: 3,
-                          alignItems: "center",
-                        }}
-                      >
-                        <h1
-                          style={{
-                            margin: 0,
-                            fontFamily: "Gumela",
-                            fontWeight: "lighter",
-                            padding: 20,
-                            fontSize: 25,
-                          }}
-                        >
-                          Liste des communes et groupements:
-                        </h1>
-                        <IconButton
-                          size="small"
-                          onClick={accordionHide}
-                          sx={{ mr: 2 }}
-                        >
-                          <Close />
-                        </IconButton>
-                      </div>
-                      {nomCommune.length !== 0 &&
-                        nomCommune.map((item) => (
-                          <Accordion key={item}>
-                            <AccordionSummary
-                              expandIcon={<ExpandMoreRounded />}
-                            >
-                              <h2
-                                style={{
-                                  fontFamily: "var(--fontText)",
-                                  margin: 5,
-                                  fontSize: 20,
-                                  fontWeight: "lighter",
-                                }}
-                              >
-                                {item}
-                              </h2>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              {list.commune[item].map((groupement) => (
-                                <h4
-                                  key={groupement}
-                                  style={{
-                                    fontFamily: "var(--fontText)",
-                                    fontSize: 15,
-                                    fontWeight: "lighter",
-                                    color: "rgb(124, 91, 91)",
-                                    marginLeft: "30px",
-                                  }}
-                                >
-                                  {groupement}
-                                </h4>
-                              ))}
-                            </AccordionDetails>
-                          </Accordion>
-                        ))}
-                    </Dialog>
-                  </ThemeProvider>
                 </div>
               </motion.section>
             ) : (
@@ -791,83 +699,6 @@ const Home = () => {
                 les métiers agricoles.
               </motion.p>
             </div>
-            <motion.div
-              initial={{ y: 200, opacity: 0 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 1,
-                delay: 1.8,
-              }}
-            >
-              <ThemeProvider theme={theme}>
-                <Button onClick={accordionShow}>Listes communes</Button>
-              </ThemeProvider>
-            </motion.div>
-            <ThemeProvider theme={theme}>
-              <Dialog open={acc} onClose={accordionHide} fullScreen>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    pa: 3,
-                    alignItems: "center",
-                  }}
-                >
-                  <h1
-                    style={{
-                      margin: 0,
-                      fontFamily: "Gumela",
-                      fontWeight: "lighter",
-                      padding: 20,
-                      fontSize: 25,
-                    }}
-                  >
-                    Liste des communes et groupements:
-                  </h1>
-                  <IconButton
-                    size="small"
-                    onClick={accordionHide}
-                    sx={{ mr: 2 }}
-                  >
-                    <Close />
-                  </IconButton>
-                </div>
-                {nomCommune.length !== 0 &&
-                  nomCommune.map((item) => (
-                    <Accordion key={item}>
-                      <AccordionSummary expandIcon={<ExpandMoreRounded />}>
-                        <h2
-                          style={{
-                            fontFamily: "var(--fontText)",
-                            margin: 5,
-                            fontSize: 20,
-                            fontWeight: "lighter",
-                          }}
-                        >
-                          {item}
-                        </h2>
-                      </AccordionSummary>
-                      <AccordionDetails sx={{ color: "red", m: 0 }}>
-                        {list.commune[item].map((groupement) => (
-                          <h4
-                            key={groupement}
-                            style={{
-                              fontFamily: "var(--fontText)",
-                              fontSize: 15,
-                              fontWeight: "lighter",
-                              color: "rgb(124, 91, 91)",
-                              marginLeft: "30px",
-                            }}
-                          >
-                            {groupement}
-                          </h4>
-                        ))}
-                      </AccordionDetails>
-                    </Accordion>
-                  ))}
-              </Dialog>
-            </ThemeProvider>
           </div>
         </motion.section>
       ) : (

@@ -1,0 +1,28 @@
+#list{
+    margin-top: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.filtre{
+    width: 90%;
+    height: 60px;
+    background: rgba($color: #000000, $alpha: 0);
+    backdrop-filter: blur(2px);
+    border: solid 1px black;
+    border-radius: 10px;
+    
+}
+#carte{
+    width: 40vw;
+    height: 40vw;
+    position: relative;
+    max-width: calc(100vh - 200px);
+    max-height: calc(100vh - 200px);
+    min-width: 400px;
+    min-height: 400px;
+    img{
+        width: 100%;
+        height: 100%;
+    }
+}
