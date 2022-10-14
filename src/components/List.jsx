@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { ActContext } from "../App";
 import "../style/List.scss";
 import Activite from "./Activite";
@@ -28,7 +28,7 @@ const List = () => {
   const [some, setSome] = useState([]);
   const [option, setOption] = useState("");
 
-  const {activities,pret} = useContext(ActContext)
+  const { activities, pret } = useContext(ActContext);
   const resetFilter = () => {
     setOption("");
     document.getElementById("datedebut").value = "";
@@ -38,123 +38,131 @@ const List = () => {
   };
   function filtre(opt, dateDeb, dateFin, search) {
     var tab = [];
-    if(search !== ""){
+    if (search !== "") {
       // eslint-disable-next-line
-      tab = activities.filter(obj=>{
-        if(obj.title.includes(search) || obj.description.includes(search)){
-          return obj
+      tab = activities.filter((obj) => {
+        if (obj.title.includes(search) || obj.description.includes(search)) {
+          return obj;
         }
-      })
+      });
     }
-    if(tab.length !== 0){
-      if(opt !== "" && dateDeb !== "" && dateFin !== ""){
+    if (tab.length !== 0) {
+      if (opt !== "" && dateDeb !== "" && dateFin !== "") {
         // eslint-disable-next-line
-        tab = tab.filter(obj=>{
-          if(obj.filière === opt && obj.date >= dateDeb && obj.date <= dateFin){
+        tab = tab.filter((obj) => {
+          if (
+            obj.filière === opt &&
+            obj.date >= dateDeb &&
+            obj.date <= dateFin
+          ) {
             return obj;
           }
-        })
-      }else if(opt !== "" && dateDeb !== "" && dateFin === ""){
+        });
+      } else if (opt !== "" && dateDeb !== "" && dateFin === "") {
         // eslint-disable-next-line
-        tab = tab.filter(obj=>{
-          if(obj.filière === opt && obj.date >= dateDeb){
+        tab = tab.filter((obj) => {
+          if (obj.filière === opt && obj.date >= dateDeb) {
             return obj;
           }
-        })
-      }else if(opt !== "" && dateDeb === "" && dateFin !== ""){
+        });
+      } else if (opt !== "" && dateDeb === "" && dateFin !== "") {
         // eslint-disable-next-line
-        tab = tab.filter(obj=>{
-          if(obj.filière === opt && obj.date <= dateFin){
+        tab = tab.filter((obj) => {
+          if (obj.filière === opt && obj.date <= dateFin) {
             return obj;
           }
-        })
-      }else if(opt !== "" && dateDeb === "" && dateFin === ""){
+        });
+      } else if (opt !== "" && dateDeb === "" && dateFin === "") {
         // eslint-disable-next-line
-        tab = tab.filter(obj=>{
-          if(obj.filière === opt){
+        tab = tab.filter((obj) => {
+          if (obj.filière === opt) {
             return obj;
           }
-        })
-      }else if(opt === "" && dateDeb !== "" && dateFin !== ""){
+        });
+      } else if (opt === "" && dateDeb !== "" && dateFin !== "") {
         // eslint-disable-next-line
-        tab = tab.filter(obj=>{
-          if(obj.date >= dateDeb && obj.date <= dateFin){
+        tab = tab.filter((obj) => {
+          if (obj.date >= dateDeb && obj.date <= dateFin) {
             return obj;
           }
-        })
-      }else if(opt === "" && dateDeb === "" && dateFin !== ""){
+        });
+      } else if (opt === "" && dateDeb === "" && dateFin !== "") {
         // eslint-disable-next-line
-        tab = tab.filter(obj=>{
-          if(obj.date <= dateFin){
+        tab = tab.filter((obj) => {
+          if (obj.date <= dateFin) {
             return obj;
           }
-        })
-      }else if(opt === "" && dateDeb !== "" && dateFin === ""){
+        });
+      } else if (opt === "" && dateDeb !== "" && dateFin === "") {
         // eslint-disable-next-line
-        tab = tab.filter(obj=>{
-          if(obj.date >= dateDeb){
+        tab = tab.filter((obj) => {
+          if (obj.date >= dateDeb) {
             return obj;
           }
-        })
-      }else{
-        tab = tab.filter(obj=>{
-          return obj
-        })
+        });
+      } else {
+        tab = tab.filter((obj) => {
+          return obj;
+        });
       }
-    }else{
-      if(opt !== "" && dateDeb !== "" && dateFin !== ""){
+    } else {
+      if (opt !== "" && dateDeb !== "" && dateFin !== "") {
         // eslint-disable-next-line
-        tab = activities.filter(obj=>{
-          if(obj.filière === opt && obj.date >= dateDeb && obj.date <= dateFin){
+        tab = activities.filter((obj) => {
+          if (
+            obj.filière === opt &&
+            obj.date >= dateDeb &&
+            obj.date <= dateFin
+          ) {
             return obj;
           }
-        })
-      }else if(opt !== "" && dateDeb !== "" && dateFin === ""){
+        });
+      } else if (opt !== "" && dateDeb !== "" && dateFin === "") {
         // eslint-disable-next-line
-        tab = activities.filter(obj=>{
-          if(obj.filière === opt && obj.date >= dateDeb){
+        tab = activities.filter((obj) => {
+          if (obj.filière === opt && obj.date >= dateDeb) {
             return obj;
           }
-        })
-      }else if(opt !== "" && dateDeb === "" && dateFin !== ""){
+        });
+      } else if (opt !== "" && dateDeb === "" && dateFin !== "") {
         // eslint-disable-next-line
-        tab = activities.filter(obj=>{
-          if(obj.filière === opt && obj.date <= dateFin){
+        tab = activities.filter((obj) => {
+          if (obj.filière === opt && obj.date <= dateFin) {
             return obj;
           }
-        })
-      }else if(opt !== "" && dateDeb === "" && dateFin === ""){
+        });
+      } else if (opt !== "" && dateDeb === "" && dateFin === "") {
         // eslint-disable-next-line
-        tab = activities.filter(obj=>{
-          if(obj.filière === opt){
+        tab = activities.filter((obj) => {
+          if (obj.filière === opt) {
             return obj;
           }
-        })
-      }else if(opt === "" && dateDeb !== "" && dateFin !== ""){
+        });
+      } else if (opt === "" && dateDeb !== "" && dateFin !== "") {
         // eslint-disable-next-line
-        tab = activities.filter(obj=>{
-          if(obj.date >= dateDeb && obj.date <= dateFin){
+        tab = activities.filter((obj) => {
+          if (obj.date >= dateDeb && obj.date <= dateFin) {
             return obj;
           }
-        })
-      }else if(opt === "" && dateDeb === "" && dateFin !== ""){
+        });
+      } else if (opt === "" && dateDeb === "" && dateFin !== "") {
         // eslint-disable-next-line
-        tab = activities.filter(obj=>{
-          if(obj.date <= dateFin){
+        tab = activities.filter((obj) => {
+          if (obj.date <= dateFin) {
             return obj;
           }
-        })
-      }else if(opt === "" && dateDeb !== "" && dateFin === ""){
+        });
+      } else if (opt === "" && dateDeb !== "" && dateFin === "") {
         // eslint-disable-next-line
-        tab = activities.filter(obj=>{
-          if(obj.date >= dateDeb){
+        tab = activities.filter((obj) => {
+          if (obj.date >= dateDeb) {
             return obj;
           }
-        })
-      }else{
-        tab = tab.filter(obj=>{
-          return obj
-        })
+        });
+      } else {
+        tab = tab.filter((obj) => {
+          return obj;
+        });
       }
     }
 
@@ -174,56 +182,58 @@ const List = () => {
           duration: 1,
         }}
       >
-        <div>
-          <label htmlFor="option">Filière: &nbsp;</label>
-          <TextField
-            id="option"
-            name="select"
-            value={option}
-            onChange={(e) => {
-              setOption(e.target.value);
+        <div id="formFilter">
+          <div>
+            <label htmlFor="option">Filière: &nbsp;</label>
+            <TextField
+              id="option"
+              name="select"
+              value={option}
+              onChange={(e) => {
+                setOption(e.target.value);
+              }}
+              defaultValue=""
+              select
+              sx={{ fontFamily: "var(--fontText)" }}
+            >
+              <MenuItem value={""}>--none--</MenuItem>
+              <MenuItem value={"Vary"}>Vary</MenuItem>
+              <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
+              <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
+              <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
+              <MenuItem value={"Trondro"}>Trondro</MenuItem>
+              <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
+            </TextField>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              alignItems: "center",
             }}
-            defaultValue=""
-            select
-            sx={{ fontFamily: "var(--fontText)" }}
           >
-            <MenuItem value={""}>--none--</MenuItem>
-            <MenuItem value={"Vary"}>Vary</MenuItem>
-            <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
-            <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
-            <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
-            <MenuItem value={"Trondro"}>Trondro</MenuItem>
-            <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
-          </TextField>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <label htmlFor="datedebut">Le: &nbsp;</label>
-          <TextField
-            id="datedebut"
-            type={"date"}
-            sx={{ fontFamily: "var(--fontText)" }}
-          ></TextField>
-          <label htmlFor="datefin">&nbsp;Jusqu'à: &nbsp;</label>
-          <TextField
-            id="datefin"
-            type={"date"}
-            sx={{ fontFamily: "var(--fontText)" }}
-          ></TextField>
-        </div>
-        <div>
-          <TextField
-            type={"search"}
-            label="--Recherche--"
-            id="rech"
-          ></TextField>
+            <label htmlFor="datedebut">Le: &nbsp;</label>
+            <TextField
+              id="datedebut"
+              type={"date"}
+              sx={{ fontFamily: "var(--fontText)" }}
+            ></TextField>
+            <label htmlFor="datefin">&nbsp;Jusqu'à: &nbsp;</label>
+            <TextField
+              id="datefin"
+              type={"date"}
+              sx={{ fontFamily: "var(--fontText)" }}
+            ></TextField>
+          </div>
+          <div>
+            <TextField
+              type={"search"}
+              label="--Recherche--"
+              id="rech"
+            ></TextField>
+          </div>
         </div>
         <div>
           <Button
