@@ -43,7 +43,7 @@ const Navbar = () => {
               <li>Partenaires</li>
             </NavLink>
             <NavLink to={"/about"}>
-              <li>Contact</li>
+              <li>Nous contacter</li>
             </NavLink>
           </ul>
         ) : (
@@ -102,7 +102,7 @@ const Navbar = () => {
               </MenuItem>
               <MenuItem>
                 <NavLink to={"/contact"}>
-                  Contact
+                  Nous contacter
                 </NavLink>
               </MenuItem>
             </Menu>

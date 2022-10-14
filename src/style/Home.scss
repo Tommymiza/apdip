@@ -1,33 +1,57 @@
-.about{
+.about {
   display: flex;
   flex-direction: column;
   width: 60%;
   align-items: center;
-  #title{
+  #title {
     display: flex;
     flex-direction: row;
     align-items: center;
-    font-family: 'Satisty';
-    h1{
+    font-family: "Satisty";
+    h1 {
       font-size: 35px;
       margin: 0;
     }
-    p{
+    p {
       font-size: 25px;
       color: rgb(124, 91, 91);
       margin: 0;
       align-self: flex-end;
     }
   }
-  #context{
+  #context {
     font-family: var(--fontText);
-    p{
+    p {
       margin-left: 20px;
     }
-    span{
+    span {
       font-weight: bold;
     }
   }
+}
+section#secFooter {
+  height: auto;
+    #footer {
+      width: 100%;
+      background: rgba($color: #000000, $alpha: 0.1);
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+      ul {
+        font-family: 'SF Pro';
+        list-style: none;
+        li{
+          cursor: pointer;
+          transition: 0.2s;
+          margin: 2px 0;
+        }
+        li:hover{
+          transform: scale(1.1);
+        }
+      }
+    }
 }
 section {
   font-family: var(--fontText);
@@ -80,64 +104,9 @@ section {
     }
   }
 }
-.diaporama {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 90vh;
-  flex-wrap: wrap;
-  overflow: hidden;
-  .diapo {
-    width: 70%;
-    height: 100%;
-    min-width: 400px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow: hidden;
-    position: relative;
-    background: rgb(63, 61, 61);
-    div {
-      min-width: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      background-color: transparent;
-      transition: 0.5s;
-      img {
-        max-width: 100%;
-      }
-      input {
-        display: none;
-      }
-    }
-  }
-  .descri {
-    width: calc(30% - 20px);
-    display: flex;
-    height: 90vh;
-    overflow-y: auto;
-    font-family: var(--fontText);
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    h2 {
-      margin: 0;
-      margin-top: 20px;
-    }
-    h4 {
-      align-self: flex-start;
-    }
-    p {
-      align-self: flex-start;
-    }
-  }
-}
-
 @media screen and (max-width: 920px) {
   section {
-    .about{
+    .about {
       margin-top: 100px;
     }
     height: auto;
@@ -152,18 +121,17 @@ section {
         padding: 0 50px;
       }
     }
-    
   }
 }
 @media screen and (max-width: 1200px) {
-  section{
-    .about{
+  section {
+    .about {
       width: 90%;
-      #title{
-        h1{
+      #title {
+        h1 {
           font-size: 20px;
         }
-        p{
+        p {
           font-size: 15px;
         }
       }
@@ -171,29 +139,16 @@ section {
   }
 }
 @media screen and (max-width: 450px) {
-  section{
-    .about{
-      #title{
-        h1{
+  section {
+    .about {
+      #title {
+        h1 {
           font-size: 18px;
         }
-        p{
+        p {
           font-size: 12px;
         }
       }
-    }
-  }
-}
-@media screen and (max-width: 1280px) {
-  .diaporama {
-    flex-direction: column;
-    .diapo {
-      height: 70%;
-      width: 100%;
-    }
-    .descri {
-      width: 100%;
-      height: calc(30% - 20px);
     }
   }
 }

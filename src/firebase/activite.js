@@ -104,9 +104,8 @@ export class activity {
       console.error("Error adding document: ", err);
     }
   }
-  async demarrer(setActivities, setShow) {
+  async demarrer(setActivities) {
     const activity = await this.queryDoc("activity");
-    const temp = {};
     var tab = [];
     for (let act of activity) {
       var tab1 = [];
@@ -124,10 +123,8 @@ export class activity {
         title: act.contenu.title,
         filière: act.contenu.filière,
       });
-      temp[act.id] = false;
     }
     setActivities(tab);
-    setShow(temp);
   }
   async list(a) {
     const activity = await this.querydoc("activity");

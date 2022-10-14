@@ -55,7 +55,6 @@ const Admin = () => {
   const [drawer, toggleDrawer] = useState(false);
   const [selected, setSelected] = useState([]);
   const act = activity.getPostInstance();
-  
 
   const columns = [
     {
@@ -220,7 +219,7 @@ const Admin = () => {
     document.getElementById("updateForm").lieu.value = a.place;
     var dateString = a.date.split("-");
     document.getElementById("updateForm").date.value =
-      dateString[2] + "-" + dateString[1] + "-" + dateString[0];
+      dateString[0] + "-" + dateString[1] + "-" + dateString[2];
     toggleDrawer(false);
   }
   useEffect(() => {
@@ -347,7 +346,7 @@ const Admin = () => {
           <Dialog open={dialog === "ajout"} fullScreen>
             <DialogTitle
               sx={{
-                fontFamily: "Gumela",
+                fontFamily: "SF Pro",
                 fontSize: 30,
                 display: "flex",
                 flexDirection: "row",
@@ -404,7 +403,13 @@ const Admin = () => {
                       required
                       sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                     ></TextField>
-                    <input type="date" name="date" required />
+                    <TextField
+                      name="date"
+                      variant="standard"
+                      type="date"
+                      required
+                      sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                    ></TextField>
                   </div>
                   <div className="form-row">
                     <Tooltip
@@ -445,7 +450,7 @@ const Admin = () => {
           <Dialog open={dialog === "modifier"} fullScreen>
             <DialogTitle
               sx={{
-                fontFamily: "Gumela",
+                fontFamily: "SF Pro",
                 fontSize: 30,
                 display: "flex",
                 flexDirection: "row",
@@ -503,7 +508,13 @@ const Admin = () => {
                     sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                   ></TextField>
                   <label>Date:</label>
-                  <input type="date" name="date" required />
+                  <TextField
+                    name="date"
+                    variant="standard"
+                    type="date"
+                    required
+                    sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                  ></TextField>
                   {progress && (
                     <CircularProgress
                       size={35}
@@ -537,15 +548,21 @@ const Admin = () => {
                     >
                       Listes des activités:
                     </li>
-                    {activities.map((item) => (
-                      <li key={item.id}>
-                        <ThemeProvider theme={theme}>
-                          <Button onClick={() => select(item)}>
-                            {item.title} {item.date}
-                          </Button>
-                        </ThemeProvider>
+                    {activities.length !== 0 ? (
+                      activities.map((item) => (
+                        <li key={item.id}>
+                          <ThemeProvider theme={theme}>
+                            <Button onClick={() => select(item)}>
+                              {item.title} {item.date}
+                            </Button>
+                          </ThemeProvider>
+                        </li>
+                      ))
+                    ) : (
+                      <li>
+                        <CircularProgress size={50}></CircularProgress>
                       </li>
-                    ))}
+                    )}
                   </ul>
                 ) : (
                   <ul>
@@ -560,7 +577,7 @@ const Admin = () => {
           <Dialog open={dialog === "supprimer"} fullScreen>
             <DialogTitle
               sx={{
-                fontFamily: "Gumela",
+                fontFamily: "SF Pro",
                 fontSize: 30,
                 display: "flex",
                 flexDirection: "row",
@@ -591,6 +608,7 @@ const Admin = () => {
                       checkboxSelection
                       disableSelectionOnClick
                       rowsPerPageOptions={[5]}
+                      pageSize={5}
                       onSelectionModelChange={(newSelection) => {
                         setSelected(newSelection);
                       }}

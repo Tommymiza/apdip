@@ -4,6 +4,6 @@ export const theme = createTheme({
     primary: {
       main: "rgb(31, 76, 82)",
     },
-    mode: 'dark'
+    mode: 'dark',
   },
 });

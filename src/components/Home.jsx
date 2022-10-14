@@ -2,57 +2,31 @@ import React, { useEffect, useState } from "react";
 import {
   Skeleton,
   Card,
-  CardMedia,
   CardActions,
   CardContent,
   Typography,
   Button,
-  Dialog,
   Grid,
-  IconButton,
   CircularProgress,
 } from "@mui/material";
-import {
-  Close,
-  ChevronLeftRounded,
-  ChevronRightRounded,
-} from "@mui/icons-material";
 import "../style/Home.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import ReactScrollWheelHandler from "react-scroll-wheel-handler";
 import { activity } from "../firebase/activite";
 import { about } from "../firebase/about";
 import { Box } from "@mui/system";
+import Activite from "./Activite";
 
 const Home = () => {
   const skeleton = [0, 1];
   const [pret, setPret] = useState(false);
-  const [activities, setActivities] = useState([]);
   const [aboutLoading, setAboutLoading] = useState(true);
   const [list, setList] = useState({});
-  const [show, setShow] = useState({});
   const [page, setPage] = useState(0);
   const [width, setWidth] = useState(document.body.offsetWidth);
-  const [slide, setSlide] = useState(0);
-
-  const slideleft = (a) => {
-    if (slide > -((a - 1) * 100)) {
-      var trsltX = slide - 100;
-      setSlide(trsltX);
-      document.querySelectorAll(".diapo div").forEach((element) => {
-        element.style.transform = `translateX(${trsltX}%)`;
-      });
-    }
-  };
-  const slideright = () => {
-    if (slide < 0) {
-      var trsltX = slide + 100;
-      setSlide(trsltX);
-      document.querySelectorAll(".diapo div").forEach((element) => {
-        element.style.transform = `translateX(${trsltX}%)`;
-      });
-    }
-  };
+  const [activities, setActivities] = useState();
+  
+  
   function upScroll() {
     var temp = page - 1;
     if (temp === -1) {
@@ -67,40 +41,20 @@ const Home = () => {
     }
     setPage(temp);
   }
-  function showDialog(id) {
-    setSlide(0);
-    const obj = {};
-    Object.keys(show).forEach((key) => {
-      if (key === id) {
-        obj[key] = true;
-      } else {
-        obj[key] = false;
-      }
-    });
-    setShow(obj);
-  }
-  function hideDialog() {
-    const temp = {};
-    Object.keys(show).forEach((key) => {
-      temp[key] = false;
-    });
-    setShow(temp);
-  }
   function nbGroup() {
     const commune = Object.keys(list.commune);
     var nb = 0;
     for (let c of commune) {
       nb = nb + list.commune[c].groupement.length;
     }
-    
+
     return [nb, commune.length];
   }
-
   useEffect(() => {
     return () => {
       setPret(false);
       const act = activity.getPostInstance();
-      act.demarrer(setActivities, setShow).then(() => {
+      act.demarrer(setActivities).then(() => {
         setPret(true);
       });
       window.addEventListener("resize", () => {
@@ -307,121 +261,7 @@ const Home = () => {
                       }}
                     >
                       {activities.map((activ, index) => (
-                        <motion.div
-                          key={index}
-                          className="actcard"
-                          initial={{ scale: 0, y: 200, opacity: 0 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 50,
-                            duration: 0.2,
-                          }}
-                        >
-                          <Card
-                            sx={{
-                              maxWidth: width > 1590 ? 345 : 260,
-                              bgcolor: "transparent",
-                              backdropFilter: "blur(3px)",
-                              boxShadow: "2px 2px 15px #6091A5",
-                            }}
-                          >
-                            <CardMedia
-                              component="img"
-                              sx={{
-                                width: width > 1590 ? 345 : 260,
-                                height: 160,
-                                objectFit: "cover",
-                              }}
-                              image={activ.images[0] || "images/logo_APDIP.png"}
-                              alt={activ.title}
-                            />
-                            <CardContent sx={{ bgcolor: "transparent" }}>
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="div"
-                              >
-                                {activ.title}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                              >
-                                {activ.description.substr(0, 30) + "..."}
-                              </Typography>
-                              <Dialog
-                                open={show[activ.id]}
-                                maxWidth={"lg"}
-                                onBackdropClick={hideDialog}
-                                sx={{ background: "transparent" }}
-                              >
-                                <div className="diaporama">
-                                  <div className="diapo">
-                                    {activ.images.map((item, index) => (
-                                      <div key={index}>
-                                        <img src={item} alt={activ.title} />
-                                      </div>
-                                    ))}
-                                    <IconButton
-                                      onClick={() => slideright()}
-                                      sx={{
-                                        position: "absolute",
-                                        left: 10,
-                                        top: "50%",
-                                        transform: "translateY(-50%)",
-                                        zIndex: 1,
-                                        color: "black",
-                                      }}
-                                    >
-                                      <ChevronLeftRounded />
-                                    </IconButton>
-                                    <IconButton
-                                      onClick={() =>
-                                        slideleft(activ.images.length)
-                                      }
-                                      sx={{
-                                        position: "absolute",
-                                        right: 10,
-                                        top: "50%",
-                                        transform: "translateY(-50%)",
-                                        zIndex: 1,
-                                        color: "black",
-                                      }}
-                                    >
-                                      <ChevronRightRounded />
-                                    </IconButton>
-                                  </div>
-                                  <div className="descri">
-                                    <h2>{activ.title}</h2>
-                                    <h4>
-                                      {activ.place} le {activ.date}
-                                    </h4>
-                                    <p>{activ.description}</p>
-                                  </div>
-                                  <IconButton
-                                    sx={{
-                                      position: "absolute",
-                                      right: 0,
-                                      top: 0,
-                                    }}
-                                    onClick={hideDialog}
-                                  >
-                                    <Close />
-                                  </IconButton>
-                                </div>
-                              </Dialog>
-                            </CardContent>
-                            <CardActions>
-                              <Button
-                                size="small"
-                                onClick={() => showDialog(activ.id)}
-                              >
-                                More...
-                              </Button>
-                            </CardActions>
-                          </Card>
-                        </motion.div>
+                        <Activite activ={activ} key={index} accueil={true} />
                       ))}
                     </div>
                   ) : (
@@ -735,106 +575,7 @@ const Home = () => {
                 }}
               >
                 {activities.map((activ, index) => (
-                  <motion.div
-                    key={index}
-                    className="actcard"
-                    initial={{ scale: 0, y: 200, opacity: 0 }}
-                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 50,
-                    }}
-                  >
-                    <Card
-                      sx={{
-                        maxWidth: 345,
-                        bgcolor: "transparent",
-                        backdropFilter: "blur(3px)",
-                        boxShadow: "2px 2px 15px #6091A5",
-                      }}
-                    >
-                      <CardMedia
-                        component="img"
-                        sx={{ width: 345, height: 160 }}
-                        image={activ.images[0] || "images/logo_APDIP.png"}
-                        alt={activ.title}
-                      />
-                      <CardContent sx={{ bgcolor: "transparent" }}>
-                        <Typography gutterBottom variant="h5" component="div">
-                          {activ.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {activ.description.substr(0, 30) + "..."}
-                        </Typography>
-                        <Dialog
-                          open={show[activ.id]}
-                          maxWidth={"lg"}
-                          onBackdropClick={hideDialog}
-                        >
-                          <div className="diaporama">
-                            <div className="diapo">
-                              {activ.images.map((item, index) => (
-                                <div key={index}>
-                                  <img src={item} alt={activ.title} />
-                                </div>
-                              ))}
-                              <IconButton
-                                onClick={() => slideright()}
-                                sx={{
-                                  position: "absolute",
-                                  left: 10,
-                                  top: "50%",
-                                  transform: "translateY(-50%)",
-                                  zIndex: 1,
-                                  color: "black",
-                                }}
-                              >
-                                <ChevronLeftRounded />
-                              </IconButton>
-                              <IconButton
-                                onClick={() => slideleft(activ.images.length)}
-                                sx={{
-                                  position: "absolute",
-                                  right: 10,
-                                  top: "50%",
-                                  transform: "translateY(-50%)",
-                                  zIndex: 1,
-                                  color: "black",
-                                }}
-                              >
-                                <ChevronRightRounded />
-                              </IconButton>
-                            </div>
-                            <div className="descri">
-                              <h2>{activ.title}</h2>
-                              <h4>
-                                {activ.place} le {activ.date}
-                              </h4>
-                              <p>{activ.description}</p>
-                            </div>
-                            <IconButton
-                              sx={{
-                                position: "absolute",
-                                right: 0,
-                                top: 0,
-                              }}
-                              onClick={hideDialog}
-                            >
-                              <Close />
-                            </IconButton>
-                          </div>
-                        </Dialog>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          size="small"
-                          onClick={() => showDialog(activ.id)}
-                        >
-                          More...
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </motion.div>
+                  <Activite activ={activ} key={index} />
                 ))}
               </div>
             ) : (
@@ -940,34 +681,28 @@ const Home = () => {
         </div>
       </motion.section>
       <motion.section
-        initial={{ opacity: 0, y: 200 }}
-        animate={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
-        transition={{ duration: 0.5 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        id="secFooter"
       >
-        <div>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita
-          totam impedit unde tempore? Fugiat fugit quia minima obcaecati,
-          repellendus aliquid neque laborum, doloremque aliquam magni, placeat
-          praesentium voluptatum possimus sapiente molestias! Sit nobis quos
-          adipisci minima possimus architecto autem recusandae corrupti sint
-          dicta earum temporibus, at veniam! In ipsam voluptatibus eveniet.
-          Dolorum distinctio earum dignissimos exercitationem, asperiores
-          repellendus. Animi quidem eligendi sed laudantium dolore quia
-          voluptates laboriosam possimus accusamus, quam unde doloribus
-          architecto, molestias quas ducimus officia a voluptate ex ullam autem
-          amet quis enim. Molestias error, minima eaque tempore quasi quos
-          omnis, veritatis, necessitatibus hic nemo excepturi. Odio unde quasi
-          aperiam quam laudantium reprehenderit nulla fuga iure dicta non sunt,
-          modi corrupti debitis sequi tenetur ab aut? Ea fugiat sunt aut eos
-          veritatis quis explicabo corporis dolorum autem soluta quibusdam
-          laborum aperiam, modi tempore nihil quaerat exercitationem dicta?
-          Facilis tempore ex placeat est error soluta beatae odio natus ipsum
-          optio, sapiente accusantium deleniti saepe aperiam sequi delectus in
-          ullam? Quis voluptatibus sed aperiam quas atque at ipsam corporis,
-          perferendis provident animi molestias voluptate suscipit commodi esse
-          veniam tenetur pariatur totam eaque dicta dignissimos! Est neque
-          doloremque quidem ipsum unde dolorem dicta nihil aspernatur laborum,
-          illo placeat ex voluptatibus magnam?
+        <div id="footer">
+          <div>
+            <h4>Nos services:</h4>
+            <ul>
+              <li>-Vente des semences</li>
+              <li>-Formation agricole et elevage</li>
+              <li>-Fond pour les paysans</li>
+              <li>-Vente des matériels agricoles</li>
+              <li>-Assurance</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Tel: </h4>
+            <p>+261 34 68 030 98</p>
+            <h4>E-mail:</h4>
+            <p>apdiptsiro@gmail.com</p>
+          </div>
         </div>
       </motion.section>
     </motion.div>

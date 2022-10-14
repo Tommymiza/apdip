@@ -10,6 +10,7 @@ import Admin from "./components/Admin";
 import Test from "./components/test";
 import List from "./components/List"
 import { AnimatePresence } from "framer-motion";
+import Contact from "./components/Contact";
 
 function App() {
   const location = useLocation();
@@ -20,6 +21,7 @@ function App() {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />}></Route>
           <Route path="/dashboard" element={<Admin />}></Route>
+          <Route path="/contact" element={<Contact />}></Route>
           <Route path="/list" element={<List />}></Route>
           <Route path="/*" element={<Test />}></Route>
         </Routes>
