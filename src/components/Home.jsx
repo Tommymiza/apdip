@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import {
   Skeleton,
   Card,
@@ -12,20 +12,18 @@ import {
 import "../style/Home.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import ReactScrollWheelHandler from "react-scroll-wheel-handler";
-import { activity } from "../firebase/activite";
 import { about } from "../firebase/about";
 import { Box } from "@mui/system";
 import Activite from "./Activite";
+import { ActContext } from "../App";
 
 const Home = () => {
   const skeleton = [0, 1];
-  const [pret, setPret] = useState(false);
   const [aboutLoading, setAboutLoading] = useState(true);
   const [list, setList] = useState({});
   const [page, setPage] = useState(0);
   const [width, setWidth] = useState(document.body.offsetWidth);
-  const [activities, setActivities] = useState();
-  
+  const {activities,pret} = useContext(ActContext)
   
   function upScroll() {
     var temp = page - 1;
@@ -52,11 +50,6 @@ const Home = () => {
   }
   useEffect(() => {
     return () => {
-      setPret(false);
-      const act = activity.getPostInstance();
-      act.demarrer(setActivities).then(() => {
-        setPret(true);
-      });
       window.addEventListener("resize", () => {
         setWidth(document.body.offsetWidth);
       });
@@ -260,7 +253,7 @@ const Home = () => {
                         justifyContent: "space-evenly",
                       }}
                     >
-                      {activities.map((activ, index) => (
+                      {activities.slice(-2).map((activ, index) => (
                         <Activite activ={activ} key={index} accueil={true} />
                       ))}
                     </div>
@@ -574,7 +567,7 @@ const Home = () => {
                   justifyContent: "space-evenly",
                 }}
               >
-                {activities.map((activ, index) => (
+                {activities.slice(-2).map((activ, index) => (
                   <Activite activ={activ} key={index} />
                 ))}
               </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext,useMemo } from "react";
 import app from "../firebase/db";
 import { activity } from "../firebase/activite";
 import { DataGrid } from "@mui/x-data-grid";
@@ -39,6 +39,7 @@ import {
 import { theme } from "./theme";
 import "../style/Admin.scss";
 import { motion } from "framer-motion";
+import { ActContext } from "../App";
 
 const Admin = () => {
   const [loading, setLoading] = useState(false);
@@ -49,35 +50,36 @@ const Admin = () => {
   const [progress, setProgress] = useState(false);
   const [activite, setActivite] = useState("");
   const [status, setStatus] = useState("");
-  const [activities, setActivities] = useState([]);
-  const [pret, setPret] = useState(false);
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [drawer, toggleDrawer] = useState(false);
   const [selected, setSelected] = useState([]);
   const act = activity.getPostInstance();
 
-  const columns = [
-    {
-      field: "title",
-      headerName: "Titre",
-      width: width / 4 - 25,
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: width / 4 - 25,
-    },
-    {
-      field: "filière",
-      headerName: "Filière",
-      width: width / 4 - 25,
-    },
-    {
-      field: "place",
-      headerName: "Place",
-      width: width / 4 - 25,
-    },
-  ];
+  const { activities, pret, setActivities } = useContext(ActContext);
+  const columns = useMemo(() => {
+    return [
+      {
+        field: "title",
+        headerName: "Titre",
+        width: width / 4 - 25,
+      },
+      {
+        field: "date",
+        headerName: "Date",
+        width: width / 4 - 25,
+      },
+      {
+        field: "filière",
+        headerName: "Filière",
+        width: width / 4 - 25,
+      },
+      {
+        field: "place",
+        headerName: "Place",
+        width: width / 4 - 25,
+      },
+    ];
+  },[width]);
   const handleDelete = () => {
     var promises = [];
     setProgress(true);
@@ -106,7 +108,7 @@ const Admin = () => {
           : newDate.getMonth() + 1;
       const day =
         newDate.getDate() < 10 ? "0" + newDate.getDate() : newDate.getDate();
-      const exactDate = day + "-" + month + "-" + newDate.getFullYear();
+      const exactDate = newDate.getFullYear() + "-" + month + "-" + day;
       const obj = {
         date: exactDate,
         description: document.getElementById("updateForm").descri.value,
@@ -244,10 +246,6 @@ const Admin = () => {
           alert(err);
           setCheck(false);
         });
-      const act = activity.getPostInstance();
-      act.list(setActivities).then(() => {
-        setPret(true);
-      });
       window.addEventListener("resize", () => {
         setWidth(document.body.offsetWidth);
         toggleDrawer(false);

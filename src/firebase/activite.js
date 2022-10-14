@@ -148,7 +148,8 @@ export class activity {
         files: act.contenu.images.join(","),
       });
     }
-    a(tab);
+    let temp = tab.sort((a,b)=>a.date.localeCompare(b.date))
+    a(temp);
   }
   async querydoc(str) {
     const database = getFirestore(app);

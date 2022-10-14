@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../style/Navbar.scss";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { WidgetsRounded, WidgetsOutlined } from "@mui/icons-material";
@@ -7,6 +7,10 @@ import { WidgetsRounded, WidgetsOutlined } from "@mui/icons-material";
 const Navbar = () => {
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate()
+  const toHome = ()=>{
+    navigate('/')
+  }
   const handleClick = () => {
     setOpen(true);
   };
@@ -23,7 +27,7 @@ const Navbar = () => {
   }, []);
   return (
     <div id="navbar">
-      <div id="logo">
+      <div id="logo" onClick={toHome}>
         <img src="/images/logo_APDIP.png" alt="logo" />
         <h2>APDIP</h2>
       </div>

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState,useContext } from "react";
+import { ActContext } from "../App";
 import "../style/List.scss";
 import Activite from "./Activite";
-import { activity } from "../firebase/activite";
 import Carte from "./Carte";
 import {
   Card,
@@ -23,13 +23,12 @@ import {
 import { motion } from "framer-motion";
 import { theme } from "./theme";
 const List = () => {
-  const [activities, setActivities] = useState();
-  const [show, setShow] = useState(false);
   const skeleton = [0, 1, 2, 3, 4, 5];
   const [map, setMap] = useState(false);
   const [some, setSome] = useState([]);
   const [option, setOption] = useState("");
 
+  const {activities,pret} = useContext(ActContext)
   const resetFilter = () => {
     setOption("");
     document.getElementById("datedebut").value = "";
@@ -165,15 +164,6 @@ const List = () => {
       alert("Pas d'activité de ce genre!");
     }
   }
-
-  useEffect(() => {
-    const act = activity.getPostInstance();
-    return () => {
-      act.list(setActivities).then(() => {
-        setShow(true);
-      });
-    };
-  }, []);
   return (
     <div id="list">
       <motion.div
@@ -255,7 +245,7 @@ const List = () => {
         </div>
       </motion.div>
       {some.length === 0 ? (
-        show ? (
+        pret ? (
           <div
             style={{
               display: "flex",
