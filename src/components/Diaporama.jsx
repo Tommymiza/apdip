@@ -74,6 +74,7 @@ const Diaporama = ({ activ, hide }) => {
           <h4>
             {activ.place} le {activ.date}
           </h4>
+          <h4>Filière : {activ.filière}</h4>
           <p>{activ.description}</p>
         </div>
         <IconButton

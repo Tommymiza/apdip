@@ -173,7 +173,7 @@ const List = () => {
     }
   }
   return (
-    <div id="list">
+    <motion.div id="list" exit={{ opacity: 0, transition: { duration: 0.5 } }}>
       <motion.div
         id="filtre"
         initial={{ opacity: 0 }}
@@ -359,7 +359,7 @@ const List = () => {
         </Button>
       </ThemeProvider>
       {map && <Carte />}
-    </div>
+    </motion.div>
   );
 };
 

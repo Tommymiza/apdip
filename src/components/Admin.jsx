@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext,useMemo } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import app from "../firebase/db";
 import { activity } from "../firebase/activite";
 import { DataGrid } from "@mui/x-data-grid";
@@ -27,7 +27,7 @@ import {
   LibraryAddRounded,
   BorderColorRounded,
   DeleteRounded,
-  PersonAddRounded,
+  Settings,
   LogoutRounded,
   LockOpenRounded,
   AddAPhotoRounded,
@@ -79,20 +79,24 @@ const Admin = () => {
         width: width / 4 - 25,
       },
     ];
-  },[width]);
+  }, [width]);
   const handleDelete = () => {
-    var promises = [];
-    setProgress(true);
-    for (let item of activities) {
-      if (selected.indexOf(item.id) > -1) {
-        promises.push(act.delete(item.id, item.path, item.files));
+    if (selected.length > 0) {
+      var promises = [];
+      setProgress(true);
+      for (let item of activities) {
+        if (selected.indexOf(item.id) > -1) {
+          promises.push(act.delete(item.id, item.path, item.files));
+        }
       }
-    }
-    Promise.all(promises).then(() => {
-      act.list(setActivities).then(() => {
-        setProgress(false);
+      Promise.all(promises).then(() => {
+        act.list(setActivities).then(() => {
+          setProgress(false);
+        });
       });
-    });
+    }else{
+      alert('Seléctionnez une activité')
+    }
   };
   const updateAct = (e) => {
     e.preventDefault();
@@ -320,10 +324,10 @@ const Admin = () => {
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
-            onClick={() => setDialog("ajoutAdmin")}
+            onClick={() => setDialog("settings")}
           >
             <Tooltip title="Ajout Admin">
-              <PersonAddRounded sx={{ width: 50, height: 50 }} />
+              <Settings sx={{ width: 50, height: 50 }} />
             </Tooltip>
           </Button>
           <Button
@@ -546,7 +550,7 @@ const Admin = () => {
                     >
                       Listes des activités:
                     </li>
-                    {activities.length !== 0 ? (
+                    {activities ? (
                       activities.map((item) => (
                         <li key={item.id}>
                           <ThemeProvider theme={theme}>
@@ -598,7 +602,63 @@ const Admin = () => {
                   alignItems: "center",
                 }}
               >
-                {activities.length !== 0 ? (
+                {activities ? (
+                  <Box sx={{ height: 400, width: "100%" }}>
+                    <DataGrid
+                      rows={activities}
+                      columns={columns}
+                      checkboxSelection
+                      disableSelectionOnClick
+                      rowsPerPageOptions={[5]}
+                      pageSize={5}
+                      onSelectionModelChange={(newSelection) => {
+                        setSelected(newSelection);
+                      }}
+                    />
+                  </Box>
+                ) : (
+                  <CircularProgress size={50}></CircularProgress>
+                )}
+                {progress && <CircularProgress size={50}></CircularProgress>}
+                <ThemeProvider theme={theme}>
+                  <Button
+                    type="submit"
+                    endIcon={<DeleteRounded />}
+                    onClick={handleDelete}
+                  >
+                    Supprimer
+                  </Button>
+                </ThemeProvider>
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={dialog === "settings"} fullScreen>
+            <DialogTitle
+              sx={{
+                fontFamily: "SF Pro",
+                fontSize: 30,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+                alignItems: "center",
+              }}
+            >
+              Supprimer des activités:
+              <IconButton onClick={handleClose}>
+                <Close />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent>
+              <div
+                id="supdiv"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                {activities ? (
                   <Box sx={{ height: 400, width: "100%" }}>
                     <DataGrid
                       rows={activities}

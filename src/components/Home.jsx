@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Skeleton,
   Card,
@@ -16,6 +16,8 @@ import { about } from "../firebase/about";
 import { Box } from "@mui/system";
 import Activite from "./Activite";
 import { ActContext } from "../App";
+import { Axe } from "../firebase/axe";
+import DialogAxe from "./DialogAxe";
 
 const Home = () => {
   const skeleton = [0, 1];
@@ -23,8 +25,9 @@ const Home = () => {
   const [list, setList] = useState({});
   const [page, setPage] = useState(0);
   const [width, setWidth] = useState(document.body.offsetWidth);
-  const {activities,pret} = useContext(ActContext)
-  
+  const [axes, setAxe] = useState();
+  const { activities, pret } = useContext(ActContext);
+
   function upScroll() {
     var temp = page - 1;
     if (temp === -1) {
@@ -375,6 +378,7 @@ const Home = () => {
           )}
           {page === 2 && (
             <motion.section
+              id="secFooter"
               className="large"
               initial={{ opacity: 0, x: 1000 }}
               animate={{ opacity: 1, x: 0, transition: { duration: 0.5 } }}
@@ -385,7 +389,67 @@ const Home = () => {
               transition={{ duration: 1 }}
               key={page}
             >
-              <div>Footer</div>
+              <div id="footer">
+                <h2>Nos Axes stratégiques 2022-2025:</h2>
+                <div className="mission">
+                  {Axe.map((item) => (
+                    <motion.div
+                      key={item.title}
+                      style={{ cursor: "pointer", maxWidth: "450px" }}
+                      initial={{ scale: 0, y: 200, opacity: 0 }}
+                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{
+                        duration: 0.2,
+                        delay: 0,
+                        type: "spring",
+                        stiffness: 50,
+                      }}
+                      onClick={() => {
+                        setAxe(<DialogAxe axe={item} hide={setAxe} />);
+                      }}
+                      whileHover={{
+                        x: 10,
+                        transition: { duration: 0.2 },
+                      }}
+                    >
+                      <p>
+                        <span>Axe {item.id}: </span>
+                        {item.title}
+                      </p>
+                    </motion.div>
+                  ))}
+                  {axes}
+                </div>
+                <motion.div
+                  id="coord"
+                  initial={{ opacity: 0, y: 250 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                >
+                  <div>
+                    <h4>Nos services:</h4>
+                    <ul>
+                      <li>-Vente des semences</li>
+                      <li>-Formation agricole et elevage</li>
+                      <li>-Fond pour les paysans</li>
+                      <li>-Vente des matériels agricoles</li>
+                      <li>-Assurance</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4>Tel: </h4>
+                    <p>+261 34 68 030 98</p>
+                    <h4>E-mail:</h4>
+                    <p>apdiptsiro@gmail.com</p>
+                    <h4>Adresse :</h4>
+                    <p>
+                      Lot 06 AB 34 Soamahamanina
+                      <br />
+                      Tsiroanomandidy 119 Madagasikara
+                    </p>
+                  </div>
+                </motion.div>
+              </div>
             </motion.section>
           )}
         </AnimatePresence>
@@ -679,22 +743,60 @@ const Home = () => {
         transition={{ duration: 1 }}
         id="secFooter"
       >
-        <div id="footer">
-          <div>
-            <h4>Nos services:</h4>
-            <ul>
-              <li>-Vente des semences</li>
-              <li>-Formation agricole et elevage</li>
-              <li>-Fond pour les paysans</li>
-              <li>-Vente des matériels agricoles</li>
-              <li>-Assurance</li>
-            </ul>
+        <div id="footerXs">
+          <div className="missionXs">
+            <h2>Nos Axes stratégiques 2022-2025:</h2>
+            {Axe.map((item) => (
+              <motion.div
+                key={item.title}
+                style={{ cursor: "pointer", maxWidth: "400px" }}
+                initial={{ scale: 0, y: 200, opacity: 0 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{
+                  duration: 0.2,
+                  delay: 0,
+                  type: "spring",
+                  stiffness: 50,
+                }}
+                onClick={() => {
+                  setAxe(<DialogAxe axe={item} hide={setAxe} />);
+                }}
+                whileHover={{
+                  x: 10,
+                  transition: { duration: 0.2 },
+                }}
+              >
+                <p>
+                  <span>Axe {item.id}: </span>
+                  {item.title}
+                </p>
+              </motion.div>
+            ))}
+            {axes}
           </div>
-          <div>
-            <h4>Tel: </h4>
-            <p>+261 34 68 030 98</p>
-            <h4>E-mail:</h4>
-            <p>apdiptsiro@gmail.com</p>
+          <div id="coord">
+            <div>
+              <h4>Nos services:</h4>
+              <ul>
+                <li>-Vente des semences</li>
+                <li>-Formation agricole et elevage</li>
+                <li>-Fond pour les paysans</li>
+                <li>-Vente des matériels agricoles</li>
+                <li>-Assurance</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Tel: </h4>
+              <p>+261 34 68 030 98</p>
+              <h4>E-mail:</h4>
+              <p>apdiptsiro@gmail.com</p>
+              <h4>Adresse :</h4>
+              <p>
+                Lot 06 AB 34 Soamahamanina
+                <br />
+                Tsiroanomandidy 119 Madagasikara
+              </p>
+            </div>
           </div>
         </div>
       </motion.section>
