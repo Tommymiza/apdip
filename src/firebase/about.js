@@ -1,7 +1,7 @@
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs,updateDoc, doc } from "firebase/firestore";
 import app from "./db";
 export class about {
-  static getpostinstance() {
+  static getPostInstance() {
     const o = new about();
     return o ? o : new about();
   }
@@ -18,5 +18,12 @@ export class about {
     const res = await getDocs(aboutDoc);
     const resultat = res.docs.map((doc) => doc.data());
     setCommune(resultat[0].commune)
+  }
+  async updateInfo(obj){
+    const database = getFirestore(app);
+    const aboutDoc = collection(database, "apropos");
+    const res = await getDocs(aboutDoc);
+    const resultat = res.docs.map((doc) => doc.id);
+    await updateDoc(doc(getFirestore(app), "apropos", resultat[0]),obj)
   }
 }

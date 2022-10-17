@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Dialog, IconButton } from "@mui/material";
 import {
   ChevronLeftRounded,
@@ -9,6 +9,7 @@ import "../style/Diapo.scss";
 
 const DialogAxe = ({ axe, hide }) => {
   const [slide, setSlide] = useState(0);
+  const [width, setWidth] = useState(document.body.offsetWidth);
   const slideleft = (a) => {
     if (slide > -((a - 1) * 100)) {
       var trsltX = slide - 100;
@@ -27,6 +28,13 @@ const DialogAxe = ({ axe, hide }) => {
       });
     }
   };
+  useEffect(() => {
+    return () => {
+      window.addEventListener("resize", () => {
+        setWidth(document.body.offsetWidth);
+      });
+    };
+  }, []);
   return (
     <Dialog
       open={true}
@@ -34,6 +42,7 @@ const DialogAxe = ({ axe, hide }) => {
       onBackdropClick={() => {
         hide();
       }}
+      fullScreen={width < 450 ? true : false}
     >
       <div className="diaporama">
         {axe.img && (

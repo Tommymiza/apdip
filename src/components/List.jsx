@@ -10,21 +10,16 @@ import {
   CardActions,
   Button,
   Typography,
-  ThemeProvider,
   TextField,
   MenuItem,
 } from "@mui/material";
 import {
-  VisibilityRounded,
-  VisibilityOffRounded,
   FilterAltRounded,
   FilterAltOffRounded,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import { theme } from "./theme";
 const List = () => {
   const skeleton = [0, 1, 2, 3, 4, 5];
-  const [map, setMap] = useState(false);
   const [some, setSome] = useState([]);
   const [option, setOption] = useState("");
 
@@ -347,22 +342,26 @@ const List = () => {
             ))}
         </div>
       )}
-      <ThemeProvider theme={theme}>
-        <Button
-          onClick={() => {
-            setMap(!map);
-          }}
-          sx={{ mt: 3 }}
-          startIcon={map ? <VisibilityOffRounded /> : <VisibilityRounded />}
-        >
-          {map ? "Cacher la carte" : "Afficher la Carte"}
-        </Button>
-      </ThemeProvider>
-      {map && (
-        <div className="map">
-          <Carte />
-        </div>
-      )}
+      <motion.h2
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{
+          duration: 1,
+        }}
+        style={{ fontFamily: "var(--fontText)", marginTop: "250px" }}
+      >
+        Liste de nos groupements:
+      </motion.h2>
+      <motion.div
+        className="map"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{
+          duration: 1,
+        }}
+      >
+        <Carte />
+      </motion.div>
     </motion.div>
   );
 };

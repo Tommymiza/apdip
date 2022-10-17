@@ -10,25 +10,32 @@ import { AnimatePresence } from "framer-motion";
 import Contact from "./components/Contact";
 import Partenaire from "./components/Partenaire";
 import { activity } from "./firebase/activite";
+import { about } from "./firebase/about"
 
 export const ActContext = createContext();
 function App() {
   const location = useLocation();
   const [activities, setActivities] = useState();
   const [pret, setPret] = useState(false);
+  const [aboutloading, setAboutloading] = useState(false);
+  const [list, setList] = useState({});
 
   useEffect(() => {
     return () => {
       const act = activity.getPostInstance();
-      act.list(setActivities).then(() => {
-        setPret(true);
-      });
+      const abt = about.getPostInstance();
+      act.list(setActivities).then(()=>{
+        setPret(true)
+      })
+      abt.getdocument(setList).then(()=>{
+        setAboutloading(true)
+      })
     };
   }, []);
   return (
     <>
       <Navbar />
-      <ActContext.Provider value={{ activities, pret, setActivities }}>
+      <ActContext.Provider value={{ activities, pret, list, aboutloading, setActivities, setList }}>
         <AnimatePresence>
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />}></Route>

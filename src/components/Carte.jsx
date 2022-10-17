@@ -16,7 +16,7 @@ const Carte = () => {
   }
   
   useEffect(() => {
-    const abt = about.getpostinstance();
+    const abt = about.getPostInstance();
     return () => {
       abt.getCommune(setCommune);
     };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import app from "../firebase/db";
 import { activity } from "../firebase/activite";
+import { about } from "../firebase/about";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   onSnapshot,
@@ -54,8 +55,10 @@ const Admin = () => {
   const [drawer, toggleDrawer] = useState(false);
   const [selected, setSelected] = useState([]);
   const act = activity.getPostInstance();
+  const abt = about.getPostInstance();
 
-  const { activities, pret, setActivities } = useContext(ActContext);
+  const { activities, pret, list, aboutloading, setActivities, setList } =
+    useContext(ActContext);
   const columns = useMemo(() => {
     return [
       {
@@ -80,6 +83,22 @@ const Admin = () => {
       },
     ];
   }, [width]);
+  const infoupdate = (e) => {
+    e.preventDefault();
+    setProgress(true)
+    const obj = {
+      ag: document.getElementById("infoform").ag.value,
+      paysans: document.getElementById("infoform").paysans.value,
+      paysRel: document.getElementById("infoform").paysRel.value,
+      paysVulga: document.getElementById("infoform").paysVulga.value,
+      technicien: document.getElementById("infoform").technicien.value,
+    };
+    abt.updateInfo(obj).then(()=>{
+      abt.getdocument(setList).then(()=>{
+        setProgress(false)
+      })
+    })
+  };
   const handleDelete = () => {
     if (selected.length > 0) {
       var promises = [];
@@ -94,8 +113,8 @@ const Admin = () => {
           setProgress(false);
         });
       });
-    }else{
-      alert('Seléctionnez une activité')
+    } else {
+      alert("Seléctionnez une activité");
     }
   };
   const updateAct = (e) => {
@@ -650,14 +669,59 @@ const Admin = () => {
               </IconButton>
             </DialogTitle>
             <DialogContent>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-              </div>
+              {aboutloading ? (
+                <div id="aboutupdate">
+                  <form
+                    style={{ minWidth: "400px" }}
+                    onSubmit={infoupdate}
+                    id="infoform"
+                  >
+                    <TextField
+                      label="Assemblée genérale:"
+                      type={"number"}
+                      defaultValue={list.ag}
+                      required
+                      name="ag"
+                    />
+                    <TextField
+                      label="Paysans:"
+                      type={"number"}
+                      defaultValue={list.paysans}
+                      required
+                      name="paysans"
+                    />
+                    <TextField
+                      label="Paysans relais:"
+                      type={"number"}
+                      defaultValue={list.paysRel}
+                      required
+                      name="paysRel"
+                    />
+                    <TextField
+                      label="Paysans vulgarisateur:"
+                      type={"number"}
+                      defaultValue={list.paysVulga}
+                      required
+                      name="paysVulga"
+                    />
+                    <TextField
+                      label="Technicien:"
+                      type={"number"}
+                      defaultValue={list.technicien}
+                      required
+                      name="technicien"
+                    />
+                    <ThemeProvider theme={theme}>
+                      {progress && <CircularProgress size={24} />}
+                      <Button startIcon={<EditRounded />} type="submit">
+                        Modifier
+                      </Button>
+                    </ThemeProvider>
+                  </form>
+                </div>
+              ) : (
+                <CircularProgress size={50} />
+              )}
             </DialogContent>
           </Dialog>
         </div>

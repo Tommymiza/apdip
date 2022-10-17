@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import {
   Skeleton,
   Card,
@@ -12,7 +12,6 @@ import {
 import "../style/Home.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import ReactScrollWheelHandler from "react-scroll-wheel-handler";
-import { about } from "../firebase/about";
 import { Box } from "@mui/system";
 import Activite from "./Activite";
 import { ActContext } from "../App";
@@ -21,12 +20,10 @@ import DialogAxe from "./DialogAxe";
 
 const Home = () => {
   const skeleton = [0, 1];
-  const [aboutLoading, setAboutLoading] = useState(true);
-  const [list, setList] = useState({});
   const [page, setPage] = useState(0);
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [axes, setAxe] = useState();
-  const { activities, pret } = useContext(ActContext);
+  const { activities, pret, list, aboutloading } = useContext(ActContext);
 
   function upScroll() {
     var temp = page - 1;
@@ -42,23 +39,22 @@ const Home = () => {
     }
     setPage(temp);
   }
-  function nbGroup() {
-    const commune = Object.keys(list.commune);
-    var nb = 0;
-    for (let c of commune) {
-      nb = nb + list.commune[c].groupement.length;
-    }
-
-    return [nb, commune.length];
-  }
+  const nbGroup = useMemo(() => {
+    return () => {
+      if (list !== null) {
+        const commune = Object.keys(list.commune);
+        var nb = 0;
+        for (let c of commune) {
+          nb = nb + list.commune[c].groupement.length;
+        }
+        return [nb, commune.length];
+      }
+    };
+  }, [list]);
   useEffect(() => {
     return () => {
       window.addEventListener("resize", () => {
         setWidth(document.body.offsetWidth);
-      });
-      const abt = about.getpostinstance();
-      abt.getdocument(setList).then(() => {
-        setAboutLoading(false);
       });
     };
   }, []);
@@ -75,7 +71,7 @@ const Home = () => {
       >
         <AnimatePresence mode="wait">
           {page === 0 &&
-            (!aboutLoading ? (
+            (aboutloading ? (
               <motion.section
                 className="large"
                 exit={{
@@ -460,7 +456,7 @@ const Home = () => {
       className="accueil"
       exit={{ opacity: 0, transition: { duration: 0.5 } }}
     >
-      {!aboutLoading ? (
+      {aboutloading ? (
         <motion.section
           className="large"
           exit={{

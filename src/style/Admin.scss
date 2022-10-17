@@ -30,6 +30,12 @@
     width: 100%;
   }
 }
+#aboutupdate{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 10px;
+}
 form {
   display: flex;
   flex-direction: column;
