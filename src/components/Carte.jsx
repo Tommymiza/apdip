@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Tooltip, Icon } from "@mui/material";
-import { PlaceRounded, ApartmentRounded } from "@mui/icons-material";
+import { MapContainer, Marker, TileLayer, Popup } from "react-leaflet";
+import "../style/leaflet.css";
 import { about } from "../firebase/about";
 import Commune from "./Commune";
-import { motion } from "framer-motion";
+import "../style/carte.scss"
 
 const Carte = () => {
   const [commune, setCommune] = useState({});
@@ -14,6 +14,7 @@ const Carte = () => {
       <Commune commune={commune} groupement={groupement} set={setDialog} />
     );
   }
+  
   useEffect(() => {
     const abt = about.getpostinstance();
     return () => {
@@ -24,51 +25,36 @@ const Carte = () => {
     const key = Object.keys(commune);
     setKeycommune(key);
   }, [commune]);
+  const center = [-18.785816, 46.049612];
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.2, type: "spring", stiffness: 50 }}
-      exit={{ opacity: 0, scale: 0 }}
-    >
-      <div id="carte">
-        <img src="./images/Bongolava.png" alt="" />
-        <Tooltip
-          title="APDIP Tsiroanomandidy"
-          sx={{
-            position: "absolute",
-            top: "50%",
-            right: "63%",
-            cursor: "pointer",
-          }}
-        >
-          <Icon fontSize="large">
-            <ApartmentRounded sx={{ fontSize: 40 }} htmlColor="red" />
-          </Icon>
-        </Tooltip>
-        {keyCommune.length !== 0 &&
-          keyCommune.map((item) => (
-            <Tooltip
-              key={item}
-              title={item}
-              sx={{
-                position: "absolute",
-                top: `${commune[item].top}%`,
-                right: `${commune[item].right}%`,
-                cursor: "pointer",
-              }}
-              onClick={() => {
+    <>
+      <MapContainer center={center} zoom={10} scrollWheelZoom={false}>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <Marker
+            position={center}
+            
+          >
+            <Popup>Apdip Tsiroanomandidy</Popup>
+          </Marker>
+        {keyCommune.map((item) => (
+          <Marker
+            key={item}
+            position={[commune[item].right, commune[item].top]}
+            eventHandlers={{
+              dblclick() {
                 showDialog(item, commune[item].groupement);
-              }}
-            >
-              <Icon fontSize="large">
-                <PlaceRounded sx={{ fontSize: 40 }} htmlColor="white" />
-              </Icon>
-            </Tooltip>
-          ))}
-      </div>
-      {dialog && dialog}
-    </motion.div>
+              }
+            }}
+          >
+            <Popup>{item}</Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+      {dialog}
+    </>
   );
 };
 

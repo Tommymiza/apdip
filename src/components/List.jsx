@@ -358,7 +358,11 @@ const List = () => {
           {map ? "Cacher la carte" : "Afficher la Carte"}
         </Button>
       </ThemeProvider>
-      {map && <Carte />}
+      {map && (
+        <div className="map">
+          <Carte />
+        </div>
+      )}
     </motion.div>
   );
 };

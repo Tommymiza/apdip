@@ -8,6 +8,7 @@ import Test from "./components/test";
 import List from "./components/List";
 import { AnimatePresence } from "framer-motion";
 import Contact from "./components/Contact";
+import Partenaire from "./components/Partenaire";
 import { activity } from "./firebase/activite";
 
 export const ActContext = createContext();
@@ -34,6 +35,7 @@ function App() {
             <Route path="/dashboard" element={<Admin />}></Route>
             <Route path="/list" element={<List />}></Route>
             <Route path="/contact" element={<Contact />}></Route>
+            <Route path="/partenaire" element={<Partenaire />}></Route>
             <Route path="/*" element={<Test />}></Route>
           </Routes>
         </AnimatePresence>

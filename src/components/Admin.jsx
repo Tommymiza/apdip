@@ -644,47 +644,19 @@ const Admin = () => {
                 alignItems: "center",
               }}
             >
-              Supprimer des activités:
+              Gestion interne:
               <IconButton onClick={handleClose}>
                 <Close />
               </IconButton>
             </DialogTitle>
             <DialogContent>
               <div
-                id="supdiv"
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                 }}
               >
-                {activities ? (
-                  <Box sx={{ height: 400, width: "100%" }}>
-                    <DataGrid
-                      rows={activities}
-                      columns={columns}
-                      checkboxSelection
-                      disableSelectionOnClick
-                      rowsPerPageOptions={[5]}
-                      pageSize={5}
-                      onSelectionModelChange={(newSelection) => {
-                        setSelected(newSelection);
-                      }}
-                    />
-                  </Box>
-                ) : (
-                  <CircularProgress size={50}></CircularProgress>
-                )}
-                {progress && <CircularProgress size={50}></CircularProgress>}
-                <ThemeProvider theme={theme}>
-                  <Button
-                    type="submit"
-                    endIcon={<DeleteRounded />}
-                    onClick={handleDelete}
-                  >
-                    Supprimer
-                  </Button>
-                </ThemeProvider>
               </div>
             </DialogContent>
           </Dialog>
