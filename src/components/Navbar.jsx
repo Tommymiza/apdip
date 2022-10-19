@@ -47,7 +47,7 @@ const Navbar = () => {
             <NavLink to={"/partenaire"}>
               <li>Partenaires</li>
             </NavLink>
-            <NavLink to={"/about"}>
+            <NavLink to={"/contact"}>
               <li>Contact</li>
             </NavLink>
           </ul>

@@ -17,7 +17,22 @@ export class about {
     const aboutDoc = collection(database, "apropos");
     const res = await getDocs(aboutDoc);
     const resultat = res.docs.map((doc) => doc.data());
+    console.log(resultat[0].commune)
     setCommune(resultat[0].commune)
+  }
+  async getTabCommune(setCoord){
+    const database = getFirestore(app);
+    const aboutDoc = collection(database, "apropos");
+    const res = await getDocs(aboutDoc);
+    const resultat = res.docs.map((doc) => doc.data());
+    const c = {}
+    const a = {}
+    for (let i in resultat[0].commune){
+      c[i] = resultat[0].commune[i].groupement
+      a[i] = {top: resultat[0].commune[i].top, right:  resultat[0].commune[i].right}
+    }
+    setCoord(a)
+    return c
   }
   async updateInfo(obj){
     const database = getFirestore(app);

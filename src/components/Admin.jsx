@@ -36,6 +36,8 @@ import {
   SendRounded,
   ViewListRounded,
   EditRounded,
+  AddCircleOutlineRounded,
+  RemoveCircleOutlineRounded,
 } from "@mui/icons-material";
 import { theme } from "./theme";
 import "../style/Admin.scss";
@@ -43,6 +45,8 @@ import { motion } from "framer-motion";
 import { ActContext } from "../App";
 
 const Admin = () => {
+  const { activities, pret, list, aboutloading, setActivities, setList } =
+    useContext(ActContext);
   const [loading, setLoading] = useState(false);
   const [check, setCheck] = useState(false);
   const [passError, setPassError] = useState("");
@@ -54,11 +58,11 @@ const Admin = () => {
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [drawer, toggleDrawer] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [com, setCom] = useState({});
+  const [coord, setCoord] = useState({});
+  const [keys, setKeysCom] = useState([]);
   const act = activity.getPostInstance();
   const abt = about.getPostInstance();
-
-  const { activities, pret, list, aboutloading, setActivities, setList } =
-    useContext(ActContext);
   const columns = useMemo(() => {
     return [
       {
@@ -85,19 +89,25 @@ const Admin = () => {
   }, [width]);
   const infoupdate = (e) => {
     e.preventDefault();
-    setProgress(true)
+    setProgress(true);
+    var c = {};
+    for (let i of keys) {
+      c[i] = { groupement: com[i], top: coord[i].top, right: coord[i].right };
+    }
+    console.log(c);
     const obj = {
       ag: document.getElementById("infoform").ag.value,
       paysans: document.getElementById("infoform").paysans.value,
       paysRel: document.getElementById("infoform").paysRel.value,
       paysVulga: document.getElementById("infoform").paysVulga.value,
       technicien: document.getElementById("infoform").technicien.value,
+      commune: c,
     };
-    abt.updateInfo(obj).then(()=>{
-      abt.getdocument(setList).then(()=>{
-        setProgress(false)
-      })
-    })
+    abt.updateInfo(obj).then(() => {
+      abt.getdocument(setList).then(() => {
+        setProgress(false);
+      });
+    });
   };
   const handleDelete = () => {
     if (selected.length > 0) {
@@ -179,6 +189,11 @@ const Admin = () => {
       reader.readAsDataURL(fichiers[key]);
     });
   };
+  const addGrp = (a) => {
+    var temp = Object.create(com);
+    temp[a] = [...temp[a], ""];
+    setCom(temp);
+  };
   const handleChangeActivite = (event) => {
     setActivite(event.target.value);
   };
@@ -198,6 +213,24 @@ const Admin = () => {
     setDialog("");
     document.cookie = "accessKey=; expires=01 Oct 1970 00:00:00 GMT";
     setConnected(false);
+  };
+  const tempCom = () => {
+    abt.getTabCommune(setCoord).then((res) => {
+      const keys = Object.keys(res);
+      setCom(res);
+      setKeysCom(keys);
+    });
+    setDialog("settings");
+  };
+  const delgrp = (c, index) => {
+    var temp = Object.create(com);
+    temp[c].splice(index, 1);
+    setCom(temp);
+  };
+  const updgrp = (v, c, i) => {
+    var temp = Object.create(com);
+    temp[c][i] = v;
+    setCom(temp);
   };
   const handleSubmit = (e) => {
     const database = getFirestore(app);
@@ -248,6 +281,7 @@ const Admin = () => {
     toggleDrawer(false);
   }
   useEffect(() => {
+    const abot = about.getPostInstance();
     return () => {
       setConnected(false);
       const tempdata = getFirestore(app);
@@ -272,6 +306,11 @@ const Admin = () => {
       window.addEventListener("resize", () => {
         setWidth(document.body.offsetWidth);
         toggleDrawer(false);
+      });
+      abot.getTabCommune(setCoord).then((res) => {
+        const keys = Object.keys(res);
+        setCom(res);
+        setKeysCom(keys);
       });
     };
   }, []);
@@ -343,9 +382,9 @@ const Admin = () => {
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
-            onClick={() => setDialog("settings")}
+            onClick={tempCom}
           >
-            <Tooltip title="Ajout Admin">
+            <Tooltip title="Paramètre">
               <Settings sx={{ width: 50, height: 50 }} />
             </Tooltip>
           </Button>
@@ -676,41 +715,115 @@ const Admin = () => {
                     onSubmit={infoupdate}
                     id="infoform"
                   >
-                    <TextField
-                      label="Assemblée genérale:"
-                      type={"number"}
-                      defaultValue={list.ag}
-                      required
-                      name="ag"
-                    />
-                    <TextField
-                      label="Paysans:"
-                      type={"number"}
-                      defaultValue={list.paysans}
-                      required
-                      name="paysans"
-                    />
-                    <TextField
-                      label="Paysans relais:"
-                      type={"number"}
-                      defaultValue={list.paysRel}
-                      required
-                      name="paysRel"
-                    />
-                    <TextField
-                      label="Paysans vulgarisateur:"
-                      type={"number"}
-                      defaultValue={list.paysVulga}
-                      required
-                      name="paysVulga"
-                    />
-                    <TextField
-                      label="Technicien:"
-                      type={"number"}
-                      defaultValue={list.technicien}
-                      required
-                      name="technicien"
-                    />
+                    <div id="modifinfo">
+                      <div id="infoprop">
+                        <h4 style={{ fontFamily: "var(--fontText)" }}>
+                          Info de base
+                        </h4>
+                        <TextField
+                          label="Assemblée genérale:"
+                          type={"number"}
+                          defaultValue={list.ag}
+                          required
+                          name="ag"
+                        />
+                        <TextField
+                          label="Paysans:"
+                          type={"number"}
+                          defaultValue={list.paysans}
+                          required
+                          name="paysans"
+                        />
+                        <TextField
+                          label="Paysans relais:"
+                          type={"number"}
+                          defaultValue={list.paysRel}
+                          required
+                          name="paysRel"
+                        />
+                        <TextField
+                          label="Paysans vulgarisateur:"
+                          type={"number"}
+                          defaultValue={list.paysVulga}
+                          required
+                          name="paysVulga"
+                        />
+                        <TextField
+                          label="Technicien:"
+                          type={"number"}
+                          defaultValue={list.technicien}
+                          required
+                          name="technicien"
+                        />
+                      </div>
+                      <div id="setComs">
+                        <h4
+                          style={{
+                            fontFamily: "var(--fontText)",
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          Communes et groupements
+                        </h4>
+                        {keys.length !== 0 &&
+                          keys.map((c) => (
+                            <div className="communes" key={c}>
+                              {com[c].length !== 0 && (
+                                <TextField
+                                  defaultValue={c}
+                                  label="commune"
+                                  required
+                                />
+                              )}
+                              {com[c].lenght !== 0 &&
+                                com[c].map((i, index) => (
+                                  <div key={i} className="grp">
+                                    <TextField
+                                      id={"grp" + i}
+                                      defaultValue={i}
+                                      label="grp"
+                                      onBlur={(e) => {
+                                        updgrp(e.target.value, c, index);
+                                      }}
+                                      InputLabelProps={{
+                                        style: {
+                                          fontSize: "15px",
+                                        },
+                                      }}
+                                      InputProps={{
+                                        style: {
+                                          height: "40px",
+                                        },
+                                      }}
+                                      inputProps={{
+                                        style: {
+                                          fontSize: "15px",
+                                        },
+                                      }}
+                                      required
+                                    />
+                                    <IconButton
+                                      size="medium"
+                                      onClick={() => {
+                                        delgrp(c, index);
+                                      }}
+                                    >
+                                      <RemoveCircleOutlineRounded />
+                                    </IconButton>
+                                  </div>
+                                ))}
+                              <IconButton
+                                size="medium"
+                                onClick={() => {
+                                  addGrp(c);
+                                }}
+                              >
+                                <AddCircleOutlineRounded />
+                              </IconButton>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
                     <ThemeProvider theme={theme}>
                       {progress && <CircularProgress size={24} />}
                       <Button startIcon={<EditRounded />} type="submit">

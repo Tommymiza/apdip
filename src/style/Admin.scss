@@ -104,6 +104,41 @@ form {
     font-size: 15px;
   }
 }
+#modifinfo{
+  display: flex;
+  flex-direction: row;
+  width: 90vw;
+  justify-content: space-between;
+}
+#infoprop{
+  display: flex;
+  flex-direction: column;
+}
+#setComs{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 60vh;
+  overflow-y: scroll;
+  .communes{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .grp{
+      display: flex;
+      flex-direction: row;
+      margin: 0;
+      margin-left: 80px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 5px;
+      div{
+        margin: 0;
+      }
+    }
+  }
+}
 @media screen and (max-width: 850px) {
   form {
     width: 100%;

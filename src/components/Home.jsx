@@ -24,7 +24,7 @@ const Home = () => {
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [axes, setAxe] = useState();
   const { activities, pret, list, aboutloading } = useContext(ActContext);
-
+  
   function upScroll() {
     var temp = page - 1;
     if (temp === -1) {
