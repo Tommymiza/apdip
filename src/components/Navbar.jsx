@@ -8,6 +8,32 @@ const Navbar = () => {
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate()
+  const menu = [
+    {
+      label: "Accueil",
+      link: "/"
+    },
+    {
+      label: "Personnel",
+      link: "/dashboard"
+    },
+    {
+      label: "Activités",
+      link: "/list"
+    },
+    {
+      label: "Produits",
+      link: "/product"
+    },
+    {
+      label: "Partenaires",
+      link: "/partenaire"
+    },
+    {
+      label: "Contact",
+      link: "/contact"
+    }
+  ]
   const toHome = ()=>{
     navigate('/')
   }
@@ -33,23 +59,13 @@ const Navbar = () => {
         <h2>APDIP</h2>
       </div>
       <nav>
-        {width >= 750 ? (
+        {width >= 950 ? (
           <ul>
-            <NavLink to={"/"} end>
-              <li>Accueil</li>
-            </NavLink>
-            <NavLink to={"/dashboard"}>
-              <li>Admin</li>
-            </NavLink>
-            <NavLink to={"/list"}>
-              <li>Activités</li>
-            </NavLink>
-            <NavLink to={"/partenaire"}>
-              <li>Partenaires</li>
-            </NavLink>
-            <NavLink to={"/contact"}>
-              <li>Contact</li>
-            </NavLink>
+            {menu.map(i=>(
+              <NavLink to={i.link} key={i.label} end={i.link === "/"}>
+                <li>{i.label}</li>
+              </NavLink>
+            ))}
           </ul>
         ) : (
           <ul>
@@ -85,31 +101,11 @@ const Navbar = () => {
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <MenuItem>
-                <NavLink to={"/"} end>
-                  Accueil
-                </NavLink>
-              </MenuItem>
-              <MenuItem>
-                <NavLink to={"/dashboard"} end>
-                  Admin
-                </NavLink>
-              </MenuItem>
-              <MenuItem>
-                <NavLink to={"/list"}>
-                  Activités
-                </NavLink>
-              </MenuItem>
-              <MenuItem>
-                <NavLink to={"/partenaire"}>
-                  Partenaires
-                </NavLink>
-              </MenuItem>
-              <MenuItem>
-                <NavLink to={"/contact"}>
-                  Contact
-                </NavLink>
-              </MenuItem>
+              {menu.map(i=>(
+                <MenuItem key={i.label}>
+                  <NavLink to={i.link} end={i.link === "/"}>{i.label}</NavLink>
+                </MenuItem>
+              ))}
             </Menu>
           </ul>
         )}

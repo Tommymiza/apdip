@@ -1,0 +1,41 @@
+#contact{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        min-width: 345px;
+        width: auto;
+        backdrop-filter: blur(10px);
+        max-width: 80%;
+        border-radius: 10px;
+        background-color: rgba($color: #000000, $alpha: 0.08);
+        color: black;
+        box-shadow: 2px 2px 15px #6091A5;
+        &>div{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+        input{
+            color: black;
+        }
+    }
+}
+@media screen and (max-width: 1000px) {
+    #contact form{
+        &>div{
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            #messageContainer{
+                width: 100%;
+            }
+        }
+    }
+}

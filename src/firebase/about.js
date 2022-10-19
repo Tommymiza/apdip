@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs,updateDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, getDocs,updateDoc, doc, query, orderBy, addDoc, deleteDoc } from "firebase/firestore";
 import app from "./db";
 export class about {
   static getPostInstance() {
@@ -17,7 +17,6 @@ export class about {
     const aboutDoc = collection(database, "apropos");
     const res = await getDocs(aboutDoc);
     const resultat = res.docs.map((doc) => doc.data());
-    console.log(resultat[0].commune)
     setCommune(resultat[0].commune)
   }
   async getTabCommune(setCoord){
@@ -33,6 +32,27 @@ export class about {
     }
     setCoord(a)
     return c
+  }
+  async getMessage(){
+    const database = getFirestore(app);
+    const aboutDoc = collection(database, "message")
+    const q = query(aboutDoc, orderBy("status", "asc"))
+    const res =  await getDocs(q)
+    const resultat = res.docs.map(doc=>{return {id: doc.id, content: doc.data()}});
+    return resultat
+  }
+  async updateMessage(id, obj){
+    await updateDoc(doc(getFirestore(app), "message", id),obj)
+  }
+  async deleteMessage(tab){
+    for(let id of tab){
+      await deleteDoc(doc(getFirestore(app), "message", id))
+    }
+  }
+  async addMessage(obj){
+    const database = getFirestore(app);
+    const aboutDoc = collection(database, "message");
+    await addDoc(aboutDoc, obj)
   }
   async updateInfo(obj){
     const database = getFirestore(app);

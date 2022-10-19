@@ -2,7 +2,9 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import app from "../firebase/db";
 import { activity } from "../firebase/activite";
 import { about } from "../firebase/about";
+import { produit } from "../firebase/produit";
 import { DataGrid } from "@mui/x-data-grid";
+import View from "./view";
 import {
   onSnapshot,
   getFirestore,
@@ -23,6 +25,7 @@ import {
   IconButton,
   ThemeProvider,
   Box,
+  Badge,
 } from "@mui/material";
 import {
   LibraryAddRounded,
@@ -38,6 +41,7 @@ import {
   EditRounded,
   AddCircleOutlineRounded,
   RemoveCircleOutlineRounded,
+  AddShoppingCartRounded
 } from "@mui/icons-material";
 import { theme } from "./theme";
 import "../style/Admin.scss";
@@ -45,7 +49,7 @@ import { motion } from "framer-motion";
 import { ActContext } from "../App";
 
 const Admin = () => {
-  const { activities, pret, list, aboutloading, setActivities, setList } =
+  const { activities, pret, list, aboutloading, setActivities, setList, setProduits } =
     useContext(ActContext);
   const [loading, setLoading] = useState(false);
   const [check, setCheck] = useState(false);
@@ -53,16 +57,59 @@ const Admin = () => {
   const [connected, setConnected] = useState(false);
   const [dialog, setDialog] = useState("");
   const [progress, setProgress] = useState(false);
+  const [progress1, setProgress1] = useState(false);
   const [activite, setActivite] = useState("");
   const [status, setStatus] = useState("");
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [drawer, toggleDrawer] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [message, setMessage] = useState([]);
+  const [showMessage, setShowMessage] = useState();
   const [com, setCom] = useState({});
   const [coord, setCoord] = useState({});
   const [keys, setKeysCom] = useState([]);
+  const [badge, setBadge] = useState(0);
   const act = activity.getPostInstance();
   const abt = about.getPostInstance();
+  const prod = produit.getPostInstance();
+  const show = (i) => {
+    var temp = message;
+    temp = temp.filter((a) => {
+      if (a.id === i.id) {
+        a.content.status = true;
+      }
+      return a;
+    });
+    var n = 0;
+    for (let i of temp) {
+      if (!i.content.status) {
+        n = n + 1;
+      }
+    }
+    setBadge(n);
+    const obj = temp.find((element) => element.id === i.id);
+    abt.updateMessage(i.id, obj.content);
+    setMessage(temp);
+    setShowMessage(<View item={i} close={hideMessage} />);
+  };
+  const delmessage = () => {
+    setProgress1(true);
+    const temp = [];
+    for (let i of message) {
+      if (i.content.status) {
+        temp.push(i.id);
+      }
+    }
+    abt.deleteMessage(temp).then(() => {
+      abt.getMessage().then((res) => {
+        setMessage(res);
+        setProgress1(false);
+      });
+    });
+  };
+  const hideMessage = () => {
+    setShowMessage();
+  };
   const columns = useMemo(() => {
     return [
       {
@@ -174,7 +221,12 @@ const Admin = () => {
       }
       i++;
     }
-    const fichiers = document.getElementById("dialogform").images.files;
+    var fichiers = ""
+    if(dialog === "ajout"){
+      fichiers = document.getElementById("dialogform").images.files;
+    }else{
+      fichiers = document.getElementById("dialogform").photo.files;
+    }
     const arrayFile = Object.keys(fichiers);
     arrayFile.forEach((i) => {
       var node = document.createElement("img");
@@ -196,6 +248,16 @@ const Admin = () => {
   };
   const handleChangeActivite = (event) => {
     setActivite(event.target.value);
+  };
+  const uploadProduit = (e) => {
+    e.preventDefault();
+    prod.ajout(
+      document.getElementById("dialogform"),
+      document.getElementById("dialogform").photo.files,
+      setProduits,
+      setStatus,
+      setProgress
+    );
   };
   const upload = (e) => {
     e.preventDefault();
@@ -219,6 +281,16 @@ const Admin = () => {
       const keys = Object.keys(res);
       setCom(res);
       setKeysCom(keys);
+    });
+    abt.getMessage().then((res) => {
+      setMessage(res);
+      var n = 0;
+      for (let i of res) {
+        if (!i.content.status) {
+          n = n + 1;
+        }
+      }
+      setBadge(n);
     });
     setDialog("settings");
   };
@@ -312,6 +384,16 @@ const Admin = () => {
         setCom(res);
         setKeysCom(keys);
       });
+      abot.getMessage().then((res) => {
+        setMessage(res);
+        var n = 0;
+        for (let i of res) {
+          if (!i.content.status) {
+            n = n + 1;
+          }
+        }
+        setBadge(n);
+      });
     };
   }, []);
 
@@ -385,7 +467,24 @@ const Admin = () => {
             onClick={tempCom}
           >
             <Tooltip title="Paramètre">
-              <Settings sx={{ width: 50, height: 50 }} />
+              <Badge badgeContent={badge} color={"error"} max={9}>
+                <Settings sx={{ width: 50, height: 50 }} />
+              </Badge>
+            </Tooltip>
+          </Button>
+          <Button
+            sx={{
+              border: "none",
+              p: 5,
+              background: "rgba(0,0,0,0.05)",
+              boxShadow: "2px 2px 15px #6091A5",
+              borderRadius: "20px",
+              backdropFilter: "blur(2px)",
+            }}
+            onClick={() => setDialog("ajoutproduit")}
+          >
+            <Tooltip title="Ajout Produit">
+              <AddShoppingCartRounded sx={{ width: 50, height: 50 }} />
             </Tooltip>
           </Button>
           <Button
@@ -488,6 +587,94 @@ const Admin = () => {
                     <input
                       type="file"
                       name="images"
+                      multiple
+                      id="img"
+                      accept="image/*"
+                      required
+                      onChange={showimage}
+                    />
+                    <div id="listes"></div>
+                  </div>
+                </div>
+                {progress && <CircularProgress></CircularProgress>}
+                <p>{status}</p>
+                <ThemeProvider theme={theme}>
+                  <Button type="submit" endIcon={<SendRounded />}>
+                    Upload
+                  </Button>
+                </ThemeProvider>
+              </form>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={dialog === "ajoutproduit"} fullScreen>
+            <DialogTitle
+              sx={{
+                fontFamily: "SF Pro",
+                fontSize: 30,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+                alignItems: "center",
+              }}
+            >
+              Ajout d'un produit:
+              <IconButton onClick={handleClose}>
+                <Close />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent>
+              <form id="dialogform" onSubmit={uploadProduit}>
+                <div>
+                  <div className="form-row">
+                    <TextField
+                      label="Filière"
+                      name="filière"
+                      variant="standard"
+                      required
+                      sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                    ></TextField>
+                    <TextField
+                      label="Stock"
+                      name="stock"
+                      variant="standard"
+                      type={"number"}
+                      required
+                      sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                    ></TextField>
+                    <TextField
+                    label="Unit"
+                    name="unit"
+                    variant="standard"
+                    required
+                    sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                  ></TextField>
+                    <TextField
+                      label="Prix"
+                      name="prix"
+                      variant="standard"
+                      type={"number"}
+                      required
+                      sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                    ></TextField>
+                  </div>
+                  <div className="form-row">
+                    <Tooltip
+                      title={"Joindre des photos"}
+                      sx={{ alignSelf: "center" }}
+                    >
+                      <IconButton size="medium">
+                        <label
+                          htmlFor="img"
+                          style={{ width: "30px", height: "30px" }}
+                        >
+                          <AddAPhotoRounded />
+                        </label>
+                      </IconButton>
+                    </Tooltip>
+                    <input
+                      type="file"
+                      name="photo"
                       multiple
                       id="img"
                       accept="image/*"
@@ -765,63 +952,106 @@ const Admin = () => {
                         >
                           Communes et groupements
                         </h4>
-                        {keys.length !== 0 &&
-                          keys.map((c) => (
-                            <div className="communes" key={c}>
-                              {com[c].length !== 0 && (
-                                <TextField
-                                  defaultValue={c}
-                                  label="commune"
-                                  required
-                                />
-                              )}
-                              {com[c].lenght !== 0 &&
-                                com[c].map((i, index) => (
-                                  <div key={i} className="grp">
-                                    <TextField
-                                      id={"grp" + i}
-                                      defaultValue={i}
-                                      label="grp"
-                                      onBlur={(e) => {
-                                        updgrp(e.target.value, c, index);
-                                      }}
-                                      InputLabelProps={{
-                                        style: {
-                                          fontSize: "15px",
-                                        },
-                                      }}
-                                      InputProps={{
-                                        style: {
-                                          height: "40px",
-                                        },
-                                      }}
-                                      inputProps={{
-                                        style: {
-                                          fontSize: "15px",
-                                        },
-                                      }}
-                                      required
-                                    />
-                                    <IconButton
-                                      size="medium"
-                                      onClick={() => {
-                                        delgrp(c, index);
-                                      }}
-                                    >
-                                      <RemoveCircleOutlineRounded />
-                                    </IconButton>
-                                  </div>
-                                ))}
-                              <IconButton
-                                size="medium"
-                                onClick={() => {
-                                  addGrp(c);
-                                }}
+                        <div className="listComm">
+                          {keys.length !== 0 &&
+                            keys.map((c) => (
+                              <div className="communes" key={c}>
+                                {com[c].length !== 0 && (
+                                  <TextField
+                                    disabled
+                                    defaultValue={c}
+                                    label="commune"
+                                    required
+                                  />
+                                )}
+                                {com[c].lenght !== 0 &&
+                                  com[c].map((i, index) => (
+                                    <div key={i} className="grp">
+                                      <TextField
+                                        id={"grp" + i}
+                                        defaultValue={i}
+                                        label="grp"
+                                        onBlur={(e) => {
+                                          updgrp(e.target.value, c, index);
+                                        }}
+                                        InputLabelProps={{
+                                          style: {
+                                            fontSize: "15px",
+                                          },
+                                        }}
+                                        InputProps={{
+                                          style: {
+                                            height: "40px",
+                                          },
+                                        }}
+                                        inputProps={{
+                                          style: {
+                                            fontSize: "15px",
+                                          },
+                                        }}
+                                        required
+                                      />
+                                      <IconButton
+                                        size="medium"
+                                        onClick={() => {
+                                          delgrp(c, index);
+                                        }}
+                                      >
+                                        <RemoveCircleOutlineRounded />
+                                      </IconButton>
+                                    </div>
+                                  ))}
+                                <IconButton
+                                  size="medium"
+                                  sx={{
+                                    marginLeft: "50px",
+                                    alignSelf: "center",
+                                  }}
+                                  onClick={() => {
+                                    addGrp(c);
+                                  }}
+                                >
+                                  <AddCircleOutlineRounded />
+                                </IconButton>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                      <div id="viewmessage">
+                        <h4
+                          style={{
+                            fontFamily: "var(--fontText)",
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          Messages:
+                        </h4>
+                        <div className="messagelist">
+                          {message.length !== 0 &&
+                            message.map((i) => (
+                              <div
+                                className={
+                                  i.content.status ? "mess" : "mess nonvue"
+                                }
+                                key={i.id}
+                                id={i.id}
+                                onClick={() => show(i)}
                               >
-                                <AddCircleOutlineRounded />
-                              </IconButton>
-                            </div>
-                          ))}
+                                <h4>{i.content.name}</h4>
+                                <p>{i.content.message.substr(0, 30) + "..."}</p>
+                              </div>
+                            ))}
+                          {showMessage}
+                        </div>
+                        <ThemeProvider theme={theme}>
+                          {progress1 && <CircularProgress size={24} />}
+                          <Button
+                            startIcon={<DeleteRounded />}
+                            onClick={delmessage}
+                          >
+                            Vider
+                          </Button>
+                        </ThemeProvider>
                       </div>
                     </div>
                     <ThemeProvider theme={theme}>

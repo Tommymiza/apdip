@@ -27,7 +27,7 @@ const Activite = ({ activ, accueil }) => {
     <motion.div
       className="actcard"
       initial={{ scale: 0, y: 200, opacity: 0 }}
-      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{
         type: "spring",
         stiffness: 50,
@@ -37,9 +37,9 @@ const Activite = ({ activ, accueil }) => {
       <Card
         sx={{
           maxWidth: 345,
-          bgcolor: "transparent",
-          backdropFilter: "blur(3px)",
+          backdropFilter: "blur(10px)",
           boxShadow: "2px 2px 15px #6091A5",
+          backgroundColor: "rgba(0, 0, 0, 0.1)"
         }}
       >
         <CardMedia

@@ -11,11 +11,14 @@ import Contact from "./components/Contact";
 import Partenaire from "./components/Partenaire";
 import { activity } from "./firebase/activite";
 import { about } from "./firebase/about";
+import { produit } from "./firebase/produit";
+import Product from "./components/Product";
 
 export const ActContext = createContext();
 function App() {
   const location = useLocation();
   const [activities, setActivities] = useState();
+  const [produits, setProduits] = useState();
   const [pret, setPret] = useState(false);
   const [aboutloading, setAboutloading] = useState(false);
   const [list, setList] = useState({});
@@ -24,12 +27,14 @@ function App() {
     return () => {
       const act = activity.getPostInstance();
       const abt = about.getPostInstance();
+      const prod = produit.getPostInstance();
       act.list(setActivities).then(() => {
         setPret(true);
       });
       abt.getdocument(setList).then(() => {
         setAboutloading(true)
       });
+      prod.list(setProduits)
     };
   }, []);
   return (
@@ -43,6 +48,8 @@ function App() {
           aboutloading,
           setActivities,
           setList,
+          produits,
+          setProduits
         }}
       >
         <AnimatePresence>
@@ -50,6 +57,7 @@ function App() {
             <Route path="/" element={<Home />}></Route>
             <Route path="/dashboard" element={<Admin />}></Route>
             <Route path="/list" element={<List />}></Route>
+            <Route path="/product" element={<Product />}></Route>
             <Route path="/contact" element={<Contact />}></Route>
             <Route path="/partenaire" element={<Partenaire />}></Route>
             <Route path="/*" element={<Test />}></Route>

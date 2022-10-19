@@ -1,17 +1,178 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  ThemeProvider,
+  Autocomplete,
+  Box,
+  CircularProgress,
+} from "@mui/material";
+import { theme } from "./theme";
+import { SendRounded } from "@mui/icons-material";
+import "../style/Contact.scss";
+import { countries } from "../firebase/CountryCodes";
+import { about } from "../firebase/about";
+import { motion } from "framer-motion";
 
 const Contact = () => {
-  const [text,setText] = useState(["fefez", "kfjezlkfj"]);
-  const add = () => {
-    setText([...text, "rer"])
+  const abt = about.getPostInstance();
+  const [num, setNum] = useState(261);
+  const [progress, setProgress] = useState(false);
+  const send = (e) => {
+    e.preventDefault();
+    setProgress(true);
+    const form = document.getElementById("contacter");
+    const name = form.name.value;
+    const email = form.email.value;
+    const tel = parseInt(num.toString() + form.num.value.toString());
+    const message = form.message.value;
+    if (email) {
+      abt
+        .addMessage({
+          name: name,
+          email: email,
+          tel: tel,
+          message: message,
+          status: false,
+        })
+        .then(() => {
+          setProgress(false);
+          form.name.value = "";
+          form.email.value = "";
+          form.num.value = "";
+          form.message.value = "";
+        });
+    } else {
+      abt
+        .addMessage({
+          name: name,
+          tel: tel,
+          message: message,
+          status: false,
+        })
+        .then(() => {
+          setProgress(false);
+          form.name.value = "";
+          form.num.value = "";
+          form.message.value = "";
+        });
+    }
   };
   return (
-    <div style={{ marginTop: "150px" }}>
-      {text.length !== 0 && text.map((i,index) => (
-        <h2 key={index}>{i}</h2>
-      ))}
-      <button onClick={add}>Add</button>
-    </div>
+    <motion.div
+      style={{ marginTop: "150px" }}
+      id="contact"
+      exit={{ opacity: 0, transition: { duration: 0.5 } }}
+    >
+      <form id="contacter" onSubmit={send}>
+        <ThemeProvider theme={theme}>
+          <h2
+            style={{
+              fontFamily: "var(--fontText)",
+              alignSelf: "flex-start",
+            }}
+          >
+            Nous contacter:
+          </h2>
+          <div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "400px",
+              }}
+            >
+              <TextField
+                label="Name:"
+                name="name"
+                required
+                sx={{ width: 300 }}
+              />
+              <TextField
+                label="Email:"
+                name="email"
+                type={"email"}
+                sx={{ width: 300 }}
+              />
+              <Autocomplete
+                id="country-select-demo"
+                sx={{ width: 300 }}
+                options={countries}
+                autoHighlight
+                getOptionLabel={(option) => option.label}
+                onChange={(e, newValue) => {
+                  if (newValue) {
+                    setNum(newValue.phone);
+                  } else {
+                    setNum(261);
+                  }
+                }}
+                renderOption={(props, option) => (
+                  <Box
+                    component="li"
+                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                    {...props}
+                  >
+                    <img
+                      loading="lazy"
+                      width="20"
+                      src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                      srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                      alt=""
+                    />
+                    {option.label} ({option.code}) +{option.phone}
+                  </Box>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Choose a country"
+                    inputProps={{
+                      ...params.inputProps,
+                      autoComplete: "new-password",
+                    }}
+                    required
+                  />
+                )}
+              />
+              <TextField
+                placeholder={"+" + num}
+                type={"number"}
+                required
+                sx={{ width: 300 }}
+                name="num"
+              />
+            </div>
+            <div
+              id="messageContainer"
+              style={{
+                alignSelf: "flex-start",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginRight: "30px",
+              }}
+            >
+              <TextField
+                label="Message:"
+                multiline
+                required
+                minRows={12}
+                sx={{ minWidth: 345 }}
+                name="message"
+              />
+            </div>
+          </div>
+          {progress && <CircularProgress size={24} />}
+          <div>
+            <Button startIcon={<SendRounded />} type="submit">
+              Envoyer
+            </Button>
+          </div>
+        </ThemeProvider>
+      </form>
+    </motion.div>
   );
 };
 
