@@ -23,6 +23,9 @@ function App() {
   const [aboutloading, setAboutloading] = useState(false);
   const [list, setList] = useState({});
 
+  useEffect(()=>{
+    console.log("Hola 1")
+  })
   useEffect(() => {
     return () => {
       console.log("hola")
