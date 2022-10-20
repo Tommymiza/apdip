@@ -27,20 +27,23 @@ function App() {
     console.log("Hola 1")
   })
   useEffect(() => {
-    console.log("hola")
-    return () => {
+    function test(){
       console.log("hola")
-      const act = activity.getPostInstance();
-      const abt = about.getPostInstance();
-      const prod = produit.getPostInstance();
-      act.list(setActivities).then(() => {
-        setPret(true);
-      });
-      abt.getdocument(setList).then(() => {
-        setAboutloading(true)
-      });
-      prod.list(setProduits)
-    };
+    }
+    return test
+    // return () => {
+    //   console.log("hola")
+    //   const act = activity.getPostInstance();
+    //   const abt = about.getPostInstance();
+    //   const prod = produit.getPostInstance();
+    //   act.list(setActivities).then(() => {
+    //     setPret(true);
+    //   });
+    //   abt.getdocument(setList).then(() => {
+    //     setAboutloading(true)
+    //   });
+    //   prod.list(setProduits)
+    // };
   }, []);
   return (
     <>
