@@ -8,7 +8,7 @@ export const partenariat = [
     },
     {
         id: 2,
-        name:"Afdi-mada",
+        name:"Afdi-Bretagne",
         descri: "Afdi est la partenaire officiel d'APDIP depuis sa création",
         img: "afdi.jpg",
         link: "https://www.afdi-opa.org/afdi-madagascar/"
