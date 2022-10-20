@@ -72,6 +72,7 @@ const Admin = () => {
   const act = activity.getPostInstance();
   const abt = about.getPostInstance();
   const prod = produit.getPostInstance();
+  console.log("hola")
   const show = (i) => {
     var temp = message;
     temp = temp.filter((a) => {

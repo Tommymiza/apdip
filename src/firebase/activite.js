@@ -17,7 +17,7 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-import app from "./db";
+import app from "../firebase/db";
 export class activity {
   static getPostInstance() {
     const instance = new activity();
