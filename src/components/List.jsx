@@ -13,10 +13,7 @@ import {
   TextField,
   MenuItem,
 } from "@mui/material";
-import {
-  FilterAltRounded,
-  FilterAltOffRounded,
-} from "@mui/icons-material";
+import { FilterAltRounded, FilterAltOffRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
 const List = () => {
   const skeleton = [0, 1, 2, 3, 4, 5];
@@ -168,7 +165,12 @@ const List = () => {
     }
   }
   return (
-    <motion.div id="list" exit={{ opacity: 0, transition: { duration: 0.5 } }}>
+    <motion.div
+      id="list"
+      exit={{ opacity: 0, transition: { duration: 0.5 } }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 0.5 } }}
+    >
       <motion.div
         id="filtre"
         initial={{ opacity: 0 }}
@@ -289,7 +291,7 @@ const List = () => {
                   <Skeleton
                     variant={"rectangular"}
                     width={345}
-                    height={160}
+                    height={200}
                   ></Skeleton>
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">

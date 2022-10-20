@@ -405,6 +405,8 @@ const Admin = () => {
     <motion.div
       id="adminsec"
       exit={{ opacity: 0, transition: { duration: 0.5 } }}
+      initial={{opacity: 0}}
+      animate={{opacity: 1, transition: {duration: 0.5}}}
     >
       {connected ? (
         <div className="btngrid">
@@ -905,7 +907,7 @@ const Admin = () => {
                     <div id="modifinfo">
                       <div id="infoprop">
                         <h4 style={{ fontFamily: "var(--fontText)" }}>
-                          Info de base
+                          Info de base:
                         </h4>
                         <TextField
                           label="Assemblée genérale:"
@@ -950,7 +952,7 @@ const Admin = () => {
                             alignSelf: "flex-start",
                           }}
                         >
-                          Communes et groupements
+                          Communes et groupements:
                         </h4>
                         <div className="listComm">
                           {keys.length !== 0 &&

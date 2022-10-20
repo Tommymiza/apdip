@@ -62,6 +62,8 @@ const Contact = () => {
     <motion.div
       style={{ marginTop: "150px" }}
       id="contact"
+      initial={{opacity: 0}}
+      animate={{opacity: 1, transition: {duration: 0.5}}}
       exit={{ opacity: 0, transition: { duration: 0.5 } }}
     >
       <form id="contacter" onSubmit={send}>
@@ -87,12 +89,22 @@ const Contact = () => {
                 label="Name:"
                 name="name"
                 required
+                InputLabelProps={{
+                  style:{
+                    color: "rgb(90, 89, 89)"
+                  }
+                }}
                 sx={{ width: 300 }}
               />
               <TextField
                 label="Email:"
                 name="email"
                 type={"email"}
+                InputLabelProps={{
+                  style:{
+                    color: "rgb(90, 89, 89)"
+                  }
+                }}
                 sx={{ width: 300 }}
               />
               <Autocomplete
@@ -100,6 +112,7 @@ const Contact = () => {
                 sx={{ width: 300 }}
                 options={countries}
                 autoHighlight
+                
                 getOptionLabel={(option) => option.label}
                 onChange={(e, newValue) => {
                   if (newValue) {
@@ -128,6 +141,11 @@ const Contact = () => {
                   <TextField
                     {...params}
                     label="Choose a country"
+                    InputLabelProps={{
+                      style:{
+                        color: "rgb(90, 89, 89)"
+                      }
+                    }}
                     inputProps={{
                       ...params.inputProps,
                       autoComplete: "new-password",
@@ -158,6 +176,11 @@ const Contact = () => {
                 label="Message:"
                 multiline
                 required
+                InputLabelProps={{
+                  style:{
+                    color: "rgb(90, 89, 89)"
+                  }
+                }}
                 minRows={12}
                 sx={{ minWidth: 345 }}
                 name="message"

@@ -6,9 +6,12 @@ import {
   CardActions,
   Typography,
   Button,
+  ThemeProvider,
 } from "@mui/material";
 import Diaporama from "./Diaporama";
 import { motion } from "framer-motion";
+import { MoreHorizRounded } from "@mui/icons-material";
+import { theme } from "./theme";
 
 const Activite = ({ activ, accueil }) => {
   const [dialog, setDialog] = useState();
@@ -39,14 +42,14 @@ const Activite = ({ activ, accueil }) => {
           maxWidth: 345,
           backdropFilter: "blur(10px)",
           boxShadow: "2px 2px 15px #6091A5",
-          backgroundColor: "rgba(0, 0, 0, 0.1)"
+          backgroundColor: "rgba(255,255,255,0.3)",
         }}
       >
         <CardMedia
           component="img"
           sx={{
             width: accueil ? (width > 1590 ? 345 : 260) : 345,
-            height: 160,
+            height: 200,
           }}
           image={activ.images[0] || "images/logo_APDIP.png"}
           alt={activ.title}
@@ -60,9 +63,15 @@ const Activite = ({ activ, accueil }) => {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={() => showDialog(activ)}>
-            More...
-          </Button>
+          <ThemeProvider theme={theme}>
+            <Button
+              endIcon={<MoreHorizRounded />}
+              size="small"
+              onClick={() => showDialog(activ)}
+            >
+              More
+            </Button>
+          </ThemeProvider>
         </CardActions>
       </Card>
       {dialog}

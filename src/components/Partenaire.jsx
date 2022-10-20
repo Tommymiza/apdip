@@ -7,6 +7,8 @@ const Partenaire = () => {
   return (
     <motion.div
       id="partenaire"
+      initial={{opacity: 0}}
+      animate={{opacity: 1, transition: {duration: 0.5}}}
       exit={{ opacity: 0, transition: { duration: 0.5 } }}
     >
       <h2>Nos partenaires:</h2>

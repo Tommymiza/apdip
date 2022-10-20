@@ -122,4 +122,17 @@ export class produit {
     const download = await getDownloadURL(refStorage);
     return download;
   }
+  async updateProduit(form, id) {
+    const prod = doc(getFirestore(app), "produit", id);
+    await updateDoc(prod, form);
+  }
+  async deleteProduit(id, str, files) {
+    const prod = doc(getFirestore(app), "produit", id);
+    await deleteDoc(prod);
+    const img = files.split(",");
+    for (let a of img) {
+      const storageRef = ref(getStorage(app), "images/" + str + "/" + a);
+      await deleteObject(storageRef);
+    }
+  }
 }
