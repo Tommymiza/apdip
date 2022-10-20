@@ -41,7 +41,7 @@ import {
   EditRounded,
   AddCircleOutlineRounded,
   RemoveCircleOutlineRounded,
-  AddShoppingCartRounded
+  AddShoppingCartRounded,
 } from "@mui/icons-material";
 import { theme } from "./theme";
 import "../style/Admin.scss";
@@ -49,8 +49,15 @@ import { motion } from "framer-motion";
 import { ActContext } from "../App";
 
 const Admin = () => {
-  const { activities, pret, list, aboutloading, setActivities, setList, setProduits } =
-    useContext(ActContext);
+  const {
+    activities,
+    pret,
+    list,
+    aboutloading,
+    setActivities,
+    setList,
+    setProduits,
+  } = useContext(ActContext);
   const [loading, setLoading] = useState(false);
   const [check, setCheck] = useState(false);
   const [passError, setPassError] = useState("");
@@ -73,7 +80,6 @@ const Admin = () => {
   const abt = about.getPostInstance();
   const prod = produit.getPostInstance();
   const show = (i) => {
-    
     var temp = message;
     temp = temp.filter((a) => {
       if (a.id === i.id) {
@@ -222,10 +228,10 @@ const Admin = () => {
       }
       i++;
     }
-    var fichiers = ""
-    if(dialog === "ajout"){
+    var fichiers = "";
+    if (dialog === "ajout") {
       fichiers = document.getElementById("dialogform").images.files;
-    }else{
+    } else {
       fichiers = document.getElementById("dialogform").photo.files;
     }
     const arrayFile = Object.keys(fichiers);
@@ -355,47 +361,46 @@ const Admin = () => {
   }
   useEffect(() => {
     const abot = about.getPostInstance();
-    return () => {
-      setConnected(false);
-      const tempdata = getFirestore(app);
-      setCheck(true);
-      const key = document.cookie;
-      const keyitems = key.split(";");
-      const keyitem = keyitems[0].split("=");
-      const admins = collection(tempdata, "admins");
-      getDocs(admins)
-        .then((res) => {
-          res.docs.forEach((doc) => {
-            if (keyitem[1] === doc.id) {
-              setConnected(true);
-            }
-          });
-          setCheck(false);
-        })
-        .catch((err) => {
-          alert(err);
-          setCheck(false);
-        });
-      window.addEventListener("resize", () => {
-        setWidth(document.body.offsetWidth);
-        toggleDrawer(false);
-      });
-      abot.getTabCommune(setCoord).then((res) => {
-        const keys = Object.keys(res);
-        setCom(res);
-        setKeysCom(keys);
-      });
-      abot.getMessage().then((res) => {
-        setMessage(res);
-        var n = 0;
-        for (let i of res) {
-          if (!i.content.status) {
-            n = n + 1;
+
+    setConnected(false);
+    const tempdata = getFirestore(app);
+    setCheck(true);
+    const key = document.cookie;
+    const keyitems = key.split(";");
+    const keyitem = keyitems[0].split("=");
+    const admins = collection(tempdata, "admins");
+    getDocs(admins)
+      .then((res) => {
+        res.docs.forEach((doc) => {
+          if (keyitem[1] === doc.id) {
+            setConnected(true);
           }
-        }
-        setBadge(n);
+        });
+        setCheck(false);
+      })
+      .catch((err) => {
+        alert(err);
+        setCheck(false);
       });
-    };
+    window.addEventListener("resize", () => {
+      setWidth(document.body.offsetWidth);
+      toggleDrawer(false);
+    });
+    abot.getTabCommune(setCoord).then((res) => {
+      const keys = Object.keys(res);
+      setCom(res);
+      setKeysCom(keys);
+    });
+    abot.getMessage().then((res) => {
+      setMessage(res);
+      var n = 0;
+      for (let i of res) {
+        if (!i.content.status) {
+          n = n + 1;
+        }
+      }
+      setBadge(n);
+    });
   }, []);
 
   return check ? (
@@ -406,8 +411,8 @@ const Admin = () => {
     <motion.div
       id="adminsec"
       exit={{ opacity: 0, transition: { duration: 0.5 } }}
-      initial={{opacity: 0}}
-      animate={{opacity: 1, transition: {duration: 0.5}}}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 0.5 } }}
     >
       {connected ? (
         <div className="btngrid">
@@ -646,12 +651,12 @@ const Admin = () => {
                       sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                     ></TextField>
                     <TextField
-                    label="Unit"
-                    name="unit"
-                    variant="standard"
-                    required
-                    sx={{ width: "100%", fontFamily: "var(--fontText)" }}
-                  ></TextField>
+                      label="Unit"
+                      name="unit"
+                      variant="standard"
+                      required
+                      sx={{ width: "100%", fontFamily: "var(--fontText)" }}
+                    ></TextField>
                     <TextField
                       label="Prix"
                       name="prix"

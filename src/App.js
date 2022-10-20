@@ -23,27 +23,18 @@ function App() {
   const [aboutloading, setAboutloading] = useState(false);
   const [list, setList] = useState({});
 
-  useEffect(()=>{
-    console.log("Hola 1")
-  })
   useEffect(() => {
-    function test(){
-      console.log("hola")
-    }
-    return test
-    // return () => {
     //   console.log("hola")
-    //   const act = activity.getPostInstance();
-    //   const abt = about.getPostInstance();
-    //   const prod = produit.getPostInstance();
-    //   act.list(setActivities).then(() => {
-    //     setPret(true);
-    //   });
-    //   abt.getdocument(setList).then(() => {
-    //     setAboutloading(true)
-    //   });
-    //   prod.list(setProduits)
-    // };
+    const act = activity.getPostInstance();
+    const abt = about.getPostInstance();
+    const prod = produit.getPostInstance();
+    act.list(setActivities).then(() => {
+      setPret(true);
+    });
+    abt.getdocument(setList).then(() => {
+      setAboutloading(true);
+    });
+    prod.list(setProduits);
   }, []);
   return (
     <>
@@ -57,7 +48,7 @@ function App() {
           setActivities,
           setList,
           produits,
-          setProduits
+          setProduits,
         }}
       >
         <AnimatePresence>

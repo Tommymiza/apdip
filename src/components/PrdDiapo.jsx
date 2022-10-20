@@ -29,11 +29,9 @@ const PrdDiapo = ({ prod, hide }) => {
     }
   };
   useEffect(() => {
-    return () => {
-      window.addEventListener("resize", () => {
-        setWidth(document.body.offsetWidth);
-      });
-    };
+    window.addEventListener("resize", () => {
+      setWidth(document.body.offsetWidth);
+    });
   }, []);
   return (
     <Dialog
@@ -44,7 +42,7 @@ const PrdDiapo = ({ prod, hide }) => {
       fullScreen={width < 450 ? true : false}
     >
       <div className="diaporama">
-        <div className="diapo" style={{width: '100%', height: "100%"}}>
+        <div className="diapo" style={{ width: "100%", height: "100%" }}>
           {prod.photo.map((item, index) => (
             <div key={index}>
               <img src={item} alt={prod.files[index]} />

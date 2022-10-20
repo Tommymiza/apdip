@@ -3,9 +3,7 @@ import { ErrorOutlineRounded } from "@mui/icons-material";
 
 const Test = () => {
   useEffect(() => {
-    return () => {
-      console.log("Hola");
-    };
+    console.log("Hola");
   }, []);
   return (
     <div

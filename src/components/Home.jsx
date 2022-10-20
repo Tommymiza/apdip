@@ -24,7 +24,7 @@ const Home = () => {
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [axes, setAxe] = useState();
   const { activities, pret, list, aboutloading } = useContext(ActContext);
-  
+
   function upScroll() {
     var temp = page - 1;
     if (temp === -1) {
@@ -52,11 +52,9 @@ const Home = () => {
     };
   }, [list]);
   useEffect(() => {
-    return () => {
-      window.addEventListener("resize", () => {
-        setWidth(document.body.offsetWidth);
-      });
-    };
+    window.addEventListener("resize", () => {
+      setWidth(document.body.offsetWidth);
+    });
   }, []);
 
   return width >= 1360 ? (
@@ -215,9 +213,8 @@ const Home = () => {
                         delay: 1.8,
                       }}
                     >
-                      Développer le niveau de
-                      vie des paysans membres au niveau maximum (IDH) et
-                      Professionnaliser les métiers agricoles.
+                      Développer le niveau de vie des paysans membres au niveau
+                      maximum (IDH) et Professionnaliser les métiers agricoles.
                     </motion.p>
                   </div>
                 </div>
@@ -590,27 +587,26 @@ const Home = () => {
                 NOTRE VISION
               </motion.h4>
               <motion.p
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 1.6,
-                      }}
-                    >
-                      <span>Développement et Professionnalisme:</span>
-                    </motion.p>
-                    <motion.p
-                      initial={{ y: 200, opacity: 0 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 1,
-                        delay: 1.8,
-                      }}
-                    >
-                      Développer le niveau de
-                      vie des paysans membres au niveau maximum (IDH) et
-                      Professionnaliser les métiers agricoles.
-                    </motion.p>
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 1.6,
+                }}
+              >
+                <span>Développement et Professionnalisme:</span>
+              </motion.p>
+              <motion.p
+                initial={{ y: 200, opacity: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: 1.8,
+                }}
+              >
+                Développer le niveau de vie des paysans membres au niveau
+                maximum (IDH) et Professionnaliser les métiers agricoles.
+              </motion.p>
             </div>
           </div>
         </motion.section>

@@ -29,11 +29,9 @@ const Diaporama = ({ activ, hide }) => {
     }
   };
   useEffect(() => {
-    return () => {
-      window.addEventListener("resize", () => {
-        setWidth(document.body.offsetWidth);
-      });
-    };
+    window.addEventListener("resize", () => {
+      setWidth(document.body.offsetWidth);
+    });
   }, []);
   return (
     <Dialog

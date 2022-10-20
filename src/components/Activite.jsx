@@ -20,11 +20,9 @@ const Activite = ({ activ, accueil }) => {
     setDialog(<Diaporama activ={activity} hide={setDialog} />);
   };
   useEffect(() => {
-    return () => {
-      window.addEventListener("resize", () => {
-        setWidth(document.body.offsetWidth);
-      });
-    };
+    window.addEventListener("resize", () => {
+      setWidth(document.body.offsetWidth);
+    });
   }, []);
   return (
     <motion.div

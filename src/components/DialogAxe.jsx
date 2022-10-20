@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, IconButton } from "@mui/material";
 import {
   ChevronLeftRounded,
@@ -29,11 +29,9 @@ const DialogAxe = ({ axe, hide }) => {
     }
   };
   useEffect(() => {
-    return () => {
-      window.addEventListener("resize", () => {
-        setWidth(document.body.offsetWidth);
-      });
-    };
+    window.addEventListener("resize", () => {
+      setWidth(document.body.offsetWidth);
+    });
   }, []);
   return (
     <Dialog

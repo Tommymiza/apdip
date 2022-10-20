@@ -18,25 +18,23 @@ const Product = () => {
   const [connected, setConnected] = useState(false);
   const skeleton = [0, 1, 2, 3];
   useEffect(() => {
-    return () => {
-      setConnected(false);
-      const tempdata = getFirestore(app);
-      const key = document.cookie;
-      const keyitems = key.split(";");
-      const keyitem = keyitems[0].split("=");
-      const admins = collection(tempdata, "admins");
-      getDocs(admins)
-        .then((res) => {
-          res.docs.forEach((doc) => {
-            if (keyitem[1] === doc.id) {
-              setConnected(true);
-            }
-          });
-        })
-        .catch((err) => {
-          alert(err);
+    setConnected(false);
+    const tempdata = getFirestore(app);
+    const key = document.cookie;
+    const keyitems = key.split(";");
+    const keyitem = keyitems[0].split("=");
+    const admins = collection(tempdata, "admins");
+    getDocs(admins)
+      .then((res) => {
+        res.docs.forEach((doc) => {
+          if (keyitem[1] === doc.id) {
+            setConnected(true);
+          }
         });
-    };
+      })
+      .catch((err) => {
+        alert(err);
+      });
   }, []);
   return (
     <>
@@ -51,7 +49,7 @@ const Product = () => {
             justifyContent: "space-evenly",
             gap: "10px",
             marginBottom: "50px",
-            minHeight: "calc(100vh - 200px)"
+            minHeight: "calc(100vh - 200px)",
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 0.5 } }}

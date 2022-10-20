@@ -7,36 +7,36 @@ import { WidgetsRounded, WidgetsOutlined } from "@mui/icons-material";
 const Navbar = () => {
   const [width, setWidth] = useState(document.body.offsetWidth);
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const menu = [
     {
       label: "Accueil",
-      link: "/"
+      link: "/",
     },
     {
       label: "Personnel",
-      link: "/dashboard"
+      link: "/dashboard",
     },
     {
       label: "Activités",
-      link: "/list"
+      link: "/list",
     },
     {
       label: "Produits",
-      link: "/product"
+      link: "/product",
     },
     {
       label: "Partenaires",
-      link: "/partenaire"
+      link: "/partenaire",
     },
     {
       label: "Contact",
-      link: "/contact"
-    }
-  ]
-  const toHome = ()=>{
-    navigate('/')
-  }
+      link: "/contact",
+    },
+  ];
+  const toHome = () => {
+    navigate("/");
+  };
   const handleClick = () => {
     setOpen(true);
   };
@@ -44,24 +44,24 @@ const Navbar = () => {
     setOpen(false);
   };
   useEffect(() => {
-    return () => {
-      window.addEventListener("resize", () => {
-        setWidth(document.body.offsetWidth);
-        setOpen(false);
-      });
-    };
+    window.addEventListener("resize", () => {
+      setWidth(document.body.offsetWidth);
+      setOpen(false);
+    });
   }, []);
   return (
     <div id="navbar">
       <div id="logo" onClick={toHome}>
-        <div><img src="/images/logo_APDIP.png" alt="logo" /></div>
-        
+        <div>
+          <img src="/images/logo_APDIP.png" alt="logo" />
+        </div>
+
         <h2>APDIP</h2>
       </div>
       <nav>
         {width >= 950 ? (
           <ul>
-            {menu.map(i=>(
+            {menu.map((i) => (
               <NavLink to={i.link} key={i.label} end={i.link === "/"}>
                 <li>{i.label}</li>
               </NavLink>
@@ -96,14 +96,16 @@ const Navbar = () => {
                   bgcolor: "transparent",
                   backdropFilter: "blur(5px)",
                   boxShadow: "0px 0px 15px #6091A5",
-                }
+                },
               }}
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              {menu.map(i=>(
+              {menu.map((i) => (
                 <MenuItem key={i.label}>
-                  <NavLink to={i.link} end={i.link === "/"}>{i.label}</NavLink>
+                  <NavLink to={i.link} end={i.link === "/"}>
+                    {i.label}
+                  </NavLink>
                 </MenuItem>
               ))}
             </Menu>
