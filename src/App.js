@@ -27,6 +27,7 @@ function App() {
     console.log("Hola 1")
   })
   useEffect(() => {
+    console.log("hola")
     return () => {
       console.log("hola")
       const act = activity.getPostInstance();
