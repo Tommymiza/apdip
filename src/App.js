@@ -25,6 +25,7 @@ function App() {
 
   useEffect(() => {
     return () => {
+      console.log("hola")
       const act = activity.getPostInstance();
       const abt = about.getPostInstance();
       const prod = produit.getPostInstance();
