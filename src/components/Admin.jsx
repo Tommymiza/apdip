@@ -699,7 +699,7 @@ const Admin = () => {
               </form>
             </DialogContent>
           </Dialog>
-          <Dialog open={dialog === "modifier"} fullScreen>
+          <Dialog open={dialog === "modifier"} sx={{overflowX: "hidden", width: "100vw"}} fullScreen>
             <DialogTitle
               sx={{
                 fontFamily: "SF Pro",
@@ -716,7 +716,7 @@ const Admin = () => {
                 <Close />
               </IconButton>
             </DialogTitle>
-            <DialogContent>
+            <DialogContent sx={{overflowX: "hidden"}}>
               <div id="updatediv">
                 <form id="updateForm" onSubmit={updateAct}>
                   <label>Titre:</label>

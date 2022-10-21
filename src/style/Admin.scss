@@ -78,7 +78,8 @@ form {
         gap: 5px;
         justify-content: center;
         max-height: 50vh;
-        overflow: scroll;
+        overflow-x: hidden;
+        overflow-y: scroll;
         img {
           width: 150px;
           height: 100px;
@@ -135,6 +136,7 @@ form {
   padding: 10px;
   .listComm {
     height: 50vh;
+    overflow-x: hidden;
     overflow-y: scroll;
     padding: 10px;
     .communes {
@@ -168,6 +170,7 @@ form {
   min-width: 345px;
   .messagelist {
     height: 50vh;
+    overflow-x: hidden;
     overflow-y: scroll;
     padding: 10px;
     width: calc(100% - 20px);
@@ -182,23 +185,23 @@ form {
       border-radius: 7px;
       transition: 0.2s;
       cursor: pointer;
-      h4{
+      h4 {
         margin: 0;
         font-family: var(--fontText);
       }
-      p{
+      p {
         font-family: var(--fontText);
         color: #000000;
         filter: none;
         margin: 0;
       }
-      &:hover{
+      &:hover {
         box-shadow: 0 0 5px rgb(88, 82, 82);
       }
     }
-    .mess.nonvue{
-      &::before{
-        content: '';
+    .mess.nonvue {
+      &::before {
+        content: "";
         width: 10px;
         height: 10px;
         z-index: 1;
@@ -214,6 +217,7 @@ form {
 @media screen and (max-width: 850px) {
   form {
     width: 100%;
+    
     &#dialogform {
       & > div {
         flex-direction: column;
@@ -224,6 +228,7 @@ form {
     }
   }
   #updatediv {
+    overflow-x: hidden;
     ul {
       transform: translateX(100%);
       background: rgba($color: #000000, $alpha: 0.4);
@@ -232,6 +237,7 @@ form {
       position: absolute;
       width: 50vw;
       height: calc(100vh - 140px);
+      overflow-x: hidden;
       overflow-y: scroll;
       max-height: 100vh;
       top: 100px;

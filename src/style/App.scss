@@ -19,6 +19,9 @@ body {
     background: rgb(88, 88, 88); 
     border-radius: 10px;
   }
+  & .MuiPaper-root{
+    overflow-x: hidden;
+  }
 }
 @font-face {
   font-family: 'SF Pro';
