@@ -2,21 +2,21 @@ export const partenariat = [
     {
         id: 1,
         name: "Ambassade de France",
-        descri: "Depuis 19.. - de nos jours",
+        descri: "L’ambassade de France à Madagascar est actuellement dirigée par Son Excellence M. Christophe Bouchard, Ambassadeur de France à Madagascar. Les locaux de l’ambassade de France à Madagascar accueillent également le Consulat général de France à Tananarive.",
         img: "logoAmb-Madagascar.jpg",
         link: "https://mg.ambafrance.org/"
     },
     {
         id: 2,
         name:"Afdi-Bretagne",
-        descri: "Afdi est la partenaire officiel d'APDIP depuis sa création",
+        descri: "Afdi met des compétences et des moyens à disposition des organisations paysannes partenaires dans les pays en développement afin de les accompagner dans la construction de leurs argumentaires politiques.",
         img: "afdi.jpg",
-        link: "https://www.afdi-opa.org/afdi-madagascar/"
+        link: "https://www.afdi-opa.org/afdi-bretagne/"
     },
     {
         id:3,
         name: "Réseau SOA",
-        descri: "Formé des Organisations paysannes régionales",
+        descri: "L’histoire de SOA (Syndicat des organisations agricoles) commence par celle de ces 10 Organisations Paysannes (OP) régionales représentants plus de 500 groupements villageois (soit près de 7800 foyers) répartis sur l’ensemble du territoire malgache en 2003.",
         img: "logo-SOA-2.png",
         link: "https://www.fo-mapp.com/farm/reseau-soa-syndicat-des-organisations-agricoles/"
     },

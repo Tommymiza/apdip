@@ -36,7 +36,7 @@ const Diaporama = ({ activ, hide }) => {
   return (
     <Dialog
       open={true}
-      maxWidth={"lg"}
+      maxWidth={"xl"}
       onBackdropClick={() => {
         hide();
       }}

@@ -547,12 +547,9 @@ const Admin = () => {
                       required
                       sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                     >
-                      <MenuItem value={"Vary"}>Vary</MenuItem>
-                      <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
-                      <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
-                      <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
-                      <MenuItem value={"Trondro"}>Trondro</MenuItem>
-                      <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
+                      {list.Filière.map(item=>(
+                        <MenuItem key={item} value={item}>{item}</MenuItem>
+                      ))}
                     </TextField>
                     <TextField
                       label="Description"
@@ -739,12 +736,9 @@ const Admin = () => {
                     required
                     sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                   >
-                    <MenuItem value={"Vary"}>Vary</MenuItem>
-                    <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
-                    <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
-                    <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
-                    <MenuItem value={"Trondro"}>Trondro</MenuItem>
-                    <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
+                    {list.Filière.map(item=>(
+                        <MenuItem key={item} value={item}>{item}</MenuItem>
+                      ))}
                   </TextField>
                   <label>Description:</label>
                   <TextField

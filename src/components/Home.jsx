@@ -435,8 +435,7 @@ const Home = () => {
                       <li>-Vente des semences</li>
                       <li>-Formation agricole et elevage</li>
                       <li>-Fond pour les paysans</li>
-                      <li>-Vente des matériels agricoles</li>
-                      <li>-Assurance</li>
+                      <li>-Vente des produits</li>
                     </ul>
                   </div>
                   <div>
@@ -793,8 +792,7 @@ const Home = () => {
                 <li>-Vente des semences</li>
                 <li>-Formation agricole et elevage</li>
                 <li>-Fond pour les paysans</li>
-                <li>-Vente des matériels agricoles</li>
-                <li>-Assurance</li>
+                <li>-Vente des produits</li>
               </ul>
             </div>
             <div>

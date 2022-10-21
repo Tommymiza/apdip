@@ -81,7 +81,6 @@ const DialogAxe = ({ axe, hide }) => {
         <div
           className={axe.img ? "descri" : ""}
           style={{
-            padding: "10px",
             fontFamily: "var(--fontText)",
             flexDirection: "column",
             alignItems: "flex-start",

@@ -8,6 +8,7 @@ import {
   Button,
   ThemeProvider,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import {
@@ -29,27 +30,27 @@ const Prd = ({ prod, connected, set }) => {
   const showDialog = (prod) => {
     setDialog(<PrdDiapo prod={prod} hide={setDialog} />);
   };
-  const updateProd = (id)=>{
-    var stock = parseInt(document.getElementById("stock"+id).value)
-    const prix = parseInt(document.getElementById("prix" + id).value)
-    if(!isNaN(prix)){
-      if(isNaN(stock)){
-        stock = 0
+  const updateProd = (id) => {
+    var stock = parseInt(document.getElementById("stock" + id).value);
+    const prix = parseInt(document.getElementById("prix" + id).value);
+    if (!isNaN(prix)) {
+      if (isNaN(stock)) {
+        stock = 0;
       }
-      setProgress(true)
-      prd.updateProduit({stock: stock, prix: prix}, id).then(()=>{
-        prd.list(set).then(()=>{
-          setProgress(false)
-        })
-      })
+      setProgress(true);
+      prd.updateProduit({ stock: stock, prix: prix }, id).then(() => {
+        prd.list(set).then(() => {
+          setProgress(false);
+        });
+      });
     }
-  }
-  const deleteProd = (prod)=>{
-    setProgress1(true)
-    prd.deleteProduit(prod.id, prod.filière, prod.files).then(()=>{
-      prd.list(set)
-    })
-  }
+  };
+  const deleteProd = (prod) => {
+    setProgress1(true);
+    prd.deleteProduit(prod.id, prod.filière, prod.files).then(() => {
+      prd.list(set);
+    });
+  };
   return (
     <motion.div
       className="actcard"
@@ -105,10 +106,15 @@ const Prd = ({ prod, connected, set }) => {
                     },
                   }}
                 />
-                <p style={{marginLeft: "10px"}}>{prod.unit}</p>
+                <p style={{ marginLeft: "10px" }}>{prod.unit}</p>
               </>
             ) : (
-              <p style={{ margin: 0, color: prod.stock !== 0 ? "black" : "rgb(228, 93, 93)" }}>
+              <p
+                style={{
+                  margin: 0,
+                  color: prod.stock !== 0 ? "black" : "rgb(228, 93, 93)",
+                }}
+              >
                 {"Stock: " + prod.stock + " " + prod.unit}
               </p>
             )}
@@ -134,7 +140,7 @@ const Prd = ({ prod, connected, set }) => {
                     },
                   }}
                 />
-                <p style={{marginLeft: "10px"}}>{" Ar/" + prod.unit}</p>
+                <p style={{ marginLeft: "10px" }}>{" Ar/" + prod.unit}</p>
               </>
             ) : (
               <p style={{ margin: 0 }}>
@@ -159,6 +165,9 @@ const Prd = ({ prod, connected, set }) => {
                   size="medium"
                   onClick={() => updateProd(prod.id)}
                   loading={progress}
+                  loadingIndicator={
+                    <CircularProgress color="primary" size={16} />
+                  }
                 >
                   Modifier
                 </LoadingButton>
