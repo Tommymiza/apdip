@@ -547,7 +547,7 @@ const Admin = () => {
                       required
                       sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                     >
-                      {list.Filière.map(item=>(
+                      {list && list.Filière.map(item=>(
                         <MenuItem key={item} value={item}>{item}</MenuItem>
                       ))}
                     </TextField>
@@ -736,7 +736,7 @@ const Admin = () => {
                     required
                     sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                   >
-                    {list.Filière.map(item=>(
+                    {list && list.Filière.map(item=>(
                         <MenuItem key={item} value={item}>{item}</MenuItem>
                       ))}
                   </TextField>

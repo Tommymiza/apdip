@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { ActContext } from "../App";
 import "../style/List.scss";
 import Activite from "./Activite";
@@ -17,12 +17,16 @@ import {
 } from "@mui/material";
 import { FilterAltRounded, FilterAltOffRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import { about } from "../firebase/about";
+
+
 const List = () => {
   const skeleton = [0, 1, 2, 3, 4, 5];
   const [some, setSome] = useState([]);
+  const { activities, pret } = useContext(ActContext);
+  const [list,setList] = useState()
+  const [fil,setFiltre] = useState(false)
   const [option, setOption] = useState("");
-
-  const { activities, pret, list } = useContext(ActContext);
   const resetFilter = () => {
     setOption("");
     document.getElementById("datedebut").value = "";
@@ -166,6 +170,12 @@ const List = () => {
       alert("Pas d'activité de ce genre!");
     }
   }
+  useEffect(() => {
+    const abt = about.getPostInstance();
+    abt.getdocument(setList).then(()=>{
+      setFiltre(true)
+    })
+  }, []);
   return (
     <motion.div
       id="list"
@@ -183,26 +193,28 @@ const List = () => {
       >
         <ThemeProvider theme={theme}>
           <div id="formFilter">
-            <div>
-              <label htmlFor="option">Filière: &nbsp;</label>
-              <TextField
-                id="option"
-                name="select"
-                value={option}
-                onChange={(e) => {
-                  setOption(e.target.value);
-                }}
-                defaultValue=""
-                select
-                sx={{ fontFamily: "var(--fontText)" }}
-              >
-                {list.Filière.map((item) => (
-                  <MenuItem key={item} value={item}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </div>
+            {fil && (
+              <div>
+                <label htmlFor="option">Filière: &nbsp;</label>
+                <TextField
+                  id="option"
+                  name="select"
+                  value={option}
+                  onChange={(e) => {
+                    setOption(e.target.value);
+                  }}
+                  defaultValue=""
+                  select
+                  sx={{ fontFamily: "var(--fontText)" }}
+                >
+                  {list.Filière.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </div>
+            )}
             <div
               style={{
                 display: "flex",
