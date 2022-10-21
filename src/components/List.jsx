@@ -3,6 +3,7 @@ import { ActContext } from "../App";
 import "../style/List.scss";
 import Activite from "./Activite";
 import Carte from "./Carte";
+import { theme } from "./theme";
 import {
   Card,
   Skeleton,
@@ -12,6 +13,7 @@ import {
   Typography,
   TextField,
   MenuItem,
+  ThemeProvider
 } from "@mui/material";
 import { FilterAltRounded, FilterAltOffRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
@@ -179,77 +181,79 @@ const List = () => {
           duration: 1,
         }}
       >
-        <div id="formFilter">
-          <div>
-            <label htmlFor="option">Filière: &nbsp;</label>
-            <TextField
-              id="option"
-              name="select"
-              value={option}
-              onChange={(e) => {
-                setOption(e.target.value);
+        <ThemeProvider theme={theme}>
+          <div id="formFilter">
+            <div>
+              <label htmlFor="option">Filière: &nbsp;</label>
+              <TextField
+                id="option"
+                name="select"
+                value={option}
+                onChange={(e) => {
+                  setOption(e.target.value);
+                }}
+                defaultValue=""
+                select
+                sx={{ fontFamily: "var(--fontText)" }}
+              >
+                <MenuItem value={""}>--none--</MenuItem>
+                <MenuItem value={"Vary"}>Vary</MenuItem>
+                <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
+                <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
+                <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
+                <MenuItem value={"Trondro"}>Trondro</MenuItem>
+                <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
+              </TextField>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              defaultValue=""
-              select
-              sx={{ fontFamily: "var(--fontText)" }}
             >
-              <MenuItem value={""}>--none--</MenuItem>
-              <MenuItem value={"Vary"}>Vary</MenuItem>
-              <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
-              <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
-              <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
-              <MenuItem value={"Trondro"}>Trondro</MenuItem>
-              <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
-            </TextField>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <label htmlFor="datedebut">Le: &nbsp;</label>
-            <TextField
-              id="datedebut"
-              type={"date"}
-              sx={{ fontFamily: "var(--fontText)" }}
-            ></TextField>
-            <label htmlFor="datefin">&nbsp;Jusqu'à: &nbsp;</label>
-            <TextField
-              id="datefin"
-              type={"date"}
-              sx={{ fontFamily: "var(--fontText)" }}
-            ></TextField>
+              <label htmlFor="datedebut">Le: &nbsp;</label>
+              <TextField
+                id="datedebut"
+                type={"date"}
+                sx={{ fontFamily: "var(--fontText)" }}
+              ></TextField>
+              <label htmlFor="datefin">&nbsp;Jusqu'à: &nbsp;</label>
+              <TextField
+                id="datefin"
+                type={"date"}
+                sx={{ fontFamily: "var(--fontText)" }}
+              ></TextField>
+            </div>
+            <div>
+              <TextField
+                type={"search"}
+                label="--Recherche--"
+                id="rech"
+              ></TextField>
+            </div>
           </div>
           <div>
-            <TextField
-              type={"search"}
-              label="--Recherche--"
-              id="rech"
-            ></TextField>
+            <Button
+              startIcon={<FilterAltRounded />}
+              onClick={() =>
+                filtre(
+                  option,
+                  document.getElementById("datedebut").value.toString(),
+                  document.getElementById("datefin").value.toString(),
+                  document.getElementById("rech").value
+                )
+              }
+            >
+              Filtrer
+            </Button>
+            <Button startIcon={<FilterAltOffRounded />} onClick={resetFilter}>
+              Reset
+            </Button>
           </div>
-        </div>
-        <div>
-          <Button
-            startIcon={<FilterAltRounded />}
-            onClick={() =>
-              filtre(
-                option,
-                document.getElementById("datedebut").value.toString(),
-                document.getElementById("datefin").value.toString(),
-                document.getElementById("rech").value
-              )
-            }
-          >
-            Filtrer
-          </Button>
-          <Button startIcon={<FilterAltOffRounded />} onClick={resetFilter}>
-            Reset
-          </Button>
-        </div>
+        </ThemeProvider>
       </motion.div>
       {some.length === 0 ? (
         pret ? (

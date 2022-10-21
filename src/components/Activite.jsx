@@ -48,6 +48,7 @@ const Activite = ({ activ, accueil }) => {
           sx={{
             width: accueil ? (width > 1590 ? 345 : 260) : 345,
             height: 200,
+            transition: "0.2s",
           }}
           image={activ.images[0] || "images/logo_APDIP.png"}
           alt={activ.title}
