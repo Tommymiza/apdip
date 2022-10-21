@@ -13,7 +13,7 @@ import {
   Typography,
   TextField,
   MenuItem,
-  ThemeProvider
+  ThemeProvider,
 } from "@mui/material";
 import { FilterAltRounded, FilterAltOffRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
@@ -22,7 +22,7 @@ const List = () => {
   const [some, setSome] = useState([]);
   const [option, setOption] = useState("");
 
-  const { activities, pret } = useContext(ActContext);
+  const { activities, pret, list } = useContext(ActContext);
   const resetFilter = () => {
     setOption("");
     document.getElementById("datedebut").value = "";
@@ -196,13 +196,11 @@ const List = () => {
                 select
                 sx={{ fontFamily: "var(--fontText)" }}
               >
-                <MenuItem value={""}>--none--</MenuItem>
-                <MenuItem value={"Vary"}>Vary</MenuItem>
-                <MenuItem value={"Tsaramaso"}>Tsaramaso</MenuItem>
-                <MenuItem value={"Katsaka"}>Katsaka</MenuItem>
-                <MenuItem value={"Kisoa"}>Kisoa</MenuItem>
-                <MenuItem value={"Trondro"}>Trondro</MenuItem>
-                <MenuItem value={"Akoho Gasy"}>Akoho Gasy</MenuItem>
+                {list.Filière.map((item) => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
               </TextField>
             </div>
             <div
