@@ -11,19 +11,26 @@ import {
   Button,
   Typography,
   TextField,
+  Dialog,
+  DialogContent,
+  IconButton,
   MenuItem,
 } from "@mui/material";
-import { FilterAltRounded, FilterAltOffRounded } from "@mui/icons-material";
+import {
+  FilterAltRounded,
+  FilterAltOffRounded,
+  CloseRounded,
+} from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { about } from "../firebase/about";
-
 
 const List = () => {
   const skeleton = [0, 1, 2, 3, 4, 5];
   const [some, setSome] = useState([]);
   const { activities, pret } = useContext(ActContext);
-  const [list,setList] = useState()
-  const [fil,setFiltre] = useState(false)
+  const [list, setList] = useState();
+  const [fil, setFiltre] = useState(false);
+  const [nothing, setNothing] = useState(false);
   const [option, setOption] = useState("");
   const resetFilter = () => {
     setOption("");
@@ -165,15 +172,15 @@ const List = () => {
     if (tab.length !== 0) {
       setSome(tab);
     } else {
-      alert("Pas d'activité de ce genre!");
+      setNothing(true);
     }
   }
   useEffect(() => {
     const abt = about.getPostInstance();
-    document.title = "Activités | Apdip"
-    abt.getdocument(setList).then(()=>{
-      setFiltre(true)
-    })
+    document.title = "Activités | Apdip";
+    abt.getdocument(setList).then(() => {
+      setFiltre(true);
+    });
   }, []);
   return (
     <motion.div
@@ -190,77 +197,77 @@ const List = () => {
           duration: 1,
         }}
       >
-          <div id="formFilter">
-            {fil && (
-              <div>
-                <label htmlFor="option">Filière: &nbsp;</label>
-                <TextField
-                  id="option"
-                  name="select"
-                  value={option}
-                  onChange={(e) => {
-                    setOption(e.target.value);
-                  }}
-                  defaultValue=""
-                  select
-                  sx={{ fontFamily: "var(--fontText)" }}
-                >
-                  {list.Filière.map((item) => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </div>
-            )}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <label htmlFor="datedebut">Le: &nbsp;</label>
-              <TextField
-                id="datedebut"
-                type={"date"}
-                sx={{ fontFamily: "var(--fontText)" }}
-              ></TextField>
-              <label htmlFor="datefin">&nbsp;Jusqu'à: &nbsp;</label>
-              <TextField
-                id="datefin"
-                type={"date"}
-                sx={{ fontFamily: "var(--fontText)" }}
-              ></TextField>
-            </div>
+        <div id="formFilter">
+          {fil && (
             <div>
+              <label htmlFor="option">Filière: &nbsp;</label>
               <TextField
-                type={"search"}
-                label="--Recherche--"
-                id="rech"
-              ></TextField>
+                id="option"
+                name="select"
+                value={option}
+                onChange={(e) => {
+                  setOption(e.target.value);
+                }}
+                defaultValue=""
+                select
+                sx={{ fontFamily: "var(--fontText)" }}
+              >
+                {list.Filière.map((item) => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </TextField>
             </div>
+          )}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <label htmlFor="datedebut">Le: &nbsp;</label>
+            <TextField
+              id="datedebut"
+              type={"date"}
+              sx={{ fontFamily: "var(--fontText)" }}
+            ></TextField>
+            <label htmlFor="datefin">&nbsp;Jusqu'à: &nbsp;</label>
+            <TextField
+              id="datefin"
+              type={"date"}
+              sx={{ fontFamily: "var(--fontText)" }}
+            ></TextField>
           </div>
           <div>
-            <Button
-              startIcon={<FilterAltRounded />}
-              onClick={() =>
-                filtre(
-                  option,
-                  document.getElementById("datedebut").value.toString(),
-                  document.getElementById("datefin").value.toString(),
-                  document.getElementById("rech").value
-                )
-              }
-            >
-              Filtrer
-            </Button>
-            <Button startIcon={<FilterAltOffRounded />} onClick={resetFilter}>
-              Reset
-            </Button>
+            <TextField
+              type={"search"}
+              label="--Recherche--"
+              id="rech"
+            ></TextField>
           </div>
+        </div>
+        <div>
+          <Button
+            startIcon={<FilterAltRounded />}
+            onClick={() =>
+              filtre(
+                option,
+                document.getElementById("datedebut").value.toString(),
+                document.getElementById("datefin").value.toString(),
+                document.getElementById("rech").value
+              )
+            }
+          >
+            Filtrer
+          </Button>
+          <Button startIcon={<FilterAltOffRounded />} onClick={resetFilter}>
+            Reset
+          </Button>
+        </div>
       </motion.div>
       {some.length === 0 ? (
         pret ? (
@@ -361,7 +368,11 @@ const List = () => {
         transition={{
           duration: 1,
         }}
-        style={{color : "white",fontFamily: "var(--fontText)", marginTop: "250px" }}
+        style={{
+          color: "white",
+          fontFamily: "var(--fontText)",
+          marginTop: "250px",
+        }}
       >
         Liste de nos groupements:
       </motion.h2>
@@ -375,6 +386,28 @@ const List = () => {
       >
         <Carte />
       </motion.div>
+      <Dialog
+        open={nothing}
+        onClose={() => {
+          setNothing(false);
+        }}
+      >
+        <IconButton
+          onClick={() => {
+            setNothing(false);
+          }}
+          sx={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+          }}
+        >
+          <CloseRounded />
+        </IconButton>
+        <DialogContent>
+          <p>Pas d'activité de ce genre</p>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
