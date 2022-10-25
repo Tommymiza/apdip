@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Autocomplete, Box, CircularProgress } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SendRounded } from "@mui/icons-material";
@@ -51,6 +51,9 @@ const Contact = () => {
         });
     }
   };
+  useEffect(() => {
+    document.title = "Contact | Apdip";
+  }, []);
   return (
     <motion.div
       style={{ marginTop: "150px" }}

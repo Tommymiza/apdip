@@ -170,6 +170,7 @@ const List = () => {
   }
   useEffect(() => {
     const abt = about.getPostInstance();
+    document.title = "Activités | Apdip"
     abt.getdocument(setList).then(()=>{
       setFiltre(true)
     })

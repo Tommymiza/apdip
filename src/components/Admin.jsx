@@ -361,7 +361,7 @@ const Admin = () => {
   }
   useEffect(() => {
     const abot = about.getPostInstance();
-
+    document.title = "Dashboard | Apdip";
     setConnected(false);
     const tempdata = getFirestore(app);
     setCheck(true);
@@ -865,7 +865,7 @@ const Admin = () => {
                 }}
               >
                 {activities ? (
-                  <Box sx={{ height: 400, width: "100%" , marginBottom: 2}}>
+                  <Box sx={{ height: 400, width: "100%", marginBottom: 2 }}>
                     <DataGrid
                       rows={activities}
                       columns={columns}

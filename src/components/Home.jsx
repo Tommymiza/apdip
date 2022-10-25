@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo } from "react";
+import React, { useState, useContext, useMemo, useEffect } from "react";
 import "../style/Home.scss";
 import {
   Public,
@@ -41,9 +41,14 @@ const Home = () => {
       }
     };
   }, [list]);
-
+  useEffect(() => {
+    document.title = "Apdip";
+  }, []);
   return (
-    <motion.div id="accueil" exit={{opacity: 0, transition:{duration: 0.5}}}>
+    <motion.div
+      id="accueil"
+      exit={{ opacity: 0, transition: { duration: 0.5 } }}
+    >
       <div id="title">
         <div
           style={{
@@ -435,11 +440,22 @@ const Home = () => {
           ))}
           {axes}
         </div>
-        <motion.div id="coord" initial={{opacity: 0}} whileInView={{opacity: 1}} transition={{duration: 1}}>
-          <div style={{position: "absolute", top: "-20px", right: "10px"}}>
-            <IconButton size="large" sx={{bgcolor: "ActiveBorder"}} onClick={()=>{
-              document.getElementById("accueil").scrollIntoView({behavior: "smooth"})
-            }}>
+        <motion.div
+          id="coord"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <div style={{ position: "absolute", top: "-20px", right: "10px" }}>
+            <IconButton
+              size="large"
+              sx={{ bgcolor: "ActiveBorder" }}
+              onClick={() => {
+                document
+                  .getElementById("accueil")
+                  .scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               <VerticalAlignTopRounded />
             </IconButton>
           </div>

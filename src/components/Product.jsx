@@ -19,6 +19,7 @@ const Product = () => {
   const skeleton = [0, 1, 2, 3];
   useEffect(() => {
     setConnected(false);
+    document.title = "Produits | Apdip";
     const tempdata = getFirestore(app);
     const key = document.cookie;
     const keyitems = key.split(";");
