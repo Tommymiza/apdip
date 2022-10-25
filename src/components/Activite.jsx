@@ -39,14 +39,14 @@ const Activite = ({ activ, accueil }) => {
         sx={{
           maxWidth: 345,
           backdropFilter: "blur(10px)",
-          boxShadow: "2px 2px 15px #6091A5",
-          backgroundColor: "rgba(255,255,255,0.3)",
+          boxShadow: "2px 2px 15px rgb(31, 30, 30)",
+          backgroundColor: "rgba(0,0,0,0.3)",
         }}
       >
         <CardMedia
           component="img"
           sx={{
-            width: accueil ? (width > 1590 ? 345 : 260) : 345,
+            width: accueil ? (width < 1590 && width > 1210 ? 260 : 345) : 345,
             height: 200,
             transition: "0.2s",
           }}

@@ -1,252 +1,246 @@
-.about {
+#title {
+  background: url("../../public/images/Reis-Ernte-5.jpg");
+  background-size: cover;
+  background-position: center;
+  padding: 40px;
+  width: calc(100vw - 80px);
+  height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
-  width: 60%;
-  align-items: center;
-  #title {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    font-family: "Satisty";
-    h1 {
-      font-size: 35px;
-      margin: 0;
-    }
-    p {
-      font-size: 25px;
-      color: rgb(124, 91, 91);
-      margin: 0;
-      align-self: flex-end;
-    }
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  &::before {
+    content: "";
+    height: 150px;
+    width: calc(100% + 80px);
+    position: absolute;
+    top: 0;
+    left: -40px;
+    background: linear-gradient(to top, transparent 20%, rgba(0, 0, 0, 0.6));
   }
-  #context {
-    font-family: var(--fontText);
-    p {
-      margin-left: 20px;
+  &::after {
+    content: "";
+    height: 150px;
+    width: calc(100% + 80px);
+    position: absolute;
+    top: calc(100vh - 150px);
+    left: -40px;
+    backdrop-filter: blur(100px);
+    mask: linear-gradient(to top, black, transparent);
+    background: linear-gradient(to bottom, transparent, var(--backColor));
+  }
+  div {
+    input[type="radio"] {
+      appearance: none;
+      width: 1.5em;
+      height: 1.5em;
+      border: solid 0.15em white;
+      border-radius: 100%;
+      margin: 0;
+      cursor: pointer;
+      display: grid;
+      place-content: center;
+    }
+    input[type="radio"]::before {
+      content: "";
+      width: 0.8em;
+      height: 0.8em;
+      border-radius: 100%;
+      transform: scale(0);
+      background: white;
+      transition: 120ms transform ease-in-out;
+    }
+    input[type="radio"]:checked::before {
+      transform: scale(1);
+    }
+    h1 {
+      filter: drop-shadow(black 0px 0px 100px);
+      text-shadow: black 0px 0px 50px, black 0px 0px 50px, black 0px 0px 50px;
+      margin: 0;
+    }
+    h2 {
+      filter: drop-shadow(black 0px 0px 25px);
+      text-shadow: black 0px 0px 50px, black 0px 0px 50px, black 0px 0px 50px;
+      font-family: var(--fontText);
+      word-spacing: normal;
+      font-weight: lighter;
     }
     span {
-      font-weight: bold;
+      color: #508d06;
+    }
+    .about {
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(2px);
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 7px;
+      #context {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        h4 {
+          color: white;
+          font-family: var(--fontText);
+          margin: 10px;
+        }
+        p {
+          font-family: var(--fontText);
+          margin: 5px;
+          color: rgb(184, 184, 184);
+          span {
+            color: white;
+            font-weight: bold;
+          }
+        }
+      }
     }
   }
 }
-section#secFooter {
-  height: auto;
-  #footer {
-    margin-top: 150px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    #coord {
-      background: rgba($color: #000000, $alpha: 0.1);
-      backdrop-filter: blur(2px);
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
-      flex-wrap: wrap;
-    }
-    .mission {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-wrap: wrap;
-      height: calc(50vh - 30px);
-      gap: 20px;
-      width: 80%;
-      padding: 0 50px;
-      margin-bottom: 20px;
-      div {
-        font-size: 20px;
-        box-shadow: 2px 2px 15px #6091a5;
-        padding: 20px;
-        backdrop-filter: blur(2px);
-        border-radius: 20px;
-        p {
-          margin: 0;
-          span {
-            font-weight: bold;
+#mission {
+  background: var(--backColor);
+}
+@media screen and (max-width: 750px) {
+  #title {
+    div {
+      h1 {
+        filter: drop-shadow(black 0px 0px 100px);
+        text-shadow: black 0px 0px 50px, black 0px 0px 50px;
+      }
+      h2 {
+        filter: drop-shadow(black 0px 0px 25px);
+        text-shadow: black 0px 0px 50px, black 0px 0px 50px;
+        font-family: var(--fontText);
+        word-spacing: normal;
+        font-weight: lighter;
+      }
+      .about {
+        width: 100vw;
+        margin-top: 40px;
+        #context {
+          padding-right: 5px;
+          padding-left: 10px;
+          h4 {
+            margin: 0;
+          }
+          p {
+            margin: 0;
           }
         }
       }
-    }
-    ul {
-      font-family: "SF Pro";
-      list-style: none;
-      li {
-        cursor: pointer;
-        transition: 0.2s;
-        margin: 2px 0;
-      }
-      li:hover {
-        transform: scale(1.1);
-      }
-    }
-    h4 {
-      margin: 0;
-      margin-top: 5px;
-    }
-    p {
-      margin: 0;
     }
   }
-  #footerXs {
-    margin-top: 150px;
-    width: 100%;
+}
+#footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  
+  #coord{
+    background: rgb(32, 32, 32);
+    width: calc(100% - 40px);
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    #coord {
-      background: rgba($color: #000000, $alpha: 0.1);
-      backdrop-filter: blur(2px);
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
-      flex-wrap: wrap;
-    }
-    .missionXs {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      width: 80%;
-      padding: 0 50px;
-      margin-bottom: 20px;
-      div {
-        font-size: 20px;
-        box-shadow: 2px 2px 15px #6091a5;
-        padding: 20px;
-        backdrop-filter: blur(2px);
-        border-radius: 20px;
-        p {
-          margin: 0;
-          span {
-            font-weight: bold;
-          }
+    flex-direction: row;
+    padding-left: 20px;
+    padding-right: 20px;
+    justify-content: space-between;
+    color: white;
+    position: relative;
+    div{
+      ul{
+        list-style: none;
+        li{
+          transition: 0.2s;
+          cursor: pointer;
+        }
+        li:hover{
+          transform: scale(1.1);
         }
       }
     }
-    ul {
-      font-family: "SF Pro";
-      list-style: none;
-      li {
-        cursor: pointer;
-        transition: 0.2s;
-        margin: 2px 0;
-      }
-      li:hover {
-        transform: scale(1.1);
+  }
+  h2{
+    color: white;
+  }
+  .mission {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 80%;
+    gap: 20px;
+    margin-bottom: 20px;
+    color: white;
+    div {
+      font-size: 20px;
+      box-shadow: 2px 2px 15px rgb(31, 30, 30);
+      padding: 20px;
+      backdrop-filter: blur(2px);
+      border-radius: 20px;
+      p {
+        margin: 0;
+        span {
+          font-weight: bold;
+        }
       }
     }
-    h4 {
-      margin: 0;
-      margin-top: 5px;
+  }
+}
+.actmiss {
+  margin: 100px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 200px;
+  h2 {
+    color: white;
+  }
+  .activity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    width: 50%;
+    div.actcard {
+      margin: 20px;
     }
-    p {
-      margin: 0;
+  }
+  .mission {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: calc(50% - 100px);
+    margin-bottom: 20px;
+    div {
+      font-size: 20px;
+      box-shadow: 2px 2px 15px rgb(31, 30, 30);
+      padding: 20px;
+      backdrop-filter: blur(2px);
+      border-radius: 20px;
+      color: white;
+      p {
+        margin: 0;
+        span {
+          font-weight: bold;
+        }
+      }
     }
   }
 }
 
-section {
-  font-family: var(--fontText);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  .MuiIconButton-root:hover {
-    background: transparent;
-    box-shadow: 0px 0px 15px #364146;
-    transition: 0.3s;
-  }
+@media screen and (max-width: 920px) {
   .actmiss {
-    margin: 100px 0;
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+    flex-direction: column;
+    flex-wrap: wrap;
     .activity {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0;
-      width: 50%;
-      div.actcard {
-        margin: 20px;
-      }
+      width: 100%;
     }
     .mission {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      width: calc(50% - 100px);
+      width: calc(100% - 100px);
       padding: 0 50px;
-      margin-bottom: 20px;
-      div {
-        font-size: 20px;
-        box-shadow: 2px 2px 15px #6091a5;
-        padding: 20px;
-        backdrop-filter: blur(2px);
-        border-radius: 20px;
-        p {
-          margin: 0;
-          span {
-            font-weight: bold;
-          }
-        }
-      }
-    }
-  }
-}
-@media screen and (max-width: 920px) {
-  section {
-    .about {
-      margin-top: 100px;
-    }
-    height: auto;
-    .actmiss {
-      flex-direction: column;
-      flex-wrap: wrap;
-      .activity {
-        width: 100%;
-      }
-      .mission {
-        width: calc(100% - 100px);
-        padding: 0 50px;
-      }
-    }
-  }
-}
-@media screen and (max-width: 1200px) {
-  section {
-    .about {
-      width: 90%;
-      #title {
-        h1 {
-          font-size: 20px;
-        }
-        p {
-          font-size: 15px;
-        }
-      }
-    }
-  }
-}
-@media screen and (max-width: 450px) {
-  section {
-    .about {
-      #title {
-        h1 {
-          font-size: 18px;
-        }
-        p {
-          font-size: 12px;
-        }
-      }
     }
   }
 }

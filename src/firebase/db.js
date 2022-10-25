@@ -7,7 +7,7 @@ const config = {
   storageBucket: "apdipdatabase.appspot.com",
   messagingSenderId: "982478106721",
   appId: "1:982478106721:web:3571c4bc9675280109ba20",
+  
 };
 const app = initializeApp(config);
-
 export default app;

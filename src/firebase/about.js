@@ -1,5 +1,5 @@
 import { getFirestore, collection, getDocs,updateDoc, doc, query, orderBy, addDoc, deleteDoc } from "firebase/firestore";
-import app from "../firebase/db";
+import app from "./db";
 export class about {
   static getPostInstance() {
     const o = new about();

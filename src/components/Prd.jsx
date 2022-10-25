@@ -6,7 +6,6 @@ import {
   CardActions,
   Typography,
   Button,
-  ThemeProvider,
   TextField,
   CircularProgress,
 } from "@mui/material";
@@ -18,7 +17,6 @@ import {
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import PrdDiapo from "./PrdDiapo";
-import { theme } from "./theme";
 import { produit } from "../firebase/produit";
 
 const Prd = ({ prod, connected, set }) => {
@@ -66,8 +64,8 @@ const Prd = ({ prod, connected, set }) => {
         sx={{
           maxWidth: 345,
           backdropFilter: "blur(10px)",
-          boxShadow: "2px 2px 15px #6091A5",
-          backgroundColor: "rgba(255,255,255,0.3)",
+          boxShadow: "2px 2px 15px rgb(31, 30, 30)",
+          backgroundColor: "rgba(0,0,0,0.3)",
         }}
       >
         <CardMedia
@@ -112,7 +110,7 @@ const Prd = ({ prod, connected, set }) => {
               <p
                 style={{
                   margin: 0,
-                  color: prod.stock !== 0 ? "black" : "rgb(228, 93, 93)",
+                  color: prod.stock !== 0 ? "white" : "rgb(228, 93, 93)",
                 }}
               >
                 {"Stock: " + prod.stock + " " + prod.unit}
@@ -150,7 +148,6 @@ const Prd = ({ prod, connected, set }) => {
           </div>
         </CardContent>
         <CardActions>
-          <ThemeProvider theme={theme}>
             <Button
               endIcon={<VisibilityRounded />}
               size="medium"
@@ -181,7 +178,6 @@ const Prd = ({ prod, connected, set }) => {
                 </LoadingButton>
               </>
             )}
-          </ThemeProvider>
         </CardActions>
       </Card>
       {dialog}

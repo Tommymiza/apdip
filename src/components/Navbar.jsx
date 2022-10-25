@@ -94,8 +94,8 @@ const Navbar = () => {
                   overflow: "visible",
                   mt: 1.5,
                   bgcolor: "transparent",
-                  backdropFilter: "blur(5px)",
-                  boxShadow: "0px 0px 15px #6091A5",
+                  backdropFilter: "blur(2px)",
+                  boxShadow: "2px 2px 15px rgb(31, 30, 30)",
                 },
               }}
               transformOrigin={{ horizontal: "right", vertical: "top" }}

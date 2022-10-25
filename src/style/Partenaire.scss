@@ -5,6 +5,7 @@
     width: 100%;
     align-items: center;
     font-family: var(--fontText);
+    color: white;
     .row-container{
         display: flex;
         flex-direction: row;
@@ -16,7 +17,7 @@
             height: 240px;
             border-radius: 7px;
             overflow: hidden;
-            box-shadow: 2px 2px 15px #6091A5;
+            box-shadow: 2px 2px 15px rgb(31, 30, 30);
             background-color: white;
             transition: 0.4s;
             position: relative;

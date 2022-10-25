@@ -1,14 +1,13 @@
 body {
   margin: 0;
   padding: 0;
-  background: url("../../public/images/background.jpg");
-  background-size: cover;
-  background-attachment: fixed;
   overflow-x: hidden;
+  background: var(--backColor);
+  font-family: var(--fontText);
 }
 * { 
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
   }
   &::-webkit-scrollbar-track {
     box-shadow: inset 0 0 10px grey;
@@ -16,20 +15,19 @@ body {
     color: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgb(88, 88, 88); 
+    background: rgb(80, 141, 6); 
     border-radius: 10px;
+    &:active{
+      background: white;
+    }
   }
   & .MuiPaper-root{
     overflow-x: hidden;
   }
 }
 @font-face {
-  font-family: 'SF Pro';
-  src: url('./SFPRODISPLAYREGULAR.OTF');
-}
-@font-face {
-  font-family: "Satisty";
-  src: url("./Satisfy-Regular.ttf");
+  font-family: "BFP";
+  src: url("./BeautifulPeoplePersonalUse-dE0g.ttf");
 }
 
 @font-face {
@@ -47,15 +45,7 @@ body {
 
 :root {
   --fontText: "Work Sans";
-}
-#notfound {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100vh;
-  h1 {
-    font-family: "Gumela";
-  }
+  --fontNav: "PoiretOne";
+  --titre: "BFP";
+  --backColor: rgb(52, 54, 54);
 }

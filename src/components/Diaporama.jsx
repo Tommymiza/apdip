@@ -79,7 +79,7 @@ const Diaporama = ({ activ, hide }) => {
         <div className="descri">
           <h2>{activ.title}</h2>
           <h4>
-            {activ.place} le {activ.date}
+            {activ.place} le {activ.date.substr(8,2) + "/" + activ.date.substr(5,2) + "/" + activ.date.substr(0,4)}
           </h4>
           <h4>Filière : {activ.filière}</h4>
           <p>{activ.description}</p>

@@ -23,10 +23,10 @@ import {
   DialogContent,
   MenuItem,
   IconButton,
-  ThemeProvider,
   Box,
   Badge,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import {
   LibraryAddRounded,
   BorderColorRounded,
@@ -43,10 +43,10 @@ import {
   RemoveCircleOutlineRounded,
   AddShoppingCartRounded,
 } from "@mui/icons-material";
-import { theme } from "./theme";
 import "../style/Admin.scss";
 import { motion } from "framer-motion";
 import { ActContext } from "../App";
+import Btn from "./outils/btn";
 
 const Admin = () => {
   const {
@@ -421,7 +421,7 @@ const Admin = () => {
               border: "none",
               p: 5,
               background: "rgba(0,0,0,0.05)",
-              boxShadow: "2px 2px 15px #6091A5",
+              boxShadow: "0 0 15px rgb(88, 82, 82)",
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
@@ -436,7 +436,7 @@ const Admin = () => {
               border: "none",
               p: 5,
               background: "rgba(0,0,0,0.05)",
-              boxShadow: "2px 2px 15px #6091A5",
+              boxShadow: "0 0 15px rgb(88, 82, 82)",
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
@@ -453,7 +453,7 @@ const Admin = () => {
               border: "none",
               p: 5,
               background: "rgba(0,0,0,0.05)",
-              boxShadow: "2px 2px 15px #6091A5",
+              boxShadow: "0 0 15px rgb(88, 82, 82)",
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
@@ -468,7 +468,7 @@ const Admin = () => {
               border: "none",
               p: 5,
               background: "rgba(0,0,0,0.05)",
-              boxShadow: "2px 2px 15px #6091A5",
+              boxShadow: "0 0 15px rgb(88, 82, 82)",
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
@@ -485,7 +485,7 @@ const Admin = () => {
               border: "none",
               p: 5,
               background: "rgba(0,0,0,0.05)",
-              boxShadow: "2px 2px 15px #6091A5",
+              boxShadow: "0 0 15px rgb(88, 82, 82)",
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
@@ -500,7 +500,7 @@ const Admin = () => {
               border: "none",
               p: 5,
               background: "rgba(0,0,0,0.05)",
-              boxShadow: "2px 2px 15px #6091A5",
+              boxShadow: "0 0 15px rgb(88, 82, 82)",
               borderRadius: "20px",
               backdropFilter: "blur(2px)",
             }}
@@ -513,7 +513,7 @@ const Admin = () => {
           <Dialog open={dialog === "ajout"} fullScreen>
             <DialogTitle
               sx={{
-                fontFamily: "SF Pro",
+                fontFamily: "var(--fontText)",
                 fontSize: 30,
                 display: "flex",
                 flexDirection: "row",
@@ -547,9 +547,12 @@ const Admin = () => {
                       required
                       sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                     >
-                      {list && list.Filière.map(item=>(
-                        <MenuItem key={item} value={item}>{item}</MenuItem>
-                      ))}
+                      {list &&
+                        list.Filière.map((item) => (
+                          <MenuItem key={item} value={item}>
+                            {item}
+                          </MenuItem>
+                        ))}
                     </TextField>
                     <TextField
                       label="Description"
@@ -601,20 +604,24 @@ const Admin = () => {
                     <div id="listes"></div>
                   </div>
                 </div>
-                {progress && <CircularProgress></CircularProgress>}
                 <p>{status}</p>
-                <ThemeProvider theme={theme}>
-                  <Button type="submit" endIcon={<SendRounded />}>
-                    Upload
-                  </Button>
-                </ThemeProvider>
+                <LoadingButton
+                  type="submit"
+                  loading={progress}
+                  loadingIndicator={
+                    <CircularProgress color="primary" size={16} />
+                  }
+                  endIcon={<SendRounded />}
+                >
+                  Upload
+                </LoadingButton>
               </form>
             </DialogContent>
           </Dialog>
           <Dialog open={dialog === "ajoutproduit"} fullScreen>
             <DialogTitle
               sx={{
-                fontFamily: "SF Pro",
+                fontFamily: "var(--fontText)",
                 fontSize: 30,
                 display: "flex",
                 flexDirection: "row",
@@ -689,20 +696,28 @@ const Admin = () => {
                     <div id="listes"></div>
                   </div>
                 </div>
-                {progress && <CircularProgress></CircularProgress>}
                 <p>{status}</p>
-                <ThemeProvider theme={theme}>
-                  <Button type="submit" endIcon={<SendRounded />}>
-                    Upload
-                  </Button>
-                </ThemeProvider>
+                <LoadingButton
+                  type="submit"
+                  loading={progress}
+                  loadingIndicator={
+                    <CircularProgress color="primary" size={16} />
+                  }
+                  endIcon={<SendRounded />}
+                >
+                  Upload
+                </LoadingButton>
               </form>
             </DialogContent>
           </Dialog>
-          <Dialog open={dialog === "modifier"} sx={{overflowX: "hidden", width: "100vw"}} fullScreen>
+          <Dialog
+            open={dialog === "modifier"}
+            sx={{ overflowX: "hidden", width: "100vw" }}
+            fullScreen
+          >
             <DialogTitle
               sx={{
-                fontFamily: "SF Pro",
+                fontFamily: "var(--fontText)",
                 fontSize: 30,
                 display: "flex",
                 flexDirection: "row",
@@ -716,7 +731,7 @@ const Admin = () => {
                 <Close />
               </IconButton>
             </DialogTitle>
-            <DialogContent sx={{overflowX: "hidden"}}>
+            <DialogContent sx={{ overflowX: "hidden" }}>
               <div id="updatediv">
                 <form id="updateForm" onSubmit={updateAct}>
                   <label>Titre:</label>
@@ -736,8 +751,11 @@ const Admin = () => {
                     required
                     sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                   >
-                    {list && list.Filière.map(item=>(
-                        <MenuItem key={item} value={item}>{item}</MenuItem>
+                    {list &&
+                      list.Filière.map((item) => (
+                        <MenuItem key={item} value={item}>
+                          {item}
+                        </MenuItem>
                       ))}
                   </TextField>
                   <label>Description:</label>
@@ -764,28 +782,27 @@ const Admin = () => {
                     required
                     sx={{ width: "100%", fontFamily: "var(--fontText)" }}
                   ></TextField>
-                  {progress && (
-                    <CircularProgress
-                      size={35}
-                      sx={{ mt: 3 }}
-                    ></CircularProgress>
-                  )}
                   <p>{status}</p>
-                  <ThemeProvider theme={theme}>
-                    <Button type="submit" endIcon={<EditRounded />}>
-                      Valider
+                  <LoadingButton
+                    loading={progress}
+                    loadingIndicator={
+                      <CircularProgress color="primary" size={16} />
+                    }
+                    type="submit"
+                    endIcon={<EditRounded />}
+                  >
+                    Valider
+                  </LoadingButton>
+                  {width < 850 && (
+                    <Button
+                      onClick={() => {
+                        toggleDrawer(!drawer);
+                      }}
+                      sx={{ zIndex: 2 }}
+                    >
+                      {drawer ? <Close /> : <ViewListRounded />}
                     </Button>
-                    {width < 850 && (
-                      <Button
-                        onClick={() => {
-                          toggleDrawer(!drawer);
-                        }}
-                        sx={{ zIndex: 2 }}
-                      >
-                        {drawer ? <Close /> : <ViewListRounded />}
-                      </Button>
-                    )}
-                  </ThemeProvider>
+                  )}
                 </form>
                 {pret ? (
                   <ul className={drawer ? "shown" : ""}>
@@ -800,11 +817,9 @@ const Admin = () => {
                     {activities ? (
                       activities.map((item) => (
                         <li key={item.id}>
-                          <ThemeProvider theme={theme}>
-                            <Button onClick={() => select(item)}>
-                              {item.title} {item.date}
-                            </Button>
-                          </ThemeProvider>
+                          <Button onClick={() => select(item)}>
+                            {item.title} {item.date}
+                          </Button>
                         </li>
                       ))
                     ) : (
@@ -826,7 +841,7 @@ const Admin = () => {
           <Dialog open={dialog === "supprimer"} fullScreen>
             <DialogTitle
               sx={{
-                fontFamily: "SF Pro",
+                fontFamily: "var(--fontText)",
                 fontSize: 30,
                 display: "flex",
                 flexDirection: "row",
@@ -850,7 +865,7 @@ const Admin = () => {
                 }}
               >
                 {activities ? (
-                  <Box sx={{ height: 400, width: "100%" }}>
+                  <Box sx={{ height: 400, width: "100%" , marginBottom: 2}}>
                     <DataGrid
                       rows={activities}
                       columns={columns}
@@ -866,23 +881,24 @@ const Admin = () => {
                 ) : (
                   <CircularProgress size={50}></CircularProgress>
                 )}
-                {progress && <CircularProgress size={50}></CircularProgress>}
-                <ThemeProvider theme={theme}>
-                  <Button
-                    type="submit"
-                    endIcon={<DeleteRounded />}
-                    onClick={handleDelete}
-                  >
-                    Supprimer
-                  </Button>
-                </ThemeProvider>
+                <LoadingButton
+                  type="submit"
+                  endIcon={<DeleteRounded />}
+                  onClick={handleDelete}
+                  loading={progress}
+                  loadingIndicator={
+                    <CircularProgress color="primary" size={16} />
+                  }
+                >
+                  Supprimer
+                </LoadingButton>
               </div>
             </DialogContent>
           </Dialog>
           <Dialog open={dialog === "settings"} fullScreen>
             <DialogTitle
               sx={{
-                fontFamily: "SF Pro",
+                fontFamily: "var(--fontText)",
                 fontSize: 30,
                 display: "flex",
                 flexDirection: "row",
@@ -1045,23 +1061,28 @@ const Admin = () => {
                             ))}
                           {showMessage}
                         </div>
-                        <ThemeProvider theme={theme}>
-                          {progress1 && <CircularProgress size={24} />}
-                          <Button
-                            startIcon={<DeleteRounded />}
-                            onClick={delmessage}
-                          >
-                            Vider
-                          </Button>
-                        </ThemeProvider>
+                        <LoadingButton
+                          startIcon={<DeleteRounded />}
+                          onClick={delmessage}
+                          loading={progress1}
+                          loadingIndicator={
+                            <CircularProgress color="primary" size={16} />
+                          }
+                        >
+                          Vider
+                        </LoadingButton>
                       </div>
                     </div>
-                    <ThemeProvider theme={theme}>
-                      {progress && <CircularProgress size={24} />}
-                      <Button startIcon={<EditRounded />} type="submit">
-                        Modifier
-                      </Button>
-                    </ThemeProvider>
+                    <LoadingButton
+                      loading={progress}
+                      loadingIndicator={
+                        <CircularProgress color="primary" size={16} />
+                      }
+                      startIcon={<EditRounded />}
+                      type="submit"
+                    >
+                      Modifier
+                    </LoadingButton>
                   </form>
                 </div>
               ) : (
@@ -1078,19 +1099,7 @@ const Admin = () => {
           {loading ? (
             <CircularProgress size={24}></CircularProgress>
           ) : (
-            <Button
-              type="submit"
-              startIcon={<LockOpenRounded />}
-              sx={{
-                color: "white",
-                p: 1,
-                border: "none",
-                boxShadow: "2px 2px 10px #6091A5",
-                borderRadius: "7px",
-              }}
-            >
-              Login
-            </Button>
+            <Btn text="Login" icon={<LockOpenRounded />} />
           )}
         </form>
       )}

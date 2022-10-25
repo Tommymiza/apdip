@@ -3,7 +3,6 @@ import { ActContext } from "../App";
 import "../style/List.scss";
 import Activite from "./Activite";
 import Carte from "./Carte";
-import { theme } from "./theme";
 import {
   Card,
   Skeleton,
@@ -13,7 +12,6 @@ import {
   Typography,
   TextField,
   MenuItem,
-  ThemeProvider,
 } from "@mui/material";
 import { FilterAltRounded, FilterAltOffRounded } from "@mui/icons-material";
 import { motion } from "framer-motion";
@@ -191,7 +189,6 @@ const List = () => {
           duration: 1,
         }}
       >
-        <ThemeProvider theme={theme}>
           <div id="formFilter">
             {fil && (
               <div>
@@ -263,7 +260,6 @@ const List = () => {
               Reset
             </Button>
           </div>
-        </ThemeProvider>
       </motion.div>
       {some.length === 0 ? (
         pret ? (
@@ -364,7 +360,7 @@ const List = () => {
         transition={{
           duration: 1,
         }}
-        style={{ fontFamily: "var(--fontText)", marginTop: "250px" }}
+        style={{color : "white",fontFamily: "var(--fontText)", marginTop: "250px" }}
       >
         Liste de nos groupements:
       </motion.h2>

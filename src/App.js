@@ -13,6 +13,8 @@ import { activity } from "./firebase/activite";
 import { about } from "./firebase/about";
 import { produit } from "./firebase/produit";
 import Product from "./components/Product";
+import { ThemeProvider } from "@mui/material";
+import { theme } from "./components/theme";
 
 export const ActContext = createContext();
 function App() {
@@ -24,7 +26,6 @@ function App() {
   const [list, setList] = useState({});
 
   useEffect(() => {
-    //   console.log("hola")
     const act = activity.getPostInstance();
     const abt = about.getPostInstance();
     const prod = produit.getPostInstance();
@@ -37,7 +38,7 @@ function App() {
     prod.list(setProduits);
   }, []);
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Navbar />
       <ActContext.Provider
         value={{
@@ -51,7 +52,7 @@ function App() {
           setProduits,
         }}
       >
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />}></Route>
             <Route path="/dashboard" element={<Admin />}></Route>
@@ -63,7 +64,7 @@ function App() {
           </Routes>
         </AnimatePresence>
       </ActContext.Provider>
-    </>
+    </ThemeProvider>
   );
 }
 
