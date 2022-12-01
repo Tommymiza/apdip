@@ -55,7 +55,6 @@ const Navbar = () => {
         <div>
           <img src="/images/logo_APDIP.png" alt="logo" />
         </div>
-
         <h2>APDIP</h2>
       </div>
       <nav>
